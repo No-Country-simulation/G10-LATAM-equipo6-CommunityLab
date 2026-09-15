@@ -1,1 +1,43 @@
+# --- Carpeta de archivos de la gestión del proyecto
 /PM_Files/
+
+# --- Variables de entorno y credenciales ---
+.env
+.env.local
+*.env
+!.env.example
+
+# --- Volúmenes locales y datos persistentes de Docker ---
+# Directorio donde n8n almacena flujos, credenciales cifradas y SQLite (si aplica)
+n8n_data/
+.n8n/
+
+# Directorios de datos de bases de datos locales (ej. Postgres, MySQL)
+postgres_data/
+mysql_data/
+db_data/
+
+# Archivos de base de datos SQLite locales
+*.sqlite
+*.sqlite3
+
+# --- Archivos temporales, respaldos y logs ---
+*.log
+logs/
+backups/
+dumps/
+*.sql
+*.tar.gz
+
+# --- Claves y certificados SSL/TLS locales ---
+*.pem
+*.key
+*.crt
+*.pfx
+
+# --- Basura de sistemas operativos y editores ---
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.sublime-workspace
