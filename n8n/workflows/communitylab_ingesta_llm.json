@@ -1,0 +1,177 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -176,
+        -144
+      ],
+      "id": "c64b0f8b-6c4e-4d8d-bc3d-9cbaad80b8e2",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "jsCode": "const dataset = {\n  \"interacciones\": [\n    {\n      \"id\": \"msg_001\",\n      \"autor\": \"Carlos Mendoza\",\n      \"canal\": \"#logros-y-empleos\",\n      \"tipo\": \"testimonio\",\n      \"texto\": \"Quiero compartirles que hoy firmé mi contrato formal como Desarrollador Junior Cloud en una consultora internacional. Todo lo aprendido en la formación de Oracle ONE y los laboratorios prácticos marcaron la diferencia absoluta en mi prueba técnica. Infinitas gracias a la comunidad por el apoyo constante!\"\n    },\n    {\n      \"id\": \"msg_002\",\n      \"autor\": \"Lucía Fernández\",\n      \"canal\": \"#dudas-programacion\",\n      \"tipo\": \"pregunta_tecnica\",\n      \"texto\": \"Hola comunidad, estoy teniendo un problema con una llamada a la API de Gemini en Python. Me sale un error de ResourceExhausted cuando envío más de 10 peticiones seguidas. ¿Alguien ha implementado exponential backoff o manejo de rate limits con la librería oficial de Google GenAI?\"\n    },\n    {\n      \"id\": \"msg_003\",\n      \"autor\": \"Mateo Rivas\",\n      \"canal\": \"#logros-y-empleos\",\n      \"tipo\": \"testimonio\",\n      \"texto\": \"Ayer me confirmaron mi primer contrato como Data Analyst para una startup de Chile gracias a los proyectos que desarrollamos en las formaciones de Alura y Oracle ONE. No se rindan, el esfuerzo constante rinde frutos!\"\n    },\n    {\n      \"id\": \"msg_004\",\n      \"autor\": \"Andrea Gómez\",\n      \"canal\": \"#dudas-cloud-oci\",\n      \"tipo\": \"pregunta_tecnica\",\n      \"texto\": \"Hola a todos, estoy intentando subir archivos a OCI Object Storage usando el SDK de Python pero me arroja un error 401 NotAuthenticated. ¿Cómo debo configurar las claves API en el archivo ~/.oci/config para la instancia VM?\"\n    },\n    {\n      \"id\": \"msg_005\",\n      \"autor\": \"Sebastián Ramos\",\n      \"canal\": \"#proyectos-showcase\",\n      \"tipo\": \"showcase\",\n      \"texto\": \"Acabo de desplegar mi bot de Telegram con IA usando Gemini Flash y OCI Compute Always Free. Pueden probarlo y darme feedback: https://t.me/sebas_oracle_bot. Todo el backend corre en un contenedor Docker con menos de 500MB de RAM!\"\n    },\n    {\n      \"id\": \"msg_006\",\n      \"autor\": \"Valeria Silva\",\n      \"canal\": \"#feedback-cursos\",\n      \"tipo\": \"feedback\",\n      \"texto\": \"El módulo de Prompt Engineering y Few-Shot Learning estuvo genial. Me gustaría que agregaran una clase extra sobre cómo prevenir prompt injection en sistemas que leen entradas de usuarios en foros públicos.\"\n    },\n    {\n      \"id\": \"msg_007\",\n      \"autor\": \"Martín Peña\",\n      \"canal\": \"#dudas-gemini-api\",\n      \"tipo\": \"pregunta_tecnica\",\n      \"texto\": \"Alguien sabe cuál es el límite de tokens por minuto (TPM) en la capa gratuita de Google Gemini 1.5 Flash cuando enviamos peticiones por streaming?\"\n    },\n    {\n      \"id\": \"msg_008\",\n      \"autor\": \"Daniela Paredes\",\n      \"canal\": \"#logros-y-empleos\",\n      \"tipo\": \"testimonio\",\n      \"texto\": \"Presenté la demo de mi proyecto de Hackathon a mi jefe actual en el área de soporte y me ascendieron a Líder Técnico de Automatización de Procesos. ¡Este programa ONE realmente transforma vidas profesionales!\"\n    },\n    {\n      \"id\": \"msg_009\",\n      \"autor\": \"Esteban Morales\",\n      \"canal\": \"#dudas-docker\",\n      \"tipo\": \"pregunta_tecnica\",\n      \"texto\": \"Cuando despliego Streamlit dentro de un contenedor Docker en Ubuntu Server de OCI, no puedo acceder desde el navegador en el puerto 8501. ¿Qué reglas de seguridad debo abrir en la VCN de Oracle Cloud?\"\n    },\n    {\n      \"id\": \"msg_010\",\n      \"autor\": \"Camila Torres\",\n      \"canal\": \"#feedback-cursos\",\n      \"tipo\": \"feedback\",\n      \"texto\": \"Me encantaría que el equipo organizador de Oracle ONE hiciera un workshop en vivo sobre cómo preparar el perfil de LinkedIn y el portafolio en GitHub para reclutadores de tecnología. La formación técnica es excelente, pero potenciar la marca personal nos daría un impulso tremendo.\"\n    },\n    {\n      \"id\": \"msg_011\",\n      \"autor\": \"Javier Rojas\",\n      \"canal\": \"#logros-y-empleos\",\n      \"tipo\": \"testimonio\",\n      \"texto\": \"Después de 6 meses de reconversión laboral desde contabilidad hacia backend con Java y Spring Boot en Oracle ONE, acabo de recibir mi oferta laboral como Desarrollador Trainee. Gracias a mis tutores y compañeros por resolver cada duda!\"\n    },\n    {\n      \"id\": \"msg_012\",\n      \"autor\": \"Paula Benítez\",\n      \"canal\": \"#dudas-cloud-oci\",\n      \"tipo\": \"pregunta_tecnica\",\n      \"texto\": \"Una pregunta rápida: ¿cuál es la mejor práctica para automatizar el respaldo diario de una base de datos Oracle Autonomous Database (Always Free) hacia OCI Object Storage usando OCI CLI o cron jobs?\"\n    },\n    {\n      \"id\": \"msg_013\",\n      \"autor\": \"Tomás Herrera\",\n      \"canal\": \"#proyectos-showcase\",\n      \"tipo\": \"showcase\",\n      \"texto\": \"Diseñé un clasificador de sentimientos de tickets de soporte técnico con Gemini 1.5 Pro y FastAPI. Logramos un 92% de precisión comparado con la categorización manual humana. Les comparto el repositorio con la documentación completa.\"\n    },\n    {\n      \"id\": \"msg_014\",\n      \"autor\": \"Gabriel Medina\",\n      \"canal\": \"#dudas-programacion\",\n      \"tipo\": \"pregunta_tecnica\",\n      \"texto\": \"¿Cómo puedo forzar a que Google Gemini siempre responda con un esquema JSON estricto en Python sin que a veces incluya bloques markdown como ```json? Me está rompiendo el json.loads() en backend.\"\n    },\n    {\n      \"id\": \"msg_015\",\n      \"autor\": \"Sofía Castro\",\n      \"canal\": \"#logros-y-empleos\",\n      \"tipo\": \"testimonio\",\n      \"texto\": \"Oficialmente soy graduada de la promoción G10 de Oracle Next Education y fui seleccionada para una pasantía remunerada en ingeniería de datos en una multinacional de telecomunicaciones. ¡Los sueños se cumplen estudiando con disciplina!\"\n    }\n  ]\n};\n\n// Devuelve los 15 registros como items independientes listos para Gemini\nreturn dataset.interacciones.map(item => ({ json: item }));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        160,
+        -112
+      ],
+      "id": "76958dff-6344-48cd-8107-001efb1a9b9b",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Analiza este mensaje de la comunidad tecnológica:\n\"{{ $json.texto }}\"\n\nAutor: {{ $json.autor }}\nCanal: {{ $json.canal }}\n\nDetermina:\n1. sentimiento: (\"positivo\", \"neutro\" o \"negativo\")\n2. tipo_contenido: (\"logro_contratacion\", \"duda_tecnica\" o \"feedback\")\n3. temas_clave: lista de temas tecnológicos mencionados\n4. post_linkedin: Si es logro_contratacion, redacta un post inspirador para LinkedIn con hook y hashtags. Si no, null.\n5. tip_tecnico_faq: Si es duda_tecnica, redacta una respuesta concisa de soporte técnico tipo FAQ. Si no, null.\n",
+        "messages": {
+          "messageValues": []
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        672,
+        -112
+      ],
+      "id": "10ce0c94-4d48-40fe-a266-405e3cd0d447",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        448,
+        -160
+      ],
+      "id": "eed07a5e-d1fe-42b3-994b-3c6d0484e8cc",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "amount": 4
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1024,
+        -80
+      ],
+      "id": "f267ba7f-aedf-481a-8380-ba23cd10d6af",
+      "name": "Wait",
+      "webhookId": "d07e2495-71cf-45fd-b148-f6ba50884446"
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-20b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        656,
+        224
+      ],
+      "id": "00d2a51f-9331-496b-ac08-44cb65cf7a10",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "dYH7OO8GOD58Q2lm",
+          "name": "Groq account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "122ad00d-9000-46d7-84e7-75c121cecd6b",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "cb0b9a3b8b392f0b0fbc26be213326cbdfd285ed78e8eb9be9b7984b7130dd64"
+  },
+  "nodeGroups": [],
+  "id": "VbiaaT0wBJZjR0Sz",
+  "tags": []
+}

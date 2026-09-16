@@ -19,6 +19,8 @@ services:
       - N8N_DEFAULT_BINARY_DATA_MODE=filesystem
     volumes:
       - n8n_data:/home/node/.n8n
+      - ./data:/data:ro
+
 
 volumes:
   n8n_data:
