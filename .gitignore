@@ -1,5 +1,5 @@
 # --- Carpeta de archivos de la gestión del proyecto
-/PM_Files/
+#/PM_Files/
 
 # --- Variables de entorno y credenciales ---
 .env

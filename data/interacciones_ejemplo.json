@@ -1,0 +1,111 @@
+{
+  "origen_comunidad": "Discord_Oracle_Next_Education_G10",
+  "periodo_referencia": "Semana_04",
+  "interacciones": [
+    {
+      "id": "msg_001",
+      "autor": "Mariana Souza",
+      "canal": "#logros-y-empleos",
+      "tipo": "testimonio",
+      "texto": "Comunidad, quede seleccionada para el puesto de Desarrolladora Junior de IA! El proyecto del curso de LangChain y OCI que construi en mi portfolio marco toda la diferencia en la entrevista tecnica. Muy agradecida con la comunidad por todo el apoyo!"
+    },
+    {
+      "id": "msg_002",
+      "autor": "Lucas Albuquerque",
+      "canal": "#dudas-langgraph",
+      "tipo": "pregunta_tecnica",
+      "texto": "Tengo dudas sobre como estructurar los nodos condicionales en LangGraph cuando la respuesta del LLM necesita reintento. Alguien tiene un ejemplo practico de router?"
+    },
+    {
+      "id": "msg_003",
+      "autor": "Carlos Mendoza",
+      "canal": "#logros-y-empleos",
+      "tipo": "testimonio",
+      "texto": "Ayer me confirmaron mi primer contrato como Data Analyst para una startup de Chile gracias a los proyectos que desarrollamos en las formaciones de Alura y Oracle ONE. No se rindan, el esfuerzo constante rinde frutos!"
+    },
+    {
+      "id": "msg_004",
+      "autor": "Andrea Gómez",
+      "canal": "#dudas-cloud-oci",
+      "tipo": "pregunta_tecnica",
+      "texto": "Hola a todos, estoy intentando subir archivos a OCI Object Storage usando el SDK de Python pero me arroja un error 401 NotAuthenticated. ¿Cómo debo configurar las claves API en el archivo ~/.oci/config para la instancia VM?"
+    },
+    {
+      "id": "msg_005",
+      "autor": "Sebastián Ramos",
+      "canal": "#proyectos-showcase",
+      "tipo": "showcase",
+      "texto": "Acabo de desplegar mi bot de Telegram con IA usando Gemini Flash y OCI Compute Always Free. Pueden probarlo y darme feedback: https://t.me/sebas_oracle_bot. Todo el backend corre en un contenedor Docker con menos de 500MB de RAM!"
+    },
+    {
+      "id": "msg_006",
+      "autor": "Valeria Silva",
+      "canal": "#feedback-cursos",
+      "tipo": "feedback",
+      "texto": "El módulo de Prompt Engineering y Few-Shot Learning estuvo genial. Me gustaría que agregaran una clase extra sobre cómo prevenir prompt injection en sistemas que leen entradas de usuarios en foros públicos."
+    },
+    {
+      "id": "msg_007",
+      "autor": "Martín Peña",
+      "canal": "#dudas-gemini-api",
+      "tipo": "pregunta_tecnica",
+      "texto": "Alguien sabe cuál es el límite de tokens por minuto (TPM) en la capa gratuita de Google Gemini 1.5 Flash cuando enviamos peticiones por streaming?"
+    },
+    {
+      "id": "msg_008",
+      "autor": "Daniela Paredes",
+      "canal": "#logros-y-empleos",
+      "tipo": "testimonio",
+      "texto": "Presenté la demo de mi proyecto de Hackathon a mi jefe actual en el área de soporte y me ascendieron a Líder Técnico de Automatización de Procesos. ¡Este programa ONE realmente transforma vidas profesionales!"
+    },
+    {
+      "id": "msg_009",
+      "autor": "Esteban Morales",
+      "canal": "#dudas-docker",
+      "tipo": "pregunta_tecnica",
+      "texto": "Cuando despliego Streamlit dentro de un contenedor Docker en Ubuntu Server de OCI, no puedo acceder desde el navegador en el puerto 8501. ¿Qué reglas de seguridad debo abrir en la VCN de Oracle Cloud?"
+    },
+    {
+      "id": "msg_010",
+      "autor": "Camila Herrera",
+      "canal": "#feedback-cursos",
+      "tipo": "feedback",
+      "texto": "Los mentores de los sábados son increíbles. La sesión de ayer sobre cómo optimizar la memoria swap en máquinas virtuales de 1GB fue clave para que no se nos cayera el servidor."
+    },
+    {
+      "id": "msg_011",
+      "autor": "Rodrigo Fuentes",
+      "canal": "#general",
+      "tipo": "felicitacion",
+      "texto": "Quiero agradecer al equipo 6 por el soporte en Discord a altas horas de la noche resolviendo dudas sobre Git y ramas. ¡Gran espíritu de compañerismo en esta comunidad!"
+    },
+    {
+      "id": "msg_012",
+      "autor": "Gabriela Castro",
+      "canal": "#dudas-langgraph",
+      "tipo": "pregunta_tecnica",
+      "texto": "¿Cuál es la mejor práctica para almacenar el estado del agente en LangGraph si queremos persistencia en PostgreSQL o Cloud Storage en lugar de solo memoria en RAM?"
+    },
+    {
+      "id": "msg_013",
+      "autor": "Felipe Vargas",
+      "canal": "#logros-y-empleos",
+      "tipo": "testimonio",
+      "texto": "Con 42 años decidí reinventarme en tecnología sin experiencia previa. Hoy firmé mi contrato como Desarrollador Python Backend. ¡Gracias ONE y No Country por abrir estas oportunidades!"
+    },
+    {
+      "id": "msg_014",
+      "autor": "Lorena Méndez",
+      "canal": "#proyectos-showcase",
+      "tipo": "showcase",
+      "texto": "Comparto el repositorio de nuestro clasificador automático de tickets de soporte con IA y visualización en Gradio: github.com/lorena/support-ai. ¡Esperamos sus pull requests y estrellas!"
+    },
+    {
+      "id": "msg_015",
+      "autor": "Alejandro Ruiz",
+      "canal": "#dudas-cloud-oci",
+      "tipo": "pregunta_tecnica",
+      "texto": "¿Cómo se configura un ciclo de vida (Lifecycle Rule) en OCI Object Storage para archivar automáticamente objetos a Archive Tier después de 30 días sin costo extra?"
+    }
+  ]
+}
