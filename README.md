@@ -102,10 +102,15 @@ pip install -r requirements.txt
 ```
 
 ### 3. Variables de Entorno
-Copia el archivo `.env.example` como `.env` y completa tus credenciales de Gemini y OCI:
+Copia el archivo `.env.example` como `.env` y completa tus credenciales de Gemini, Groq y OCI:
 ```bash
 cp .env.example .env
 ```
+
+### 4. Orquestador n8n
+- **En la Nube (Instancia oficial del equipo):** La VM de OCI Always Free corre n8n directamente en [http://147.15.9.116:5678](http://147.15.9.116:5678).
+- **En Local:** Ejecuta `docker compose up -d` y accede en `http://localhost:5678`.
+- Consulta la guía completa de flujos y versionado en [`n8n/README.md`](n8n/README.md).
 
 ---
 

@@ -9,7 +9,7 @@ Este directorio contiene la documentación, flujos versionados y guías operativ
 El equipo cuenta con una instancia activa de n8n desplegada en una máquina virtual Linux Always Free en **Oracle Cloud Infrastructure (OCI)**:
 
 * **URL de acceso:** [http://147.15.9.116:5678](http://147.15.9.116:5678)
-* **Entorno VM:** Ubuntu Linux en OCI (`/home/ubuntu/n8n-hackathon`)
+* **Entorno VM:** Ubuntu Linux en OCI (`/home/ubuntu/G10-LATAM-equipo6-CommunityLab`)
 * **Responsables Infra / n8n:** José Medina & César Cely
 
 ### 👥 Acceso para Miembros del Equipo
@@ -23,12 +23,24 @@ El equipo cuenta con una instancia activa de n8n desplegada en una máquina virt
 Si deseas probar flujos o nodos en tu máquina local sin afectar la instancia compartida:
 
 ```bash
-# 1. Asegúrate de tener Docker y Docker Compose instalados
+# 1. Levantar el servicio
 docker compose up -d
 
 # 2. Abrir en el navegador
 http://localhost:5678
 ```
+
+---
+
+## 🚀 Patrón Arquitectónico del Pipeline en n8n
+
+Para procesar las 15 interacciones orgánicas evitando bloqueos de permisos y cuotas de API (*Rate Limits*):
+
+1. **Ingesta de Datos:** Nodo `Code` que lee los datos parseados de `data/interacciones_ejemplo.json` (montado en `/home/node/data/interacciones_ejemplo.json`).
+2. **Control de Flujo (Batching):** Nodo `Loop Over Items` con `Batch Size: 1`.
+3. **Inferencia LLM:** Nodo `Basic LLM Chain` conectado a `Google Gemini Chat Model` o `Groq Chat Model` (utilizando modelos de alto rendimiento como `openai/gpt-oss-20b` o `gemini-1.5-flash`).
+4. **Resiliencia & Rate Limiting:** Nodo `Wait` de 4 segundos que pausa la ejecución antes de avanzar al siguiente item, protegiendo el límite de TPM/RPM de la API.
+5. **Cierre de Ciclo:** La salida de `Wait` regresa al `Loop Over Items`.
 
 ---
 
@@ -47,15 +59,15 @@ Para asegurar que los workflows no queden únicamente en la base de datos de la 
 
 ---
 
-## ⚙️ Configuración Recomendada en la VM de OCI
+## ⚙️ Configuración Oficial en la VM de OCI
 
-Para la instancia en producción en la VM, el archivo `/home/ubuntu/n8n-hackathon/docker-compose.yml` debe contemplar:
+En la VM, el servicio corre en `/home/ubuntu/G10-LATAM-equipo6-CommunityLab/docker-compose.yml`:
 
 ```yaml
-version: "3"
 services:
   n8n:
     image: docker.n8n.io/n8nio/n8n:latest
+    container_name: communitylab-n8n
     restart: always
     ports:
       - "5678:5678"
@@ -63,7 +75,7 @@ services:
       - N8N_HOST=0.0.0.0
       - N8N_PORT=5678
       - N8N_PROTOCOL=http
-      - WEBHOOK_URL=http://147.15.9.116:5678/
+      - WEBHOOK_URL=${N8N_WEBHOOK_URL:-http://localhost:5678/}
       - NODE_ENV=production
       - EXECUTIONS_DATA_PRUNE=true
       - EXECUTIONS_DATA_MAX_AGE=24
@@ -71,8 +83,15 @@ services:
       - N8N_SECURE_COOKIE=false
       - GENERIC_TIMEZONE=America/Bogota
       - N8N_DEFAULT_BINARY_DATA_MODE=filesystem
+      - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=false
+      - N8N_ALLOWED_FILE_PATHS=/home/node/data/
     volumes:
       - n8n_data:/home/node/.n8n
+      - ./data:/home/node/data:ro
+
 volumes:
   n8n_data:
+    external: true
+    name: n8n-hackathon_n8n_data
 ```
+

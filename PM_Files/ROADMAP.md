@@ -78,26 +78,30 @@ gantt
 
 ---
 
-### Semana 0: Kickoff, Repositorio y Arquitectura (En curso)
+### Semana 0: Kickoff, Repositorio y Arquitectura (Completada / Al día)
 * **Objetivo:** Definir reglas de juego, estructura del código, dataset inicial y validar que todos tengan accesos.
 * **Entregables:**
   - [x] Repositorio oficial conectado y clonado.
   - [x] Acta de la 1ª reunión (`PM_Files/acta-primera-reunion_14092026.md`).
-  - [ ] Estructura base de carpetas creada (`src/`, `data/`, `config/`).
-  - [ ] Archivo `data/interacciones_ejemplo.json` con 15 casos variados (testimonios, dudas técnicas, felicitaciones).
-  - [ ] **Sprint Demo Meet S0 (Jueves)**.
+  - [x] Estructura base de carpetas creada (`src/`, `data/`, `n8n/`, `PM_Files/`).
+  - [x] Archivo `data/interacciones_ejemplo.json` con 15 casos variados (testimonios, dudas técnicas, felicitaciones).
+  - [x] Despliegue de VM Ubuntu Always Free en OCI Compute (`147.15.9.116`) con Docker Compose y n8n productivo.
+  - [x] **Sprint Demo Meet S0 (Jueves)**.
 
 ---
 
-### Semana 1: Ingesta de Datos & Motor de LLM (Gemini)
-* **Objetivo:** Lograr que un lote de mensajes pase por Gemini y devuelva el JSON estructurado obligatorio.
+### Semana 1: Ingesta de Datos & Motor de LLM (En curso - Gran avance)
+* **Objetivo:** Lograr que un lote de mensajes pase por el LLM y devuelva el JSON estructurado obligatorio.
 * **Lunes:** *Sprint Planning Meet*. Asignación formal de tareas.
 * **Desarrollo:**
-  - Script de ingesta y validación de esquema con Pydantic.
-  - Integración con SDK de Gemini (`google-genai`).
-  - Prompt engineering: análisis de sentimiento, extracción de temas y generación de copys (LinkedIn + Newsletter/FAQ).
-* **Jueves:** *Sprint Demo Meet S1*. Mostrar la ejecución del script por terminal/notebook con salida JSON formal.
+  - [x] Ingesta y parseo de los 15 items de prueba dentro del pipeline en n8n montado desde la VM.
+  - [x] Conexión con LLM (Gemini / Groq) mediante `Basic LLM Chain`.
+  - [x] Implementación de control de flujo con bucle (`Loop Over Items`) y temporizador (`Wait`) para tolerancia a *Rate Limits* (TPM/RPM).
+  - [ ] Refinamiento de esquemas estructurados de salida (JSON con copys de LinkedIn y Tips técnicos).
+  - [ ] Script Python complementario con Pydantic en `src/ai_engine/`.
+* **Jueves:** *Sprint Demo Meet S1*. Mostrar la ejecución del pipeline con salida JSON formal.
 * **Fin de semana:** Subir entregables de avance a No Country.
+
 
 ---
 
