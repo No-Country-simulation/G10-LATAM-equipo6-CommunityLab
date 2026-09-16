@@ -18,20 +18,20 @@ Desarrollar un MVP de un **Motor Inteligente de Transformación y Distribución 
 
 Para optimizar la colaboración y garantizar aprendizaje transversal, el equipo se divide en 3 células clave:
 
-### 🧠 Célula 1: IA, Prompts & Orquestación
-* **Miembros sugeridos:** Max Ferrer, Edwin Enriquez, Juan Luis Mansilla.
+### 🧠 Célula 1: IA, Prompts & Orquestación (n8n & Gemini)
+* **Miembros sugeridos:** Max Ferrer, Edwin Enriquez, Juan Luis Mansilla, José Medina.
 * **Responsabilidades:**
   * Diseño de *system prompts* con *few-shot learning* para distintos canales y tonos.
-  * Extracción estructurada (Pydantic / Structured Outputs) de métricas de sentimiento y temas clave.
-  * Lógica de bifurcación condicional (ej.: sentimiento muy positivo $\rightarrow$ caso de éxito; duda recurrente $\rightarrow$ FAQ/Tip).
-  * Pipeline de ejecución en Python (LangChain/LangGraph o scripts modulares).
+  * Extracción estructurada de métricas de sentimiento y temas clave.
+  * Implementación y modelado de flujos en **n8n** (nodos de webhook, Gemini AI, bifurcación switch y exportación JSON a `n8n/workflows/`).
+  * Integración híbrida con scripts de Python auxiliares si son requeridos.
 
 ### ☁️ Célula 2: Cloud OCI, Infraestructura & Backend
-* **Miembros sugeridos:** César Cely (PM & Cloud), José Medina, Raúl Gallardo.
+* **Miembros sugeridos:** César Cely (PM & Cloud), José Medina (Admin VM), Raúl Gallardo.
 * **Responsabilidades:**
-  * Configuración de Bucket en **OCI Object Storage** (Always Free) y gestión de API Keys/tenancy.
-  * Módulo en Python usando `oci-python-sdk` para carga y descarga de paquetes JSON/activos.
-  * Configuración de la VM en **OCI Compute (Linux Ubuntu/Oracle Linux Always Free)** con Docker / Systemd.
+  * Administración y mantenimiento de la VM Linux Always Free en **OCI Compute** (`147.15.9.116`), con Docker y n8n activo.
+  * Configuración de Bucket en **OCI Object Storage** (Always Free) y credenciales de acceso.
+  * Integración de n8n / Python con OCI Object Storage para persistencia de activos de marketing.
   * Manejo seguro de variables de entorno (`.env`, `.env.example`).
 
 ### 💻 Célula 3: Frontend (Streamlit), Datos & QA

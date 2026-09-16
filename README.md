@@ -19,22 +19,27 @@
 
 ```mermaid
 flowchart TD
-    A[Canales de Comunidad: Discord / JSON / CSV] -->|Ingesta de Datos| B(Módulo de Limpieza & Normalización)
-    B --> C{Motor IA: Google Gemini}
-    C -->|Análisis de Sentimiento & Temas| D[Clasificador y Enrutador]
+    A[Canales de Comunidad: Discord / Webhook / JSON / CSV] -->|Trigger / Ingesta| N8N{Orquestador: n8n}
     
-    D -->|Sentimiento Positivo / Logro| E1[Generador Post LinkedIn & Newsletter]
-    D -->|Duda Técnica Frecuente| E2[Generador Tip Técnico / FAQ]
-    D -->|Métricas Generales| E3[Dashboard de Salud de Comunidad]
+    subgraph n8n Workflow Engine
+        N8N -->|1. Sanitizar & Parsear| N1[Normalización JSON]
+        N1 -->|2. Prompting & Análisis| C{Motor LLM: Google Gemini}
+        C -->|3. Sentimiento & Extracción de Temas| D[Enrutador Condicional Switch]
+        D -->|Positivo / Logro| E1[Generador Post LinkedIn & Newsletter]
+        D -->|Duda Técnica| E2[Generador Tip Técnico / FAQ]
+        D -->|Métricas Salud| E3[Agregador de Métricas]
+        E1 & E2 & E3 --> F[Paquete Estructurado de Activos JSON]
+    end
     
-    E1 & E2 & E3 --> F[Paquete Estructurado de Activos JSON]
-    
-    F -->|Persistencia Obligatoria| G[(OCI Object Storage Always Free)]
-    F -->|Visualización y Curaduría| H[Panel Interactivo Streamlit]
+    F -->|4. Persistencia Obligatoria| G[(OCI Object Storage Always Free)]
+    G -->|5. Lectura y Curaduría| H[Panel Interactivo Streamlit]
+    H -.->|Trigger reprocesamiento / Webhook| N8N
     
     subgraph OCI Cloud Deployment
         G
-        H -.->|Despliegue VM| I[OCI Compute Always Free]
+        VM[OCI Compute VM Linux Always Free]
+        VM ---|Docker Compose| N8N
+        VM ---|Despliegue UI| H
     end
 ```
 
@@ -59,7 +64,8 @@ flowchart TD
 ## 📁 Estructura del Repositorio
 
 ```text
-├── .env.example                      # Plantilla de variables de entorno (Gemini + OCI)
+├── docker-compose.yml                # Despliegue de n8n (Local & OCI Compute VM)
+├── .env.example                      # Plantilla de variables de entorno (Gemini, OCI, n8n)
 ├── README.md                         # Documentación general y arquitectura
 ├── PM_Files/                         # Gestión del Proyecto y Metodología Ágil
 │   ├── ROADMAP.md                    # Plan maestro de 5 semanas, hitos y demos
@@ -67,6 +73,9 @@ flowchart TD
 │   └── Proyecto 3 – 🚀 CommunityLab.pdf # Especificación oficial del reto
 ├── data/
 │   └── interacciones_ejemplo.json    # Dataset de prueba con 15 interacciones simuladas
+├── n8n/                              # Orquestación de flujos
+│   ├── README.md                     # Guía de conexión a la VM OCI y versionado
+│   └── workflows/                    # Workflows exportados en JSON para Git
 ├── src/
 │   ├── ingestion/                    # Lectura y parsing de JSON, CSV o Webhooks
 │   ├── ai_engine/                    # Prompts, análisis con Gemini y schemas de salida
