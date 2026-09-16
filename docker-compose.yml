@@ -17,9 +17,11 @@ services:
       - N8N_SECURE_COOKIE=false
       - GENERIC_TIMEZONE=America/Bogota
       - N8N_DEFAULT_BINARY_DATA_MODE=filesystem
+      - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=false
+      - N8N_ALLOWED_FILE_PATHS=/home/node/data/
     volumes:
       - n8n_data:/home/node/.n8n
-      - ./data:/data:ro
+      - ./data:/home/node/data:ro
 
 
 volumes:
