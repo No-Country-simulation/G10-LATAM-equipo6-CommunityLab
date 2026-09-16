@@ -34,6 +34,7 @@ dumps/
 *.key
 *.crt
 *.pfx
+*.pub
 
 # --- Basura de sistemas operativos y editores ---
 .DS_Store
