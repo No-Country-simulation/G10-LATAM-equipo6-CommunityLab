@@ -22,3 +22,7 @@ services:
 
 volumes:
   n8n_data:
+    external: true
+    name: n8n-hackathon_n8n_data
+
+
