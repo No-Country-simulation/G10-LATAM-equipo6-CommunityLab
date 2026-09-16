@@ -5,4 +5,4 @@ Descarguen el archivo de la llave adjunto.
 Si usan Mac o Linux, primero denle permisos a la llave en su terminal con: chmod 400 nombre_de_la_llave.key
 
 Conéctense al servidor ejecutando este comando:
-ssh -i nombre_de_la_llave.key ubuntu@147.15.9.116
+ssh -i nombre_de_la_llave.key usuario@147.15.9.116
