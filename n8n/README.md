@@ -36,13 +36,16 @@ http://localhost:5678
 
 Para procesar las 15 interacciones orgánicas evitando bloqueos de permisos y cuotas de API (*Rate Limits*):
 
-1. **Ingesta de Datos:** Nodo `Code` que lee los datos parseados de `data/interacciones_ejemplo.json` (montado en `/home/node/data/interacciones_ejemplo.json`).
-2. **Control de Flujo (Batching):** Nodo `Loop Over Items` con `Batch Size: 1`.
-3. **Inferencia LLM:** Nodo `Basic LLM Chain` conectado a `Google Gemini Chat Model` o `Groq Chat Model` (utilizando modelos de alto rendimiento como `openai/gpt-oss-20b` o `gemini-1.5-flash`).
-4. **Resiliencia & Rate Limiting:** Nodo `Wait` de 4 segundos que pausa la ejecución antes de avanzar al siguiente item, protegiendo el límite de TPM/RPM de la API.
-5. **Cierre de Ciclo:** La salida de `Wait` regresa al `Loop Over Items`.
+1. **Ingesta de Datos:** Nodo `Code` que lee y emite individualmente los 15 registros de `data/interacciones_ejemplo.json`.
+2. **Control de Flujo (Batching):** Nodo `Loop Over Items` con `Batch Size: 1` para procesamiento secuencial.
+3. **Inferencia LLM:** Nodo `Basic LLM Chain` conectado a `Groq Chat Model` (con `openai/gpt-oss-20b`) o `Google Gemini Chat Model`, forzando la clasificación con un System Prompt estandarizado.
+4. **Validación Estructurada:** Subnodo `Structured Output Parser` que valida y extrae tipadamente `sentimiento`, `tipo_contenido`, `temas_clave`, `post_linkedin` y `tip_tecnico_faq`.
+5. **Consolidación y Enriquecimiento (Metadata):** Nodo `Edit Fields (Set)` que fusiona los datos del autor original (`id`, `autor`, `canal`, `texto_original`) con los activos generados por la IA en un objeto plano unificado.
+6. **Resiliencia & Rate Limiting:** Nodo `Wait` de 12 segundos que pausa la ejecución antes de avanzar al siguiente item, protegiendo el límite de TPM/RPM de la API.
+7. **Cierre de Ciclo:** La salida de `Wait` regresa al `Loop Over Items` hasta procesar el lote completo.
 
 ---
+
 
 ## 📁 Convención de Versionado de Flujos (`workflows/`)
 
