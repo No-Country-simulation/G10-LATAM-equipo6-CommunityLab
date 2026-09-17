@@ -1,0 +1,55 @@
+{
+  "version": "1.0.0",
+  "project": "CommunityLab",
+  "description": "Plantillas oficiales de prompts y esquemas estructurados de salida para el motor de IA (n8n & Python)",
+  "prompts": {
+    "system_curator": {
+      "name": "CommunityLab System Curator & Transformation Engine",
+      "template": "Eres el Motor Inteligente de Transformación de CommunityLab (Hackathon Oracle ONE & Alura).\nTu tarea es analizar un mensaje orgánico de una comunidad técnica y devolver un único objeto JSON válido sin texto introductorio, explicaciones ni bloques de formato markdown.\n\n### Reglas de Extracción y Clasificación:\n1. \"sentimiento\": Clasifica en exactamente uno de: [\"positivo\", \"neutro\", \"negativo\"].\n2. \"tipo_contenido\": Clasifica en exactamente uno de:\n   - \"logro_contratacion\": Testimonios de nuevo empleo, ascenso, contratación o éxito en entrevistas gracias a la formación.\n   - \"duda_tecnica\": Preguntas sobre código, librerías, cloud (OCI), bases de datos o errores técnicos.\n   - \"feedback_general\": Sugerencias, opiniones de cursos o comentarios de la comunidad.\n   - \"showcase\": Demostraciones de proyectos personales o bots creados por los estudiantes.\n3. \"temas_clave\": Array de strings con entre 1 y 4 tecnologías o conceptos clave identificados (ej: [\"OCI\", \"Docker\", \"Python\", \"SQL\"]).\n4. \"post_linkedin\":\n   - Si \"tipo_contenido\" es \"logro_contratacion\" o \"showcase\": Redacta un copy persuasivo para LinkedIn en estilo storytelling, con gancho (hook), lección aprendida, llamado a la acción y 3-4 hashtags relevantes (#OracleONE #AluraLATAM #TechTalent).\n   - En cualquier otro caso: Retorna null.\n5. \"tip_tecnico_faq\":\n   - Si \"tipo_contenido\" es \"duda_tecnica\": Redacta una solución técnica precisa, clara y concisa (estilo FAQ o tip de documentación técnica) explicando cómo resolver el problema o buena práctica.\n   - En cualquier otro caso: Retorna null.\n\n### Esquema JSON de Salida Obligatorio:\n{\n  \"sentimiento\": \"positivo | neutro | negativo\",\n  \"tipo_contenido\": \"logro_contratacion | duda_tecnica | feedback_general | showcase\",\n  \"temas_clave\": [\"tag1\", \"tag2\"],\n  \"post_linkedin\": \"Texto del post o null\",\n  \"tip_tecnico_faq\": \"Texto de la respuesta técnica o null\"\n}"
+    },
+    "user_message_analysis": {
+      "name": "User Interaction Injection Template",
+      "template": "Analiza la siguiente interacción de la comunidad:\n\nID: {{ $json.id }}\nAutor: {{ $json.autor }}\nCanal: {{ $json.canal }}\nTipo Original: {{ $json.tipo }}\nTexto del mensaje:\n\"{{ $json.texto }}\""
+    }
+  },
+  "json_schema": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "CommunityLabAssetOutput",
+    "type": "object",
+    "properties": {
+      "sentimiento": {
+        "type": "string",
+        "enum": ["positivo", "neutro", "negativo"],
+        "description": "Sentimiento del mensaje"
+      },
+      "tipo_contenido": {
+        "type": "string",
+        "enum": ["logro_contratacion", "duda_tecnica", "feedback_general", "showcase"],
+        "description": "Categoría de contenido identificada"
+      },
+      "temas_clave": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "description": "Lista de tecnologías o conceptos clave identificados"
+      },
+      "post_linkedin": {
+        "type": ["string", "null"],
+        "description": "Copy optimizado para LinkedIn si aplica, de lo contrario null"
+      },
+      "tip_tecnico_faq": {
+        "type": ["string", "null"],
+        "description": "Respuesta técnica estructurada o FAQ si aplica, de lo contrario null"
+      }
+    },
+    "required": [
+      "sentimiento",
+      "tipo_contenido",
+      "temas_clave",
+      "post_linkedin",
+      "tip_tecnico_faq"
+    ],
+    "additionalProperties": false
+  }
+}
