@@ -6,8 +6,8 @@
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        -176,
-        -144
+        0,
+        -32
       ],
       "id": "c7ebb725-71e0-461c-9510-145f0fb49f29",
       "name": "When clicking ‘Execute workflow’"
@@ -19,8 +19,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        160,
-        -112
+        224,
+        -32
       ],
       "id": "3886afa0-892d-4454-8cb7-6e87fcbd488c",
       "name": "Code in JavaScript"
@@ -43,7 +43,7 @@
       "typeVersion": 1.9,
       "position": [
         672,
-        -112
+        -160
       ],
       "id": "0f1ed7c6-bdc8-4a35-8355-194187936a3f",
       "name": "Basic LLM Chain",
@@ -58,7 +58,7 @@
       "typeVersion": 3,
       "position": [
         448,
-        -160
+        -32
       ],
       "id": "9c530d7f-8879-44ef-8496-43a56129923e",
       "name": "Loop Over Items"
@@ -70,8 +70,8 @@
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
       "position": [
-        1104,
-        -112
+        1248,
+        -32
       ],
       "id": "6f1cf890-4eaf-4e15-b8e3-3026bee05b28",
       "name": "Wait",
@@ -85,8 +85,8 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
       "typeVersion": 1,
       "position": [
-        656,
-        224
+        680,
+        72
       ],
       "id": "070c6054-a518-4584-a87a-693bbc7637ff",
       "name": "Groq Chat Model",
@@ -100,16 +100,87 @@
     {
       "parameters": {
         "schemaType": "manual",
-        "inputSchema": "{\n  \"version\": \"1.0.0\",\n  \"project\": \"CommunityLab\",\n  \"description\": \"Plantillas oficiales de prompts y esquemas estructurados de salida para el motor de IA (n8n & Python)\",\n  \"prompts\": {\n    \"system_curator\": {\n      \"name\": \"CommunityLab System Curator & Transformation Engine\",\n      \"template\": \"Eres el Motor Inteligente de Transformación de CommunityLab (Hackathon Oracle ONE & Alura).\\nTu tarea es analizar un mensaje orgánico de una comunidad técnica y devolver un único objeto JSON válido sin texto introductorio, explicaciones ni bloques de formato markdown.\\n\\n### Reglas de Extracción y Clasificación:\\n1. \\\"sentimiento\\\": Clasifica en exactamente uno de: [\\\"positivo\\\", \\\"neutro\\\", \\\"negativo\\\"].\\n2. \\\"tipo_contenido\\\": Clasifica en exactamente uno de:\\n   - \\\"logro_contratacion\\\": Testimonios de nuevo empleo, ascenso, contratación o éxito en entrevistas gracias a la formación.\\n   - \\\"duda_tecnica\\\": Preguntas sobre código, librerías, cloud (OCI), bases de datos o errores técnicos.\\n   - \\\"feedback_general\\\": Sugerencias, opiniones de cursos o comentarios de la comunidad.\\n   - \\\"showcase\\\": Demostraciones de proyectos personales o bots creados por los estudiantes.\\n3. \\\"temas_clave\\\": Array de strings con entre 1 y 4 tecnologías o conceptos clave identificados (ej: [\\\"OCI\\\", \\\"Docker\\\", \\\"Python\\\", \\\"SQL\\\"]).\\n4. \\\"post_linkedin\\\":\\n   - Si \\\"tipo_contenido\\\" es \\\"logro_contratacion\\\" o \\\"showcase\\\": Redacta un copy persuasivo para LinkedIn en estilo storytelling, con gancho (hook), lección aprendida, llamado a la acción y 3-4 hashtags relevantes (#OracleONE #AluraLATAM #TechTalent).\\n   - En cualquier otro caso: Retorna null.\\n5. \\\"tip_tecnico_faq\\\":\\n   - Si \\\"tipo_contenido\\\" es \\\"duda_tecnica\\\": Redacta una solución técnica precisa, clara y concisa (estilo FAQ o tip de documentación técnica) explicando cómo resolver el problema o buena práctica.\\n   - En cualquier otro caso: Retorna null.\\n\\n### Esquema JSON de Salida Obligatorio:\\n{\\n  \\\"sentimiento\\\": \\\"positivo | neutro | negativo\\\",\\n  \\\"tipo_contenido\\\": \\\"logro_contratacion | duda_tecnica | feedback_general | showcase\\\",\\n  \\\"temas_clave\\\": [\\\"tag1\\\", \\\"tag2\\\"],\\n  \\\"post_linkedin\\\": \\\"Texto del post o null\\\",\\n  \\\"tip_tecnico_faq\\\": \\\"Texto de la respuesta técnica o null\\\"\\n}\"\n    },\n    \"user_message_analysis\": {\n      \"name\": \"User Interaction Injection Template\",\n      \"template\": \"Analiza la siguiente interacción de la comunidad:\\n\\nID: {{ $json.id }}\\nAutor: {{ $json.autor }}\\nCanal: {{ $json.canal }}\\nTipo Original: {{ $json.tipo }}\\nTexto del mensaje:\\n\\\"{{ $json.texto }}\\\"\"\n    }\n  },\n  \"json_schema\": {\n    \"$schema\": \"http://json-schema.org/draft-07/schema#\",\n    \"title\": \"CommunityLabAssetOutput\",\n    \"type\": \"object\",\n    \"properties\": {\n      \"sentimiento\": {\n        \"type\": \"string\",\n        \"enum\": [\"positivo\", \"neutro\", \"negativo\"],\n        \"description\": \"Sentimiento del mensaje\"\n      },\n      \"tipo_contenido\": {\n        \"type\": \"string\",\n        \"enum\": [\"logro_contratacion\", \"duda_tecnica\", \"feedback_general\", \"showcase\"],\n        \"description\": \"Categoría de contenido identificada\"\n      },\n      \"temas_clave\": {\n        \"type\": \"array\",\n        \"items\": {\n          \"type\": \"string\"\n        },\n        \"description\": \"Lista de tecnologías o conceptos clave identificados\"\n      },\n      \"post_linkedin\": {\n        \"type\": [\"string\", \"null\"],\n        \"description\": \"Copy optimizado para LinkedIn si aplica, de lo contrario null\"\n      },\n      \"tip_tecnico_faq\": {\n        \"type\": [\"string\", \"null\"],\n        \"description\": \"Respuesta técnica estructurada o FAQ si aplica, de lo contrario null\"\n      }\n    },\n    \"required\": [\n      \"sentimiento\",\n      \"tipo_contenido\",\n      \"temas_clave\",\n      \"post_linkedin\",\n      \"tip_tecnico_faq\"\n    ],\n    \"additionalProperties\": false\n  }\n}\n"
+        "inputSchema": "{\n  \"$schema\": \"http://json-schema.org/draft-07/schema#\",\n  \"title\": \"CommunityLabAssetOutput\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"sentimiento\": {\n      \"type\": \"string\",\n      \"enum\": [\"positivo\", \"neutro\", \"negativo\"],\n      \"description\": \"Sentimiento del mensaje\"\n    },\n    \"tipo_contenido\": {\n      \"type\": \"string\",\n      \"enum\": [\"logro_contratacion\", \"duda_tecnica\", \"feedback_general\", \"showcase\"],\n      \"description\": \"Categoría de contenido identificada\"\n    },\n    \"temas_clave\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"string\"\n      },\n      \"description\": \"Lista de tecnologías o conceptos clave identificados\"\n    },\n    \"post_linkedin\": {\n      \"type\": [\"string\", \"null\"],\n      \"description\": \"Copy optimizado para LinkedIn si aplica, de lo contrario null\"\n    },\n    \"tip_tecnico_faq\": {\n      \"type\": [\"string\", \"null\"],\n      \"description\": \"Respuesta técnica estructurada o FAQ si aplica, de lo contrario null\"\n    }\n  },\n  \"required\": [\n    \"sentimiento\",\n    \"tipo_contenido\",\n    \"temas_clave\",\n    \"post_linkedin\",\n    \"tip_tecnico_faq\"\n  ]\n}"
       },
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.3,
       "position": [
-        832,
-        224
+        808,
+        72
       ],
       "id": "ecfbc0c7-ef05-450a-a869-cd68b27d41c1",
       "name": "Structured Output Parser1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "0000f74e-abda-4723-9835-3d2b2c470b0b",
+              "name": "sentimiento",
+              "value": "={{ $json.output.sentimiento }}",
+              "type": "string"
+            },
+            {
+              "id": "80594c9e-2ee8-42d2-96d2-b886ef569739",
+              "name": "tipo_contenido",
+              "value": "={{ $json.output.tipo_contenido }}",
+              "type": "string"
+            },
+            {
+              "id": "386a9821-6d19-48f7-8cd1-7c3e7ef9216e",
+              "name": "temas_clave",
+              "value": "={{ $json.output.temas_clave }}",
+              "type": "array"
+            },
+            {
+              "id": "fdea6ed7-a46f-46b9-96b8-3f04e988dee4",
+              "name": "post_linkedin",
+              "value": "={{ $json.output.post_linkedin }}",
+              "type": "string"
+            },
+            {
+              "id": "6ccd090b-b9aa-4cb8-a57b-8a952b05a510",
+              "name": "tip_tecnico_faq",
+              "value": "={{ $json.output.tip_tecnico_faq }}",
+              "type": "string"
+            },
+            {
+              "id": "502b656e-0272-42d2-a1e8-f22e193be12a",
+              "name": "=id",
+              "value": "={{ $('Loop Over Items').item.json.id }}",
+              "type": "string"
+            },
+            {
+              "id": "d223770f-aace-40d2-9f0f-185a6f3202ab",
+              "name": "autor",
+              "value": "={{ $('Loop Over Items').item.json.autor }}",
+              "type": "string"
+            },
+            {
+              "id": "d12ffb05-bafd-4f4d-8bc2-c0a5c6c02f54",
+              "name": "canal",
+              "value": "={{ $('Loop Over Items').item.json.canal }}",
+              "type": "string"
+            },
+            {
+              "id": "f50b402f-87fd-4287-9bcb-19416ba8a243",
+              "name": "texto_original",
+              "value": "={{ $('Loop Over Items').item.json.texto }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        1024,
+        -160
+      ],
+      "id": "a4788d3d-82e2-48c4-b5ab-351bf14b2aa2",
+      "name": "Edit Fields"
     }
   ],
   "pinData": {},
@@ -152,7 +223,7 @@
       "main": [
         [
           {
-            "node": "Wait",
+            "node": "Edit Fields",
             "type": "main",
             "index": 0
           }
@@ -191,6 +262,17 @@
           }
         ]
       ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
@@ -198,7 +280,7 @@
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "38999b25-a907-4858-8323-50e4436634a5",
+  "versionId": "7c486412-2e46-43e4-8e67-cd435256269f",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "cb0b9a3b8b392f0b0fbc26be213326cbdfd285ed78e8eb9be9b7984b7130dd64"
