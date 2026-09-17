@@ -55,7 +55,7 @@ flowchart TD
 | **José Medina** | Paraguay | **Oracle Ecosystem & N8N / LLMs Specialist** |
 | **Juan Luis Mansilla** | Puerto Montt, Chile | **Backend & Fullstack Developer** |
 | **Edwin Gustavo Enriquez Arias** | La Paz, Bolivia | **QA Lead, Testing Automation & Backend** |
-| **Carol Yesenia Arancay Osorio** | LATAM | **Frontend / UX & Data** |
+| **Carol Yesenia Arancay Osorio** | Lima, Perú | **Frontend / UX & Data** |
 | **Víctor Araya** | LATAM | **Frontend & Documentación** |
 | **Rodrigo Ramírez** | LATAM | **Testing & Soporte** |
 
