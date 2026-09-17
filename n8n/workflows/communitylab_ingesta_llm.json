@@ -1,5 +1,5 @@
 {
-  "name": "CCely_WF_001",
+  "name": "CCely_WF_002",
   "nodes": [
     {
       "parameters": {},
@@ -9,7 +9,7 @@
         -176,
         -144
       ],
-      "id": "c64b0f8b-6c4e-4d8d-bc3d-9cbaad80b8e2",
+      "id": "c7ebb725-71e0-461c-9510-145f0fb49f29",
       "name": "When clicking ‘Execute workflow’"
     },
     {
@@ -22,15 +22,20 @@
         160,
         -112
       ],
-      "id": "76958dff-6344-48cd-8107-001efb1a9b9b",
+      "id": "3886afa0-892d-4454-8cb7-6e87fcbd488c",
       "name": "Code in JavaScript"
     },
     {
       "parameters": {
         "promptType": "define",
-        "text": "=Analiza este mensaje de la comunidad tecnológica:\n\"{{ $json.texto }}\"\n\nAutor: {{ $json.autor }}\nCanal: {{ $json.canal }}\n\nDetermina:\n1. sentimiento: (\"positivo\", \"neutro\" o \"negativo\")\n2. tipo_contenido: (\"logro_contratacion\", \"duda_tecnica\" o \"feedback\")\n3. temas_clave: lista de temas tecnológicos mencionados\n4. post_linkedin: Si es logro_contratacion, redacta un post inspirador para LinkedIn con hook y hashtags. Si no, null.\n5. tip_tecnico_faq: Si es duda_tecnica, redacta una respuesta concisa de soporte técnico tipo FAQ. Si no, null.\n",
+        "text": "=Analiza la siguiente interacción de la comunidad:\n\nID: {{ $json.id }}\nAutor: {{ $json.autor }}\nCanal: {{ $json.canal }}\nTipo Original: {{ $json.tipo }}\nTexto del mensaje:\n\"{{ $json.texto }}\"\n",
+        "hasOutputParser": true,
         "messages": {
-          "messageValues": []
+          "messageValues": [
+            {
+              "message": "=Eres el Motor Inteligente de Transformación de CommunityLab (Hackathon Oracle ONE & Alura). Tu tarea es analizar un mensaje orgánico de una comunidad técnica y devolver un único objeto JSON válido sin texto introductorio, explicaciones ni bloques de formato markdown.  ### Reglas de Extracción y Clasificación: 1. \"sentimiento\": Clasifica en exactamente uno de: [\"positivo\", \"neutro\", \"negativo\"]. 2. \"tipo_contenido\": Clasifica en exactamente uno de:    - \"logro_contratacion\": Testimonios de nuevo empleo, ascenso, contratación o éxito en entrevistas gracias a la formación.    - \"duda_tecnica\": Preguntas sobre código, librerías, cloud (OCI), bases de datos o errores técnicos.    - \"feedback_general\": Sugerencias, opiniones de cursos o comentarios de la comunidad.    - \"showcase\": Demostraciones de proyectos personales o bots creados por los estudiantes. 3. \"temas_clave\": Array de strings con entre 1 y 4 tecnologías o conceptos clave identificados (ej: [\"OCI\", \"Docker\", \"Python\", \"SQL\"]). 4. \"post_linkedin\":    - Si \"tipo_contenido\" es \"logro_contratacion\" o \"showcase\": Redacta un copy persuasivo para LinkedIn en estilo storytelling, con gancho (hook), lección aprendida, llamado a la acción y 3-4 hashtags relevantes (#OracleONE #AluraLATAM #TechTalent).    - En cualquier otro caso: Retorna null. 5. \"tip_tecnico_faq\":    - Si \"tipo_contenido\" es \"duda_tecnica\": Redacta una solución técnica precisa, clara y concisa (estilo FAQ o tip de documentación técnica) explicando cómo resolver el problema o buena práctica.    - En cualquier otro caso: Retorna null.  ### Esquema JSON de Salida Obligatorio: {   \"sentimiento\": \"positivo | neutro | negativo\",   \"tipo_contenido\": \"logro_contratacion | duda_tecnica | feedback_general | showcase\",   \"temas_clave\": [\"tag1\", \"tag2\"],   \"post_linkedin\": \"Texto del post o null\",   \"tip_tecnico_faq\": \"Texto de la respuesta técnica o null\" }"
+            }
+          ]
         },
         "batching": {}
       },
@@ -40,8 +45,10 @@
         672,
         -112
       ],
-      "id": "10ce0c94-4d48-40fe-a266-405e3cd0d447",
-      "name": "Basic LLM Chain"
+      "id": "0f1ed7c6-bdc8-4a35-8355-194187936a3f",
+      "name": "Basic LLM Chain",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000
     },
     {
       "parameters": {
@@ -53,22 +60,22 @@
         448,
         -160
       ],
-      "id": "eed07a5e-d1fe-42b3-994b-3c6d0484e8cc",
+      "id": "9c530d7f-8879-44ef-8496-43a56129923e",
       "name": "Loop Over Items"
     },
     {
       "parameters": {
-        "amount": 4
+        "amount": 12
       },
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
       "position": [
-        1024,
-        -80
+        1104,
+        -112
       ],
-      "id": "f267ba7f-aedf-481a-8380-ba23cd10d6af",
+      "id": "6f1cf890-4eaf-4e15-b8e3-3026bee05b28",
       "name": "Wait",
-      "webhookId": "d07e2495-71cf-45fd-b148-f6ba50884446"
+      "webhookId": "e2ca8732-8cd6-4cd8-8e1a-5decc8c232f9"
     },
     {
       "parameters": {
@@ -81,7 +88,7 @@
         656,
         224
       ],
-      "id": "00d2a51f-9331-496b-ac08-44cb65cf7a10",
+      "id": "070c6054-a518-4584-a87a-693bbc7637ff",
       "name": "Groq Chat Model",
       "credentials": {
         "groqApi": {
@@ -89,6 +96,20 @@
           "name": "Groq account"
         }
       }
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"version\": \"1.0.0\",\n  \"project\": \"CommunityLab\",\n  \"description\": \"Plantillas oficiales de prompts y esquemas estructurados de salida para el motor de IA (n8n & Python)\",\n  \"prompts\": {\n    \"system_curator\": {\n      \"name\": \"CommunityLab System Curator & Transformation Engine\",\n      \"template\": \"Eres el Motor Inteligente de Transformación de CommunityLab (Hackathon Oracle ONE & Alura).\\nTu tarea es analizar un mensaje orgánico de una comunidad técnica y devolver un único objeto JSON válido sin texto introductorio, explicaciones ni bloques de formato markdown.\\n\\n### Reglas de Extracción y Clasificación:\\n1. \\\"sentimiento\\\": Clasifica en exactamente uno de: [\\\"positivo\\\", \\\"neutro\\\", \\\"negativo\\\"].\\n2. \\\"tipo_contenido\\\": Clasifica en exactamente uno de:\\n   - \\\"logro_contratacion\\\": Testimonios de nuevo empleo, ascenso, contratación o éxito en entrevistas gracias a la formación.\\n   - \\\"duda_tecnica\\\": Preguntas sobre código, librerías, cloud (OCI), bases de datos o errores técnicos.\\n   - \\\"feedback_general\\\": Sugerencias, opiniones de cursos o comentarios de la comunidad.\\n   - \\\"showcase\\\": Demostraciones de proyectos personales o bots creados por los estudiantes.\\n3. \\\"temas_clave\\\": Array de strings con entre 1 y 4 tecnologías o conceptos clave identificados (ej: [\\\"OCI\\\", \\\"Docker\\\", \\\"Python\\\", \\\"SQL\\\"]).\\n4. \\\"post_linkedin\\\":\\n   - Si \\\"tipo_contenido\\\" es \\\"logro_contratacion\\\" o \\\"showcase\\\": Redacta un copy persuasivo para LinkedIn en estilo storytelling, con gancho (hook), lección aprendida, llamado a la acción y 3-4 hashtags relevantes (#OracleONE #AluraLATAM #TechTalent).\\n   - En cualquier otro caso: Retorna null.\\n5. \\\"tip_tecnico_faq\\\":\\n   - Si \\\"tipo_contenido\\\" es \\\"duda_tecnica\\\": Redacta una solución técnica precisa, clara y concisa (estilo FAQ o tip de documentación técnica) explicando cómo resolver el problema o buena práctica.\\n   - En cualquier otro caso: Retorna null.\\n\\n### Esquema JSON de Salida Obligatorio:\\n{\\n  \\\"sentimiento\\\": \\\"positivo | neutro | negativo\\\",\\n  \\\"tipo_contenido\\\": \\\"logro_contratacion | duda_tecnica | feedback_general | showcase\\\",\\n  \\\"temas_clave\\\": [\\\"tag1\\\", \\\"tag2\\\"],\\n  \\\"post_linkedin\\\": \\\"Texto del post o null\\\",\\n  \\\"tip_tecnico_faq\\\": \\\"Texto de la respuesta técnica o null\\\"\\n}\"\n    },\n    \"user_message_analysis\": {\n      \"name\": \"User Interaction Injection Template\",\n      \"template\": \"Analiza la siguiente interacción de la comunidad:\\n\\nID: {{ $json.id }}\\nAutor: {{ $json.autor }}\\nCanal: {{ $json.canal }}\\nTipo Original: {{ $json.tipo }}\\nTexto del mensaje:\\n\\\"{{ $json.texto }}\\\"\"\n    }\n  },\n  \"json_schema\": {\n    \"$schema\": \"http://json-schema.org/draft-07/schema#\",\n    \"title\": \"CommunityLabAssetOutput\",\n    \"type\": \"object\",\n    \"properties\": {\n      \"sentimiento\": {\n        \"type\": \"string\",\n        \"enum\": [\"positivo\", \"neutro\", \"negativo\"],\n        \"description\": \"Sentimiento del mensaje\"\n      },\n      \"tipo_contenido\": {\n        \"type\": \"string\",\n        \"enum\": [\"logro_contratacion\", \"duda_tecnica\", \"feedback_general\", \"showcase\"],\n        \"description\": \"Categoría de contenido identificada\"\n      },\n      \"temas_clave\": {\n        \"type\": \"array\",\n        \"items\": {\n          \"type\": \"string\"\n        },\n        \"description\": \"Lista de tecnologías o conceptos clave identificados\"\n      },\n      \"post_linkedin\": {\n        \"type\": [\"string\", \"null\"],\n        \"description\": \"Copy optimizado para LinkedIn si aplica, de lo contrario null\"\n      },\n      \"tip_tecnico_faq\": {\n        \"type\": [\"string\", \"null\"],\n        \"description\": \"Respuesta técnica estructurada o FAQ si aplica, de lo contrario null\"\n      }\n    },\n    \"required\": [\n      \"sentimiento\",\n      \"tipo_contenido\",\n      \"temas_clave\",\n      \"post_linkedin\",\n      \"tip_tecnico_faq\"\n    ],\n    \"additionalProperties\": false\n  }\n}\n"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        832,
+        224
+      ],
+      "id": "ecfbc0c7-ef05-450a-a869-cd68b27d41c1",
+      "name": "Structured Output Parser1"
     }
   ],
   "pinData": {},
@@ -159,6 +180,17 @@
           }
         ]
       ]
+    },
+    "Structured Output Parser1": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
@@ -166,12 +198,12 @@
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "122ad00d-9000-46d7-84e7-75c121cecd6b",
+  "versionId": "38999b25-a907-4858-8323-50e4436634a5",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "cb0b9a3b8b392f0b0fbc26be213326cbdfd285ed78e8eb9be9b7984b7130dd64"
   },
   "nodeGroups": [],
-  "id": "VbiaaT0wBJZjR0Sz",
+  "id": "164UrZhViJYbKfV7",
   "tags": []
 }
