@@ -50,25 +50,25 @@ Para optimizar la colaboración y garantizar aprendizaje transversal, el equipo 
 gantt
     title Cronograma de Trabajo - CommunityLab
     dateFormat  YYYY-MM-DD
-    section S0: Setup & Kickoff
+    section S0: Setup & OCI VM
     First Meet & Roles           :done, 2026-09-14, 2026-09-16
-    Repo & Dataset Simulado      :active, 2026-09-16, 2026-09-18
-    Sprint Demo Meet S0          :2026-09-18, 2026-09-19
-    section S1: Ingesta & IA Base
-    Ingesta JSON/CSV             :2026-09-21, 2026-09-23
-    Pipeline Gemini & Prompts    :2026-09-21, 2026-09-24
+    Repo, Dataset & VM OCI Ready :done, 2026-09-16, 2026-09-18
+    Sprint Demo Meet S0          :done, 2026-09-18, 2026-09-19
+    section S1: Ingesta & IA Pipeline
+    Pipeline n8n + LLM Resiliente:active, 2026-09-21, 2026-09-23
+    Extracción Estructurada JSON :active, 2026-09-21, 2026-09-24
     Sprint Demo Meet S1          :2026-09-24, 2026-09-25
-    section S2: OCI Storage & Routing
-    Conexión OCI Object Storage  :2026-09-28, 2026-09-30
-    Bifurcaciones de contenido   :2026-09-28, 2026-10-01
+    section S2: Persistencia OCI & Routing
+    Bifurcaciones de Contenido   :2026-09-28, 2026-09-30
+    Conexión OCI Object Storage  :2026-09-28, 2026-10-01
     Sprint Demo Meet S2          :2026-10-01, 2026-10-02
-    section S3: UI Streamlit & E2E
-    Panel Streamlit Curaduría    :2026-10-05, 2026-10-08
-    Integración E2E              :2026-10-06, 2026-10-08
+    section S3: UI Streamlit en VM
+    Desarrollo Panel Streamlit   :2026-10-05, 2026-10-07
+    Despliegue Docker Streamlit  :2026-10-06, 2026-10-08
     Sprint Demo Meet S3          :2026-10-08, 2026-10-09
-    section S4: Cloud Deploy & QA
-    Despliegue OCI VM Compute    :2026-10-12, 2026-10-14
-    Pruebas QA & Video preliminar:2026-10-13, 2026-10-15
+    section S4: Integración E2E & QA
+    Pruebas E2E & Stress QA      :2026-10-12, 2026-10-14
+    Grabación Demo Preliminar    :2026-10-13, 2026-10-15
     Sprint Demo Meet S4          :2026-10-15, 2026-10-16
     section S5: Pitch & Demo Day
     Video Demo Final YouTube     :2026-10-19, 2026-10-22
@@ -78,79 +78,88 @@ gantt
 
 ---
 
-### Semana 0: Kickoff, Repositorio y Arquitectura (Completada / Al día)
-* **Objetivo:** Definir reglas de juego, estructura del código, dataset inicial y validar que todos tengan accesos.
-* **Entregables:**
+### Semana 0: Kickoff, Repositorio, Dataset y VM OCI (Completada con éxito)
+* **Objetivo:** Definir reglas de juego, estructura del código, dataset inicial y dejar la infraestructura cloud base operando.
+* **Entregables logrados:**
   - [x] Repositorio oficial conectado y clonado.
   - [x] Acta de la 1ª reunión (`PM_Files/acta-primera-reunion_14092026.md`).
   - [x] Estructura base de carpetas creada (`src/`, `data/`, `n8n/`, `PM_Files/`).
   - [x] Archivo `data/interacciones_ejemplo.json` con 15 casos variados (testimonios, dudas técnicas, felicitaciones).
-  - [x] Despliegue de VM Ubuntu Always Free en OCI Compute (`147.15.9.116`) con Docker Compose y n8n productivo.
-  - [x] **Sprint Demo Meet S0 (Jueves)**.
+  - [x] **Hito adelantado:** Despliegue de VM Ubuntu Always Free en **OCI Compute** (`147.15.9.116`) con Docker Compose y n8n productivo configurado con volumen persistente.
+  - [x] Configuración de variables de entorno seguras (`.env.example` con Gemini, Groq, n8n y OCI).
+  - [x] **Sprint Demo Meet S0**.
 
 ---
 
-### Semana 1: Ingesta de Datos & Motor de LLM (En curso - Gran avance)
-* **Objetivo:** Lograr que un lote de mensajes pase por el LLM y devuelva el JSON estructurado obligatorio.
+### Semana 1: Ingesta de Datos & Pipeline de LLM (En curso — Gran avance)
+* **Objetivo:** Ingerir las interacciones de la comunidad y procesarlas a través del LLM devolviendo el JSON estructurado obligatorio.
 * **Lunes:** *Sprint Planning Meet*. Asignación formal de tareas.
 * **Desarrollo:**
-  - [x] Ingesta y parseo de los 15 items de prueba dentro del pipeline en n8n montado desde la VM.
+  - [x] Ingesta y parseo del lote de 15 mensajes en el contenedor de n8n montado desde `./data/`.
   - [x] Conexión con LLM (Gemini / Groq) mediante `Basic LLM Chain`.
-  - [x] Implementación de control de flujo con bucle (`Loop Over Items`) y temporizador (`Wait`) para tolerancia a *Rate Limits* (TPM/RPM).
-  - [ ] Refinamiento de esquemas estructurados de salida (JSON con copys de LinkedIn y Tips técnicos).
-  - [ ] Script Python complementario con Pydantic en `src/ai_engine/`.
-* **Jueves:** *Sprint Demo Meet S1*. Mostrar la ejecución del pipeline con salida JSON formal.
+  - [x] Implementación de patrón tolerante a fallos y *Rate Limits* (nodo `Loop Over Items` + `Wait` de 4s).
+  - [ ] Estandarización del prompt del sistema para extracción estricta: `sentimiento`, `tipo_contenido`, `temas_clave`, `post_linkedin` y `tip_tecnico_faq`.
+  - [ ] Salida de activos formateada en JSON estructurado (usando *Structured Output Parser*).
+  - [ ] Script Python complementario con Pydantic en `src/ai_engine/` para validación programática.
+* **Jueves:** *Sprint Demo Meet S1*. Demostración en vivo del pipeline en n8n procesando los 15 casos con salida JSON formal.
 * **Fin de semana:** Subir entregables de avance a No Country.
 
-
 ---
 
-### Semana 2: Persistencia en OCI Object Storage & Lógica Condicional
-* **Objetivo:** Guardar los activos procesados directamente en la nube de Oracle (Always Free) y filtrar por condiciones.
+### Semana 2: Enrutamiento Condicional & Persistencia en OCI Object Storage
+* **Objetivo:** Bifurcar los contenidos clasificados y guardar los paquetes de marketing directamente en la nube de Oracle (Always Free).
 * **Lunes:** *Sprint Planning Meet*.
 * **Desarrollo:**
-  - Configuración del Bucket en OCI Object Storage.
-  - Creación del cliente OCI en Python (`src/cloud_oci/storage_client.py`).
-  - Enrutamiento condicional: Mensaje positivo $\rightarrow$ Post LinkedIn / Newsletter; Pregunta $\rightarrow$ Tip / FAQ.
-  - Guardado del paquete de marketing en formato `activos/{fecha}/paquete-distribucion.json`.
-* **Jueves:** *Sprint Demo Meet S2*. Demostración de subida automática al bucket de OCI y verificación de URLs.
+  - [ ] Configuración del Bucket en **OCI Object Storage** y credenciales API / Customer Secret Key (S3-compatible).
+  - [ ] Enrutamiento condicional en n8n con nodo `Switch`:
+    - Rama A: Logros/Contrataciones $\rightarrow$ Copys optimizados para LinkedIn y Newsletter.
+    - Rama B: Dudas técnicas $\rightarrow$ Formato FAQ / Tip de soporte.
+    - Rama C: Feedback general $\rightarrow$ Métricas para el Community Manager.
+  - [ ] Subida automatizada de activos a OCI Object Storage (`activos/{fecha}/paquete-distribucion.json`) desde n8n o cliente Python (`src/cloud_oci/storage_client.py`).
+  - [ ] Verificación de lectura de URLs firmadas / objetos almacenados.
+* **Jueves:** *Sprint Demo Meet S2*. Demostración de subida automática al bucket de OCI y verificación de URLs de los paquetes generados.
 * **Fin de semana:** Subir entregables a No Country.
 
 ---
 
-### Semana 3: Panel de Curaduría en Streamlit & Flujo End-to-End
-* **Objetivo:** Dotar a la solución de una interfaz gráfica que permita al usuario humano revisar, editar y aprobar publicaciones.
+### Semana 3: Panel de Curaduría en Streamlit & Despliegue en VM OCI
+* **Objetivo:** Dotar a la solución de una interfaz gráfica moderna (desplegada en la VM de OCI) para que los Community Managers revisen, editen y aprueben copys.
 * **Lunes:** *Sprint Planning Meet*.
 * **Desarrollo:**
-  - Interfaz web con **Streamlit**:
-    - Vista 1: Métricas de salud de comunidad (gráficos de sentimiento y temas más hablados).
-    - Vista 2: Bandeja de copys generados (editor de texto, botón "Aprobar", "Rechazar" y "Regenerar").
-    - Vista 3: Histórico de paquetes archivados en OCI.
-  - Conexión del backend con la interfaz gráfica.
-* **Jueves:** *Sprint Demo Meet S3*. Recorrido interactivo completo desde la carga de datos hasta la aprobación en pantalla.
+  - [ ] Interfaz web con **Streamlit** en `src/ui/`:
+    - Vista 1: Dashboard de salud de comunidad (gráficos de sentimiento y temas en tendencia).
+    - Vista 2: Bandeja de curaduría (editor de textos, botones "Aprobar", "Rechazar" y "Regenerar").
+    - Vista 3: Explorador de activos archivados en OCI Object Storage.
+  - [ ] Disparo interactivo desde Streamlit hacia n8n mediante Webhook (`POST /webhook/...`).
+  - [ ] Despliegue de Streamlit en la VM de OCI Compute (puerto `8501`) mediante Docker Compose integrado.
+* **Jueves:** *Sprint Demo Meet S3*. Recorrido interactivo completo desde la carga de datos hasta la aprobación en pantalla sobre la IP pública.
 * **Fin de semana:** Subir entregables a No Country.
 
 ---
 
-### Semana 4: Despliegue en VM OCI Compute, QA & Grabación Preliminar
-* **Objetivo:** Desplegar el sistema en la nube de Oracle de forma autónoma y estabilizar la aplicación.
+### Semana 4: Pruebas E2E, Blindaje QA & Grabación Preliminar
+* **Objetivo:** Estabilizar la aplicación integral, ejecutar pruebas de carga/QA y preparar el material audiovisual.
 * **Lunes:** *Sprint Planning Meet*.
 * **Desarrollo:**
-  - Creación de Compute Instance Linux (Always Free) en OCI.
-  - Despliegue con Docker / Docker Compose (Streamlit + Backend).
-  - Pruebas exhaustivas por parte del equipo QA (casos extremos, errores en API, etc.).
-  - Guión del video demo y primer ensayo de grabación.
-* **Jueves:** *Sprint Demo Meet S4*. Demostración de la aplicación corriendo en la IP pública de OCI.
+  - [ ] Pruebas exhaustivas por parte del equipo de QA (Edwin, Raúl, Rodrigo):
+    - Manejo de entradas malformadas o textos vacíos.
+    - Resistencia ante caídas de red o cuotas de API.
+    - Validación de consistencia en OCI Object Storage.
+  - [ ] Automatización de pruebas unitarias y de integración (`tests/`).
+  - [ ] Guión detallado del video demo y primer ensayo general de grabación.
+  - [ ] Optimización de consumo de RAM/CPU en la VM OCI Always Free.
+* **Jueves:** *Sprint Demo Meet S4*. Demostración E2E libre de fallos y presentación del video preliminar.
 * **Fin de semana:** Subir entregables a No Country.
 
 ---
 
 ### Semana 5: Pre-Demo, Video Demo Final y Demo Day
-* **Objetivo:** Presentación del proyecto ante la comunidad evaluadora y cierre formal.
+* **Objetivo:** Presentación del proyecto ante la comunidad evaluadora y cierre formal de la Hackathon.
 * **Lunes:** *Sprint Planning Meet* de cierre. Apertura de feedback entre compañeros en la plataforma.
 * **Tareas críticas:**
-  - [ ] Grabación y edición del **Video Demo de YouTube** (máximo 10 minutos, mostrando problema, solución, demo técnica y stack OCI/Gemini).
+  - [ ] Grabación y edición del **Video Demo de YouTube** (máximo 10 minutos, destacando el problema de negocio, arquitectura en OCI Always Free, orquestación en n8n e IA).
   - [ ] Pulido final del `README.md` (diagrama de arquitectura, capturas de pantalla, badges, pasos de instalación).
-  - [ ] **Pre Demo Meet (Jueves):** Ensayo general con mentores.
-  - [ ] **Subir entregables finales** (Cierre domingo 23:59 pm).
+  - [ ] **Pre Demo Meet (Jueves):** Ensayo general con mentores de No Country / Oracle.
+  - [ ] **Subir entregables finales** (Cierre formal domingo 23:59 pm).
   - [ ] **Demo Day (Martes/Jueves):** Presentación en vivo y pitch del equipo.
+
