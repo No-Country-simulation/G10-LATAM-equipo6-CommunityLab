@@ -111,11 +111,13 @@ gantt
 * **Lunes:** *Sprint Planning Meet*.
 * **Desarrollo:**
   - [ ] Configuración del Bucket en **OCI Object Storage** y credenciales API / Customer Secret Key (S3-compatible).
-  - [ ] Enrutamiento condicional en n8n con nodo `Switch`:
+  - [x] Enrutamiento condicional en n8n con nodo `Switch` (`n8n/workflows/ingestion_groq_subflow.json`):
     - Rama A: Logros/Contrataciones $\rightarrow$ Copys optimizados para LinkedIn y Newsletter.
     - Rama B: Dudas técnicas $\rightarrow$ Formato FAQ / Tip de soporte.
     - Rama C: Feedback general $\rightarrow$ Métricas para el Community Manager.
+    - Rama D: Proyectos / Showcase de la comunidad.
   - [ ] Subida automatizada de activos a OCI Object Storage (`activos/{fecha}/paquete-distribucion.json`) desde n8n o cliente Python (`src/cloud_oci/storage_client.py`).
+
   - [ ] Verificación de lectura de URLs firmadas / objetos almacenados.
 * **Jueves:** *Sprint Demo Meet S2*. Demostración de subida automática al bucket de OCI y verificación de URLs de los paquetes generados.
 * **Fin de semana:** Subir entregables a No Country.
