@@ -100,7 +100,7 @@ gantt
   - [x] Implementación de patrón tolerante a fallos y *Rate Limits* (nodo `Loop Over Items` + `Wait` de 10s).
   - [x] Estandarización del prompt del sistema para extracción estricta: `sentimiento`, `tipo_contenido`, `temas_clave`, `post_linkedin` y `tip_tecnico_faq` ([prompt_templates.json](file:///home/cesar-cely/Proyectos/G10-LATAM-equipo6-CommunityLab/src/ai_engine/prompt_templates.json)).
   - [x] Salida de activos formateada y validada en JSON estricto.
-  - [ ] Script Python complementario con Pydantic en `src/ai_engine/` para validación programática (en desarrollo).
+  - [x] Script Python complementario con Pydantic en `src/ai_engine/` para validación programática (`schemas.py` y `validator.py`).
 * **Jueves:** *Sprint Demo Meet S1*. Demostración en vivo del pipeline en n8n procesando los 15 casos con salida JSON formal.
 * **Fin de semana:** Subir entregables de avance a No Country.
 

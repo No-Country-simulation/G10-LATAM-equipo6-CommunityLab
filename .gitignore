@@ -42,3 +42,12 @@ Thumbs.db
 .idea/
 .vscode/
 *.sublime-workspace
+
+# --- Entornos y caché de Python ---
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+
