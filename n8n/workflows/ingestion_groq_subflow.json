@@ -296,6 +296,19 @@
       ],
       "id": "410d76ae-f7db-4d4b-b2f7-23e059c01798",
       "name": "Route by Content Type"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Nodo de consolidación: Recopila todos los items enrutados y genera el paquete final para OCI\nconst allItems = $input.all().map(item => item.json);\n\nconst total = allItems.length;\nconst hoy = new Date().toISOString();\n\n// Cálculo de métricas de sentimiento\nconst sentimientos = {\n  positivo: allItems.filter(i => i.sentimiento === 'positivo').length,\n  neutro: allItems.filter(i => i.sentimiento === 'neutro').length,\n  negativo: allItems.filter(i => i.sentimiento === 'negativo').length\n};\n\n// Agrupación por activos de destino\nconst marketing_linkedin = allItems\n  .filter(i => ['logro_contratacion', 'showcase'].includes(i.tipo_contenido) && i.post_linkedin)\n  .map(i => ({\n    id: i.id,\n    autor: i.autor,\n    canal: i.canal,\n    tipo_contenido: i.tipo_contenido,\n    temas_clave: i.temas_clave,\n    post_linkedin: i.post_linkedin\n  }));\n\nconst faqs_tecnicas = allItems\n  .filter(i => i.tipo_contenido === 'duda_tecnica' && i.tip_tecnico_faq)\n  .map(i => ({\n    id: i.id,\n    autor: i.autor,\n    canal: i.canal,\n    temas_clave: i.temas_clave,\n    pregunta_original: i.texto_original,\n    tip_tecnico_faq: i.tip_tecnico_faq\n  }));\n\nconst feedback_comunidad = allItems\n  .filter(i => i.tipo_contenido === 'feedback_general')\n  .map(i => ({\n    id: i.id,\n    autor: i.autor,\n    canal: i.canal,\n    temas_clave: i.temas_clave,\n    comentario: i.texto_original,\n    sentimiento: i.sentimiento\n  }));\n\n// Construcción del paquete oficial de distribución para OCI\nconst paqueteOCI = {\n  metadata: {\n    version: '1.0.0',\n    plataforma: 'CommunityLab',\n    fecha_generacion: hoy,\n    origen_comunidad: 'Discord_Oracle_Next_Education_G10',\n    total_interacciones: total\n  },\n  metricas_salud: {\n    sentimientos,\n    distribucion_tipo: {\n      logro_contratacion: allItems.filter(i => i.tipo_contenido === 'logro_contratacion').length,\n      duda_tecnica: allItems.filter(i => i.tipo_contenido === 'duda_tecnica').length,\n      showcase: allItems.filter(i => i.tipo_contenido === 'showcase').length,\n      feedback_general: allItems.filter(i => i.tipo_contenido === 'feedback_general').length\n    }\n  },\n  activos: {\n    marketing_linkedin,\n    faqs_tecnicas,\n    feedback_comunidad\n  }\n};\n\nreturn [{ json: paqueteOCI }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        400,
+        -80
+      ],
+      "id": "7b1c4e20-3329-4d89-9a21-fa2b8c9d0011",
+      "name": "Consolidar Paquete OCI"
     }
   ],
   "pinData": {},
@@ -397,10 +410,34 @@
     },
     "Route by Content Type": {
       "main": [
-        [],
-        [],
-        [],
-        [],
+        [
+          {
+            "node": "Consolidar Paquete OCI",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Consolidar Paquete OCI",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Consolidar Paquete OCI",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Consolidar Paquete OCI",
+            "type": "main",
+            "index": 0
+          }
+        ],
         []
       ]
     }
