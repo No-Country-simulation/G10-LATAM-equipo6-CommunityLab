@@ -1,15 +1,15 @@
 {
-  "name": "CCely_WF_002",
+  "name": "JLMansilla001",
   "nodes": [
     {
       "parameters": {},
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        0,
-        -32
+        -672,
+        320
       ],
-      "id": "c7ebb725-71e0-461c-9510-145f0fb49f29",
+      "id": "57ce2b6b-b0c5-4bda-81b1-a78f90b7e05f",
       "name": "When clicking ‘Execute workflow’"
     },
     {
@@ -19,10 +19,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        224,
-        -32
+        -448,
+        320
       ],
-      "id": "3886afa0-892d-4454-8cb7-6e87fcbd488c",
+      "id": "a31b4405-847e-4df8-a22b-8698b17f02c9",
       "name": "Code in JavaScript"
     },
     {
@@ -42,10 +42,10 @@
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "typeVersion": 1.9,
       "position": [
-        672,
-        -160
+        0,
+        320
       ],
-      "id": "0f1ed7c6-bdc8-4a35-8355-194187936a3f",
+      "id": "e102491f-e6c9-41c2-8d4a-e6239e7731c3",
       "name": "Basic LLM Chain",
       "retryOnFail": true,
       "waitBetweenTries": 5000
@@ -57,10 +57,10 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        448,
-        -32
+        -224,
+        320
       ],
-      "id": "9c530d7f-8879-44ef-8496-43a56129923e",
+      "id": "d9fa172e-89e6-41a8-be4a-a4dd149eb22c",
       "name": "Loop Over Items"
     },
     {
@@ -70,10 +70,10 @@
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
       "position": [
-        1248,
-        -32
+        576,
+        432
       ],
-      "id": "6f1cf890-4eaf-4e15-b8e3-3026bee05b28",
+      "id": "4acd5e37-7568-4bf6-af82-82f66d162b11",
       "name": "Wait",
       "webhookId": "e2ca8732-8cd6-4cd8-8e1a-5decc8c232f9"
     },
@@ -85,10 +85,10 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
       "typeVersion": 1,
       "position": [
-        688,
-        80
+        16,
+        544
       ],
-      "id": "070c6054-a518-4584-a87a-693bbc7637ff",
+      "id": "a9641378-00e1-491e-9def-9fe84b3501e0",
       "name": "Groq Chat Model",
       "credentials": {
         "groqApi": {
@@ -105,10 +105,10 @@
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.3,
       "position": [
-        816,
-        80
+        144,
+        544
       ],
-      "id": "ecfbc0c7-ef05-450a-a869-cd68b27d41c1",
+      "id": "3e19da75-9424-42bc-afee-b419d5337741",
       "name": "Structured Output Parser1"
     },
     {
@@ -176,23 +176,129 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.5,
       "position": [
-        1024,
-        -160
+        352,
+        320
       ],
-      "id": "a4788d3d-82e2-48c4-b5ab-351bf14b2aa2",
+      "id": "3316b661-18a0-4422-b601-18d12f847014",
       "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "2dc25d96-d4a4-4ca1-ac08-7408c005a555",
+                    "leftValue": "={{ $json.tipo_contenido }}",
+                    "rightValue": "logro_contratacion",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "logro_contratacion"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "13db1795-b840-41ce-9563-9982a98d66b9",
+                    "leftValue": "={{ $json.tipo_contenido }}",
+                    "rightValue": "duda_tecnica",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "duda_tecnica"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "19a4651b-864f-43d4-a79d-aebc524d31c5",
+                    "leftValue": "={{ $json.tipo_contenido }}",
+                    "rightValue": "showcase",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "showcase"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "386f7623-cf57-4f4f-b9d5-a8096e600aca",
+                    "leftValue": "={{ $json.tipo_contenido }}",
+                    "rightValue": "feedback_general",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "feedback_general"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra"
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        64,
+        -80
+      ],
+      "id": "410d76ae-f7db-4d4b-b2f7-23e059c01798",
+      "name": "Route by Content Type"
     }
   ],
-  "pinData": {
-    "When clicking ‘Execute workflow’": [
-      {
-        "json": {},
-        "pairedItem": {
-          "item": 0
-        }
-      }
-    ]
-  },
+  "pinData": {},
   "connections": {
     "When clicking ‘Execute workflow’": {
       "main": [
@@ -218,7 +324,13 @@
     },
     "Loop Over Items": {
       "main": [
-        [],
+        [
+          {
+            "node": "Route by Content Type",
+            "type": "main",
+            "index": 0
+          }
+        ],
         [
           {
             "node": "Basic LLM Chain",
@@ -282,6 +394,15 @@
           }
         ]
       ]
+    },
+    "Route by Content Type": {
+      "main": [
+        [],
+        [],
+        [],
+        [],
+        []
+      ]
     }
   },
   "active": false,
@@ -289,12 +410,11 @@
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "5e4db2d0-0046-4093-ab0b-c71457e2649a",
+  "versionId": "7454e819-e23e-4e57-8b2e-d391902f1531",
   "meta": {
-    "templateCredsSetupCompleted": true,
     "instanceId": "cb0b9a3b8b392f0b0fbc26be213326cbdfd285ed78e8eb9be9b7984b7130dd64"
   },
   "nodeGroups": [],
-  "id": "164UrZhViJYbKfV7",
+  "id": "Ll4nwPHBxhqcCmJi",
   "tags": []
 }
