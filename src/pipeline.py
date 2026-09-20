@@ -1,7 +1,7 @@
 """Orquestador E2E del Pipeline de CommunityLab.
 
 Integra el módulo de ingesta, el motor de inferencia de Gemini y la consolidación
-de paquetes de distribución con métricas para persistencia y curaduría.
+de paquetes de distribución con métricas para persistencia en OCI y curaduría en Streamlit.
 """
 
 import argparse
@@ -20,6 +20,7 @@ from src.ai_engine.schemas import (
     SentimientoEnum,
     TipoContenidoEnum,
 )
+from src.cloud_oci.storage_client import OCIStorageManager
 from src.ingestion.data_loader import (
     cargar_interacciones_desde_json,
     filtrar_por_canal,
@@ -41,16 +42,19 @@ class CommunityLabPipeline:
     def __init__(
         self,
         ai_service: Optional[GeminiService] = None,
+        storage_manager: Optional[OCIStorageManager] = None,
         delay_between_calls: float = 2.0,
     ):
         """Inicializa el pipeline orquestador.
 
         Args:
             ai_service: Instancia de GeminiService. Si es None, se crea una por defecto.
+            storage_manager: Instancia de OCIStorageManager para persistencia cloud.
             delay_between_calls: Segundos de pausa entre cada llamada a la API
                                  para respetar cuotas de Rate Limit (por defecto 2.0s).
         """
         self.ai_service = ai_service or GeminiService()
+        self.storage_manager = storage_manager or OCIStorageManager(allow_local_fallback=True)
         self.delay_between_calls = delay_between_calls
 
     def procesar_interaccion(
@@ -221,11 +225,19 @@ class CommunityLabPipeline:
         logger.info("Paquete guardado exitosamente en: %s", out_path.resolve())
         return out_path
 
+    def subir_a_oci(
+        self,
+        paquete: Dict[str, Any],
+        object_name: Optional[str] = None,
+    ) -> Dict[str, Any]:
+        """Sube el paquete procesado a OCI Object Storage a través de OCIStorageManager."""
+        return self.storage_manager.upload_json_asset(paquete, object_name=object_name)
+
 
 def main():
     """Punto de entrada de línea de comandos (CLI) para ejecutar el pipeline."""
     parser = argparse.ArgumentParser(
-        description="CommunityLab — Pipeline E2E de Procesamiento con IA"
+        description="CommunityLab — Pipeline E2E de Procesamiento con IA y Persistencia OCI"
     )
     parser.add_argument(
         "--input",
@@ -237,7 +249,7 @@ def main():
         "--output",
         "-o",
         default="data/paquete_procesado.json",
-        help="Ruta donde se guardará el paquete JSON resultante.",
+        help="Ruta donde se guardará el paquete JSON resultante localmente.",
     )
     parser.add_argument(
         "--limit",
@@ -259,6 +271,11 @@ def main():
         default=2.0,
         help="Segundos de pausa entre llamadas a la API (por defecto 2.0s).",
     )
+    parser.add_argument(
+        "--upload-oci",
+        action="store_true",
+        help="Sube automáticamente el paquete procesado a OCI Object Storage.",
+    )
 
     args = parser.parse_args()
 
@@ -272,6 +289,10 @@ def main():
         )
         pipeline.guardar_paquete_json(paquete, args.output)
 
+        oci_info = None
+        if args.upload_oci:
+            oci_info = pipeline.subir_a_oci(paquete)
+
         print("\n" + "=" * 60)
         print("  🎉 RESUMEN DE EJECUCIÓN DEL PIPELINE COMMUNITYLAB")
         print("=" * 60)
@@ -284,6 +305,8 @@ def main():
         print(f"Tips Técnicos / FAQ:  {metricas['total_tips_faq_generados']}")
         print(f"Sentimiento:          {metricas['distribucion_sentimiento']}")
         print(f"Archivo guardado en:  {args.output}")
+        if oci_info:
+            print(f"Persistencia OCI:     {oci_info.get('status')} -> {oci_info.get('object_name')}")
         print("=" * 60 + "\n")
 
     except Exception as e:
