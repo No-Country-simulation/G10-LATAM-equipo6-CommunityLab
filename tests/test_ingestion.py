@@ -7,6 +7,7 @@ import pytest
 from src.ai_engine.schemas import CommunityInteraction
 from src.ingestion.data_loader import (
     cargar_interacciones_desde_json,
+    filtrar_omitir_ids,
     filtrar_por_canal,
     filtrar_por_tipo,
     generar_lotes,
@@ -149,3 +150,17 @@ def test_generar_lotes_batching(dataset_oficial_path: Path):
     # Lotes de tamaño inválido (< 1)
     with pytest.raises(ValueError):
         list(generar_lotes(interacciones, tamano_lote=0))
+
+
+def test_filtrar_omitir_ids(dataset_oficial_path: Path):
+    """Verifica que filtrar_omitir_ids excluya correctamente los IDs indicados."""
+    interacciones = cargar_interacciones_desde_json(dataset_oficial_path)
+    assert len(interacciones) == 15
+
+    ids_a_excluir = {"msg_001", "msg_002", "msg_003"}
+    filtradas = filtrar_omitir_ids(interacciones, ids_a_excluir)
+
+    assert len(filtradas) == 12
+    assert all(i.id not in ids_a_excluir for i in filtradas)
+    assert filtradas[0].id == "msg_004"
+

@@ -30,7 +30,8 @@ load_dotenv()
 class GeminiService:
     """Motor de inferencia y transformación de contenido usando Google Gemini."""
 
-    DEFAULT_MODEL = "gemini-1.5-flash"
+    DEFAULT_MODEL = "gemini-3.6-flash"
+    FALLBACK_MODELS = ["gemini-3.6-flash", "gemini-3.5-flash-lite"]
 
     def __init__(
         self,
@@ -167,8 +168,26 @@ class GeminiService:
                     or "quota" in error_str
                     or "rate" in error_str
                 )
+                is_model_not_found = "404" in error_str or "not found" in error_str
+                is_unavailable = (
+                    "503" in error_str
+                    or "unavailable" in error_str
+                    or "high demand" in error_str
+                )
 
-                if attempt < max_retries and is_rate_limit:
+                if (is_model_not_found or is_unavailable) and attempt < max_retries:
+                    for fallback in self.FALLBACK_MODELS:
+                        if fallback != self.model_name:
+                            logger.warning(
+                                "Modelo '%s' con error (%s). Cambiando automáticamente al modelo '%s'...",
+                                self.model_name,
+                                "404 No Encontrado" if is_model_not_found else "503 Alta Demanda",
+                                fallback,
+                            )
+                            self.model_name = fallback
+                            break
+                    time.sleep(2.0)
+                elif attempt < max_retries and is_rate_limit:
                     sleep_time = base_delay * (2 ** (attempt - 1))
                     logger.warning(
                         "Límite de cuota detectado para %s. Reintentando en %.1fs (intento %d)...",

@@ -7,7 +7,7 @@ y proporcionar utilidades de filtrado y particionado en lotes (batching) para el
 import json
 import logging
 from pathlib import Path
-from typing import Any, Dict, Generator, List, Optional, Union
+from typing import Any, Dict, Generator, List, Optional, Set, Union
 
 from src.ai_engine.schemas import CommunityInteraction
 
@@ -92,6 +92,23 @@ def filtrar_por_tipo(
     """Filtra una lista de interacciones por tipo (ej. 'testimonio', 'pregunta_tecnica')."""
     tipo_limpio = tipo.strip().lower()
     return [i for i in interacciones if i.tipo.strip().lower() == tipo_limpio]
+
+
+def filtrar_omitir_ids(
+    interacciones: List[CommunityInteraction],
+    ids_a_omitir: Union[Set[str], List[str]],
+) -> List[CommunityInteraction]:
+    """Filtra y excluye las interacciones cuyos IDs ya se encuentran en la colección proporcionada.
+
+    Args:
+        interacciones: Lista de interacciones candidatas.
+        ids_a_omitir: Conjunto o lista de identificadores (strings) a ignorar.
+
+    Returns:
+        Lista filtrada sin los IDs indicados.
+    """
+    set_ids = set(ids_a_omitir)
+    return [i for i in interacciones if i.id not in set_ids]
 
 
 def obtener_canales_unicos(interacciones: List[CommunityInteraction]) -> List[str]:

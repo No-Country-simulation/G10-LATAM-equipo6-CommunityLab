@@ -11,7 +11,7 @@ import logging
 from pathlib import Path
 import sys
 import time
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Set, Union
 
 from src.ai_engine.gemini_service import GeminiService
 from src.ai_engine.schemas import (
@@ -23,17 +23,15 @@ from src.ai_engine.schemas import (
 from src.cloud_oci.storage_client import OCIStorageManager
 from src.ingestion.data_loader import (
     cargar_interacciones_desde_json,
+    filtrar_omitir_ids,
     filtrar_por_canal,
     filtrar_por_tipo,
     generar_lotes,
 )
 
-# Configuración básica de logging
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
-)
-logger = logging.getLogger("CommunityLabPipeline")
+from src.utils.logger import setup_logger
+
+logger = setup_logger("CommunityLabPipeline")
 
 
 class CommunityLabPipeline:
@@ -70,6 +68,7 @@ class CommunityLabPipeline:
         canal_filtro: Optional[str] = None,
         tipo_filtro: Optional[str] = None,
         limite: Optional[int] = None,
+        ids_a_omitir: Optional[Union[Set[str], List[str]]] = None,
     ) -> Dict[str, Any]:
         """Ejecuta el pipeline completo sobre un archivo JSON de interacciones.
 
@@ -78,6 +77,7 @@ class CommunityLabPipeline:
             canal_filtro: Opcional, canal a filtrar (ej. '#logros-y-empleos').
             tipo_filtro: Opcional, tipo a filtrar (ej. 'testimonio').
             limite: Cantidad máxima de registros a procesar (útil para pruebas).
+            ids_a_omitir: Conjunto opcional de IDs de interacción a excluir (ej. ya procesados).
 
         Returns:
             Diccionario estructurado con el Paquete de Distribución y métricas.
@@ -95,6 +95,10 @@ class CommunityLabPipeline:
         if tipo_filtro:
             interacciones = filtrar_por_tipo(interacciones, tipo_filtro)
             logger.info("Filtro tipo '%s': %d restantes.", tipo_filtro, len(interacciones))
+
+        if ids_a_omitir:
+            interacciones = filtrar_omitir_ids(interacciones, ids_a_omitir)
+            logger.info("Omitiendo %d IDs previos de la sesión: %d disponibles.", len(ids_a_omitir), len(interacciones))
 
         if limite and limite > 0:
             interacciones = interacciones[:limite]
@@ -117,15 +121,25 @@ class CommunityLabPipeline:
                     item.autor,
                     item.canal,
                 )
+                logger.debug("Texto interacción [%d chars]: '%s'", len(item.texto), item.texto[:140])
                 resultado = self.procesar_interaccion(item)
                 activos_procesados.append(resultado)
+                logger.debug(
+                    "Resultado ID='%s' -> Sentimiento=%s, Tipo=%s, Temas=%s, PostLinkedIn=%s",
+                    item.id,
+                    resultado.activo.sentimiento.value,
+                    resultado.activo.tipo_contenido.value,
+                    resultado.activo.temas_clave,
+                    bool(resultado.activo.post_linkedin),
+                )
 
             except Exception as e:
-                logger.error("Error al procesar registro %s: %s", item.id, e)
+                logger.error("Error al procesar registro %s: %s", item.id, e, exc_info=True)
                 fallidos.append({"id": item.id, "autor": item.autor, "error": str(e)})
 
             # Pausa preventiva entre llamadas (excepto en el último ítem)
             if idx < total_a_procesar and self.delay_between_calls > 0:
+                logger.debug("Pausa preventiva rate-limit de %.2fs...", self.delay_between_calls)
                 time.sleep(self.delay_between_calls)
 
         # Consolidación de métricas y paquete final
@@ -202,6 +216,9 @@ class CommunityLabPipeline:
             },
             "activos": [
                 {
+                    "lote_id": f"py_{ahora.strftime('%H%M%S')}",
+                    "procesado_en": ahora.isoformat(),
+                    "motor_orquestacion": "python_gemini",
                     "interaccion": item.interaccion.model_dump(),
                     "activo": item.activo.model_dump(),
                 }
@@ -229,9 +246,14 @@ class CommunityLabPipeline:
         self,
         paquete: Dict[str, Any],
         object_name: Optional[str] = None,
+        object_name_suffix: Optional[str] = None,
     ) -> Dict[str, Any]:
         """Sube el paquete procesado a OCI Object Storage a través de OCIStorageManager."""
-        return self.storage_manager.upload_json_asset(paquete, object_name=object_name)
+        return self.storage_manager.upload_json_asset(
+            paquete,
+            object_name=object_name,
+            object_name_suffix=object_name_suffix,
+        )
 
 
 def main():
@@ -281,6 +303,12 @@ def main():
 
     pipeline = CommunityLabPipeline(delay_between_calls=args.delay)
 
+    if hasattr(sys.stdout, "reconfigure"):
+        try:
+            sys.stdout.reconfigure(encoding="utf-8")
+        except Exception:
+            pass
+
     try:
         paquete = pipeline.procesar_archivo(
             ruta_input=args.input,
@@ -294,7 +322,7 @@ def main():
             oci_info = pipeline.subir_a_oci(paquete)
 
         print("\n" + "=" * 60)
-        print("  🎉 RESUMEN DE EJECUCIÓN DEL PIPELINE COMMUNITYLAB")
+        print("  [OK] RESUMEN DE EJECUCION DEL PIPELINE COMMUNITYLAB")
         print("=" * 60)
         meta = paquete["metadata_paquete"]
         metricas = paquete["metricas"]

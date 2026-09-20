@@ -141,14 +141,16 @@ class OCIStorageManager:
         data: Union[Dict[str, Any], List[Any], str],
         object_name: Optional[str] = None,
         prefix: str = "activos",
+        object_name_suffix: Optional[str] = None,
     ) -> Dict[str, Any]:
         """Sube un paquete JSON a OCI Object Storage (o a almacenamiento local si está en modo fallback).
 
         Args:
             data: Diccionario, lista o string JSON a guardar.
             object_name: Nombre exacto del objeto. Si es None, se genera automáticamente
-                         con formato '{prefix}/{YYYY-MM-DD}/paquete-distribucion-{HHMMSS}.json'.
+                         con formato '{prefix}/{YYYY-MM-DD}/paquete-distribucion-[suffix-]{HHMMSS}.json'.
             prefix: Carpeta virtual dentro del bucket (por defecto 'activos').
+            object_name_suffix: Sufijo opcional para diferenciar el motor generador (ej: 'n8n', 'python').
 
         Returns:
             Dict con metadata de la operación (status, object_name, etag, bytes_subidos, timestamp).
@@ -156,9 +158,10 @@ class OCIStorageManager:
         now = datetime.now(timezone.utc)
         date_folder = now.strftime("%Y-%m-%d")
         time_tag = now.strftime("%H%M%S")
+        suffix_str = f"-{object_name_suffix}" if object_name_suffix else ""
 
         if not object_name:
-            object_name = f"{prefix}/{date_folder}/paquete-distribucion-{time_tag}.json"
+            object_name = f"{prefix}/{date_folder}/paquete-distribucion{suffix_str}-{time_tag}.json"
 
         if isinstance(data, (dict, list)):
             body_bytes = json.dumps(data, ensure_ascii=False, indent=2).encode("utf-8")
