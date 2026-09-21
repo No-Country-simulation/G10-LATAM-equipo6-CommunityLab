@@ -83,87 +83,33 @@ st.sidebar.info(
 if modo == "💼 Curaduría de Activos":
     st.subheader("📋 Revisión y Aprobación de Copys para Publicación")
 
-    # Cargar paquetes disponibles
-    paquetes_disponibles = obtener_ultimos_paquetes(limite=20)
-
-    default_paquete_path = Path("data/paquete_procesado.json")
-    python_paquete_path = Path("data/paquete_procesado_python.json")
-    n8n_paquete_path = Path("data/paquete_procesado_n8n.json")
+    # Cargar paquetes directamente de OCI Object Storage (Fuente de Verdad en la Nube)
+    paquetes_disponibles = obtener_ultimos_paquetes(limite=30)
     opciones_fuente = []
 
-    # 1. Opción Consolidada si existen ambos
-    if python_paquete_path.exists() and n8n_paquete_path.exists():
-        opciones_fuente.append("🔥 Vista Consolidada: Todos los Activos (Python + n8n)")
-
-    # 2. Opciones individuales
-    if python_paquete_path.exists():
-        opciones_fuente.append("🐍 Python: data/paquete_procesado_python.json")
-    if n8n_paquete_path.exists():
-        opciones_fuente.append("🔄 n8n: data/paquete_procesado_n8n.json")
-    if default_paquete_path.exists():
-        opciones_fuente.append("📁 Último Lote Generado: data/paquete_procesado.json")
-
+    # Exclusivamente paquetes en OCI Storage
     for p in paquetes_disponibles:
         opciones_fuente.append(f"Storage: {p['name']}")
 
+    # Fallback local únicamente si OCI está vacío o en modo offline
+    if not opciones_fuente:
+        for local_f in [Path("data/paquete_procesado_python.json"), Path("data/paquete_procesado.json")]:
+            if local_f.exists():
+                opciones_fuente.append(f"Local: {local_f.as_posix()}")
+
     if not opciones_fuente:
         st.warning(
-            "⚠️ Aún no se han generado paquetes de distribución. "
-            "Ve a la pestaña **'⚡ Ejecutar Pipeline'** para procesar el dataset de ejemplo."
+            "⚠️ Aún no se han generado paquetes en OCI Object Storage. "
+            "Ejecuta el flujo en n8n o ve a la pestaña **'⚡ Ejecutar Pipeline'** para procesar interacciones."
         )
     else:
-        fuente_seleccionada = st.selectbox("Selecciona el lote a inspeccionar:", opciones_fuente)
+        fuente_seleccionada = st.selectbox("Selecciona el lote de OCI a inspeccionar:", opciones_fuente)
 
         # Cargar datos del paquete
         datos_paquete = None
-        if fuente_seleccionada.startswith("🔥 Vista Consolidada:"):
-            with open(python_paquete_path, "r", encoding="utf-8") as f:
-                d_py = json.load(f)
-            with open(n8n_paquete_path, "r", encoding="utf-8") as f:
-                d_n8n = json.load(f)
-
-            activos_py = d_py.get("activos", [])
-            for a in activos_py:
-                a["motor_orquestacion"] = a.get("motor_orquestacion") or "python_gemini"
-
-            activos_n8n = d_n8n.get("activos", [])
-            for a in activos_n8n:
-                a["motor_orquestacion"] = a.get("motor_orquestacion") or "n8n_local"
-
-            activos_todos = activos_py + activos_n8n
-
-            m_py = d_py.get("metricas", {})
-            m_n8n = d_n8n.get("metricas", {})
-            total_posts = m_py.get("total_posts_linkedin_generados", 0) + m_n8n.get("total_posts_linkedin_generados", 0)
-            total_tips = m_py.get("total_tips_faq_generados", 0) + m_n8n.get("total_tips_faq_generados", 0)
-
-            sent_dist = {"positivo": 0, "neutro": 0, "negativo": 0}
-            for s in ["positivo", "neutro", "negativo"]:
-                sent_dist[s] = (
-                    m_py.get("distribucion_sentimiento", {}).get(s, 0)
-                    + m_n8n.get("distribucion_sentimiento", {}).get(s, 0)
-                )
-
-            datos_paquete = {
-                "metadata_paquete": {
-                    "total_procesados_exitosamente": len(activos_todos),
-                    "motor_orquestacion": "Consolidado Dual (Python + n8n)",
-                },
-                "metricas": {
-                    "distribucion_sentimiento": sent_dist,
-                    "total_posts_linkedin_generados": total_posts,
-                    "total_tips_faq_generados": total_tips,
-                },
-                "activos": activos_todos,
-            }
-        elif fuente_seleccionada.startswith("🐍 Python:"):
-            with open(python_paquete_path, "r", encoding="utf-8") as f:
-                datos_paquete = json.load(f)
-        elif fuente_seleccionada.startswith("🔄 n8n:"):
-            with open(n8n_paquete_path, "r", encoding="utf-8") as f:
-                datos_paquete = json.load(f)
-        elif fuente_seleccionada.startswith("📁 Último") or fuente_seleccionada.startswith("Local:"):
-            with open(default_paquete_path, "r", encoding="utf-8") as f:
+        if fuente_seleccionada.startswith("Local:"):
+            local_p = Path(fuente_seleccionada.replace("Local: ", ""))
+            with open(local_p, "r", encoding="utf-8") as f:
                 datos_paquete = json.load(f)
         else:
             nombre_obj = fuente_seleccionada.replace("Storage: ", "")
@@ -466,21 +412,9 @@ elif modo == "⚡ Ejecutar Pipeline":
                     es_asincrono = paquete_n8n.get("metadata_paquete", {}).get("modo_ejecucion") == "asincrono"
 
                     if not es_asincrono:
-                        # Modo acumulativo si está activo (solo para respuestas sincrónicas con datos)
-                        if acumular_lote:
-                            p_n8n_path = Path("data/paquete_procesado_n8n.json")
-                            d_prev_n8n = json.loads(p_n8n_path.read_text(encoding="utf-8")) if p_n8n_path.exists() else None
-                            paquete_n8n = fusionar_paquetes(d_prev_n8n, paquete_n8n)
-
-                        # Guardar tanto en paquete específico de n8n como en el general
-                        with open("data/paquete_procesado_n8n.json", "w", encoding="utf-8") as f:
-                            json.dump(paquete_n8n, f, ensure_ascii=False, indent=2)
-                        with open("data/paquete_procesado.json", "w", encoding="utf-8") as f:
-                            json.dump(paquete_n8n, f, ensure_ascii=False, indent=2)
-
                         st.success(f"¡Flujo n8n completado exitosamente en **{t_total:.2f}s**!")
                         st.json(paquete_n8n.get("metricas", {}))
-                        st.info("Revisa los copys generados en **'💼 Curaduría de Activos'**.")
+                        st.info("Los 4 archivos especializados fueron actualizados en OCI Object Storage. Selecciónalos en **'💼 Curaduría de Activos'**.")
                     else:
                         st.success(f"🚀 ¡Lote recibido por n8n en **{t_total:.2f}s**!")
                         st.info(f"ℹ️ {paquete_n8n['metadata_paquete'].get('mensaje_n8n')}")

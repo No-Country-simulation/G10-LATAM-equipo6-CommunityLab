@@ -424,18 +424,38 @@ def guardar_curaduria_humana(
     estado_aprobacion: str = "aprobado",
     notas: str = "",
     ruta_registro: Union[str, Path] = "data/curaduria_aprobados.json",
+    persistir_oci: bool = True,
 ) -> Dict[str, Any]:
-    """Registra la aprobación, edición o rechazo de un copy por parte del Community Manager."""
-    path = Path(ruta_registro)
-    path.parent.mkdir(parents=True, exist_ok=True)
-
+    """Registra la aprobación, edición o rechazo de un copy por parte del Community Manager en OCI y local."""
     registros: List[Dict[str, Any]] = []
-    if path.exists():
+    sm: Optional[OCIStorageManager] = None
+
+    # Intentar leer el historial actual desde OCI Object Storage si persistir_oci es True
+    if persistir_oci:
         try:
-            with open(path, "r", encoding="utf-8") as f:
-                registros = json.load(f)
-        except Exception:
-            registros = []
+            sm = OCIStorageManager(allow_local_fallback=True)
+            if not sm.is_local_mode:
+                try:
+                    data_oci = sm.get_asset("curaduria/curaduria_aprobados.json")
+                    if isinstance(data_oci, list):
+                        registros = data_oci
+                    elif isinstance(data_oci, dict) and "aprobados" in data_oci:
+                        registros = data_oci["aprobados"]
+                except Exception:
+                    # El archivo aún no existe en el bucket, empezamos lista vacía
+                    registros = []
+        except Exception as err:
+            logger.warning("No se pudo conectar a OCI para leer curaduría: %s", err)
+
+    # Si no leyó de OCI, verificar si existe local
+    if not registros:
+        path = Path(ruta_registro)
+        if path.exists():
+            try:
+                with open(path, "r", encoding="utf-8") as f:
+                    registros = json.load(f)
+            except Exception:
+                registros = []
 
     nuevo_registro = {
         "id_interaccion": id_interaccion,
@@ -449,6 +469,22 @@ def guardar_curaduria_humana(
     registros = [r for r in registros if r.get("id_interaccion") != id_interaccion]
     registros.append(nuevo_registro)
 
+    # Persistir en OCI Object Storage
+    if persistir_oci:
+        try:
+            if not sm:
+                sm = OCIStorageManager(allow_local_fallback=True)
+            sm.upload_json_asset(
+                data=registros,
+                object_name="curaduria/curaduria_aprobados.json",
+            )
+            logger.info("Curaduría sincronizada en OCI Object Storage: curaduria/curaduria_aprobados.json")
+        except Exception as e_oci:
+            logger.warning("No se pudo sincronizar curaduría en OCI: %s", e_oci)
+
+    # Guardar también localmente como respaldo ligero
+    path = Path(ruta_registro)
+    path.parent.mkdir(parents=True, exist_ok=True)
     with open(path, "w", encoding="utf-8") as f:
         json.dump(registros, f, ensure_ascii=False, indent=2)
 
