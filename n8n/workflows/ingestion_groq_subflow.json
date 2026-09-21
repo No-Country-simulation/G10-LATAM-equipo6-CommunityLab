@@ -1,5 +1,5 @@
 {
-  "name": "CCely_WF_003",
+  "name": "CCely_WF_004",
   "nodes": [
     {
       "parameters": {
@@ -8,10 +8,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -400,
-        336
+        -432,
+        448
       ],
-      "id": "e4227270-de60-4732-b0b1-f093d41f43ee",
+      "id": "dd20ba78-c8e2-4d9a-8000-4f565a1fb6cc",
       "name": "Code in JavaScript1"
     },
     {
@@ -31,10 +31,10 @@
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "typeVersion": 1.9,
       "position": [
-        48,
-        336
+        16,
+        448
       ],
-      "id": "a942c2aa-7e65-4b12-836e-70174b46492c",
+      "id": "28f008a3-e559-4bf4-b2d3-9350706e7849",
       "name": "Basic LLM Chain1",
       "retryOnFail": true,
       "waitBetweenTries": 5000
@@ -46,10 +46,10 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        -176,
-        336
+        -208,
+        448
       ],
-      "id": "5649dcd9-88d9-43a7-9eae-daa77c211593",
+      "id": "42679acf-a1a3-4b64-9228-8382d3f1a3f8",
       "name": "Loop Over Items1"
     },
     {
@@ -59,10 +59,10 @@
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
       "position": [
-        624,
-        448
+        592,
+        560
       ],
-      "id": "adf9f02b-aa08-4f3a-9296-a8d9235d8f1c",
+      "id": "5b298d42-bce5-4a8d-a9db-de312890b1f4",
       "name": "Wait1",
       "webhookId": "e2ca8732-8cd6-4cd8-8e1a-5decc8c232f9"
     },
@@ -74,10 +74,10 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
       "typeVersion": 1,
       "position": [
-        32,
-        576
+        24,
+        664
       ],
-      "id": "c3c36344-a2ab-4e08-91f9-d056875a926d",
+      "id": "8e97e8ae-e5e5-41e1-bb14-5a6957b49e67",
       "name": "Groq Chat Model1",
       "credentials": {
         "groqApi": {
@@ -94,10 +94,10 @@
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.3,
       "position": [
-        208,
-        576
+        152,
+        664
       ],
-      "id": "64aa1bd4-034c-48e2-a1e3-6a6da2b07244",
+      "id": "d364fe5d-9437-46e7-87fc-e88478fe2741",
       "name": "Structured Output Parser"
     },
     {
@@ -165,126 +165,11 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.5,
       "position": [
-        400,
-        336
+        368,
+        448
       ],
-      "id": "0a7b5e0a-94ba-4f72-bd93-808a796decbc",
+      "id": "c0fb89a0-451e-4a6e-980c-816e2d3819db",
       "name": "Edit Fields1"
-    },
-    {
-      "parameters": {
-        "rules": {
-          "values": [
-            {
-              "conditions": {
-                "options": {
-                  "caseSensitive": true,
-                  "leftValue": "",
-                  "typeValidation": "strict",
-                  "version": 2
-                },
-                "conditions": [
-                  {
-                    "id": "2dc25d96-d4a4-4ca1-ac08-7408c005a555",
-                    "leftValue": "={{ $json.tipo_contenido }}",
-                    "rightValue": "logro_contratacion",
-                    "operator": {
-                      "type": "string",
-                      "operation": "equals"
-                    }
-                  }
-                ],
-                "combinator": "and"
-              },
-              "renameOutput": true,
-              "outputKey": "logro_contratacion"
-            },
-            {
-              "conditions": {
-                "options": {
-                  "caseSensitive": true,
-                  "leftValue": "",
-                  "typeValidation": "strict",
-                  "version": 2
-                },
-                "conditions": [
-                  {
-                    "id": "13db1795-b840-41ce-9563-9982a98d66b9",
-                    "leftValue": "={{ $json.tipo_contenido }}",
-                    "rightValue": "duda_tecnica",
-                    "operator": {
-                      "type": "string",
-                      "operation": "equals"
-                    }
-                  }
-                ],
-                "combinator": "and"
-              },
-              "renameOutput": true,
-              "outputKey": "duda_tecnica"
-            },
-            {
-              "conditions": {
-                "options": {
-                  "caseSensitive": true,
-                  "leftValue": "",
-                  "typeValidation": "strict",
-                  "version": 2
-                },
-                "conditions": [
-                  {
-                    "id": "19a4651b-864f-43d4-a79d-aebc524d31c5",
-                    "leftValue": "={{ $json.tipo_contenido }}",
-                    "rightValue": "showcase",
-                    "operator": {
-                      "type": "string",
-                      "operation": "equals"
-                    }
-                  }
-                ],
-                "combinator": "and"
-              },
-              "renameOutput": true,
-              "outputKey": "showcase"
-            },
-            {
-              "conditions": {
-                "options": {
-                  "caseSensitive": true,
-                  "leftValue": "",
-                  "typeValidation": "strict",
-                  "version": 2
-                },
-                "conditions": [
-                  {
-                    "id": "386f7623-cf57-4f4f-b9d5-a8096e600aca",
-                    "leftValue": "={{ $json.tipo_contenido }}",
-                    "rightValue": "feedback_general",
-                    "operator": {
-                      "type": "string",
-                      "operation": "equals"
-                    }
-                  }
-                ],
-                "combinator": "and"
-              },
-              "renameOutput": true,
-              "outputKey": "feedback_general"
-            }
-          ]
-        },
-        "options": {
-          "fallbackOutput": "none"
-        }
-      },
-      "type": "n8n-nodes-base.switch",
-      "typeVersion": 3.2,
-      "position": [
-        112,
-        -32
-      ],
-      "id": "92f717d5-272d-4fa2-9040-346ba39ebafb",
-      "name": "Route by Content Type1"
     },
     {
       "parameters": {
@@ -293,10 +178,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        400,
-        0
+        80,
+        144
       ],
-      "id": "b31a37bd-7862-44cf-8d82-b198d258abf7",
+      "id": "e9fd1836-fee7-487c-9540-365d80ad20e7",
       "name": "Consolidar Paquete OCI1"
     },
     {
@@ -309,10 +194,10 @@
       "type": "n8n-nodes-base.s3",
       "typeVersion": 1,
       "position": [
-        848,
-        0
+        592,
+        144
       ],
-      "id": "14ecaca9-4970-4c91-818e-9b2e32e4a1b4",
+      "id": "9742aa62-8269-4653-8e98-3dc48483d2f2",
       "name": "Upload a file1",
       "credentials": {
         "s3": {
@@ -333,10 +218,10 @@
       "type": "n8n-nodes-base.convertToFile",
       "typeVersion": 1.1,
       "position": [
-        624,
-        0
+        368,
+        144
       ],
-      "id": "d2a8b4a7-ed18-408b-b0e4-d418d2fe606b",
+      "id": "5fde64f7-e60a-48f9-9846-3c0379b31f67",
       "name": "Convert to File1"
     }
   ],
@@ -367,11 +252,6 @@
     "Loop Over Items1": {
       "main": [
         [
-          {
-            "node": "Route by Content Type1",
-            "type": "main",
-            "index": 0
-          },
           {
             "node": "Consolidar Paquete OCI1",
             "type": "main",
@@ -431,14 +311,6 @@
         ]
       ]
     },
-    "Route by Content Type1": {
-      "main": [
-        [],
-        [],
-        [],
-        []
-      ]
-    },
     "Consolidar Paquete OCI1": {
       "main": [
         [
@@ -467,11 +339,11 @@
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "c1582104-143d-42b4-a3a4-4eb0a5c4ce45",
+  "versionId": "e947091f-7b19-4269-b67b-1abed526d1a0",
   "meta": {
     "instanceId": "cb0b9a3b8b392f0b0fbc26be213326cbdfd285ed78e8eb9be9b7984b7130dd64"
   },
   "nodeGroups": [],
-  "id": "NOHpmxRdZanXenxK",
+  "id": "0nZC9ksVszIbNIc8",
   "tags": []
 }
