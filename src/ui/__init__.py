@@ -5,6 +5,7 @@ from .services import (
     cargar_paquete,
     procesar_archivo_ui,
     guardar_curaduria_humana,
+    obtener_mapa_curaduria,
 )
 
 __all__ = [
@@ -12,4 +13,5 @@ __all__ = [
     "cargar_paquete",
     "procesar_archivo_ui",
     "guardar_curaduria_humana",
+    "obtener_mapa_curaduria",
 ]
