@@ -23,6 +23,7 @@ def test_guardar_curaduria_humana(tmp_path: Path):
         estado_aprobacion="aprobado",
         notas="Excelente gancho",
         ruta_registro=registro_path,
+        persistir_oci=False,
     )
 
     assert res["id_interaccion"] == "msg_001"

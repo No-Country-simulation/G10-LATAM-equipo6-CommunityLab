@@ -243,6 +243,8 @@ if modo == "💼 Curaduría de Activos":
                     badge_estado = "🟢 APROBADO"
                 elif estado_cur == "rechazado":
                     badge_estado = "🔴 DESCARTADO"
+                elif estado_cur == "leido":
+                    badge_estado = "🔵 LEÍDO"
                 else:
                     badge_estado = "⏳ PENDIENTE"
 
@@ -272,6 +274,8 @@ if modo == "💼 Curaduría de Activos":
                             st.success(f"✅ **Aprobado en OCI:** {cur_info.get('fecha_curaduria', '')[:19]}")
                         elif estado_cur == "rechazado":
                             st.warning(f"❌ **Descartado en OCI:** {cur_info.get('fecha_curaduria', '')[:19]}")
+                        elif estado_cur == "leido":
+                            st.info(f"👁️ **Marcado como leído en OCI:** {cur_info.get('fecha_curaduria', '')[:19]}")
 
                         if activo.get("post_linkedin"):
                             st.markdown("**Copy para LinkedIn:**")
@@ -306,8 +310,26 @@ if modo == "💼 Curaduría de Activos":
                         elif activo.get("tip_tecnico_faq"):
                             st.markdown("**Tip Técnico / Respuesta FAQ:**")
                             st.markdown(activo["tip_tecnico_faq"])
+                            if st.button("👁️ Marcar FAQ como Leído / Revisado", key=f"btn_faq_read_{interaccion['id']}_{motor_val}_{idx}"):
+                                guardar_curaduria_humana(
+                                    id_interaccion=interaccion["id"],
+                                    copy_aprobado=activo["tip_tecnico_faq"],
+                                    estado_aprobacion="leido",
+                                    notas="FAQ técnico revisado",
+                                )
+                                st.success("¡FAQ marcado como leído en OCI!")
+                                st.rerun()
                         else:
-                            st.markdown("_No requiere generación de post ni FAQ (Feedback General)._")
+                            st.markdown("_Interacción clasificada como Feedback General de la comunidad._")
+                            if st.button("👁️ Marcar Feedback como Leído", key=f"btn_fb_read_{interaccion['id']}_{motor_val}_{idx}"):
+                                guardar_curaduria_humana(
+                                    id_interaccion=interaccion["id"],
+                                    copy_aprobado=interaccion["texto"],
+                                    estado_aprobacion="leido",
+                                    notas="Feedback de comunidad revisado",
+                                )
+                                st.success("¡Feedback marcado como leído en OCI!")
+                                st.rerun()
 
 # -----------------------------------------------------------------------------
 # VISTA 2: EJECUTAR PIPELINE
