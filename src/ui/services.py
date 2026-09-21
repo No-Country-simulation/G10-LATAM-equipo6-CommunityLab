@@ -232,7 +232,7 @@ def procesar_archivo_n8n_ui(
     canal_filtro: Optional[str] = None,
     tipo_filtro: Optional[str] = None,
     upload_oci: bool = False,
-    timeout_segundos: float = 120.0,
+    timeout_segundos: float = 600.0,
     ids_a_omitir: Optional[Set[str]] = None,
 ) -> Dict[str, Any]:
     """Ejecuta el procesamiento a través del orquestador n8n (vía Webhook HTTP).
