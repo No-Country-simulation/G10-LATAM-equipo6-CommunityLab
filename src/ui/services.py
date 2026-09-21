@@ -144,6 +144,52 @@ def cargar_paquete(
         return None
 
 
+def vaciar_historico_oci(prefix: str = "activos") -> int:
+    """Elimina los paquetes persistidos tanto en OCI Object Storage real como en almacenamiento local.
+
+    Args:
+        prefix: Prefijo a vaciar en el storage (por defecto 'activos').
+
+    Returns:
+        Cantidad de elementos eliminados.
+    """
+    eliminados = 0
+    try:
+        sm = OCIStorageManager(allow_local_fallback=True)
+        if not sm.is_local_mode:
+            # Eliminar en el bucket de OCI Cloud
+            items = sm.list_assets(prefix=prefix, limit=1000)
+            for item in items:
+                nombre = item.get("name")
+                if nombre:
+                    try:
+                        sm.delete_object(nombre)
+                        eliminados += 1
+                        logger.info("🗑️ Objeto '%s' eliminado de OCI Cloud.", nombre)
+                    except Exception as err:
+                        logger.warning("No se pudo eliminar '%s' en OCI: %s", nombre, err)
+    except Exception as e_oci:
+        logger.warning("Error al intentar vaciar OCI Cloud: %s", e_oci)
+
+    # También limpiar carpeta local de fallback si existe
+    local_p = Path("data/oci_local_storage") / prefix
+    if local_p.exists():
+        import shutil
+        for item in list(local_p.iterdir()):
+            try:
+                if item.is_dir():
+                    shutil.rmtree(item)
+                    eliminados += 1
+                elif item.is_file():
+                    item.unlink()
+                    eliminados += 1
+            except Exception as e:
+                logger.warning("No se pudo eliminar local '%s': %s", item, e)
+
+    logger.info("Almacenamiento histórico de OCI vaciado: %d elementos eliminados.", eliminados)
+    return eliminados
+
+
 def vaciar_historico_oci_local(ruta: Union[str, Path] = "data/oci_local_storage/activos") -> int:
     """Elimina todos los paquetes JSON persistidos en el almacenamiento local de OCI.
 
@@ -167,7 +213,7 @@ def vaciar_historico_oci_local(ruta: Union[str, Path] = "data/oci_local_storage/
                     eliminados += 1
             except Exception as e:
                 logger.warning("No se pudo eliminar '%s': %s", item, e)
-    logger.info("Almacenamiento histórico de OCI vaciado: %d elementos eliminados.", eliminados)
+    logger.info("Almacenamiento local de OCI vaciado: %d elementos eliminados.", eliminados)
     return eliminados
 
 

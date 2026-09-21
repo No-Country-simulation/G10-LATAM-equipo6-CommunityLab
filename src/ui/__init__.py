@@ -6,6 +6,8 @@ from .services import (
     procesar_archivo_ui,
     guardar_curaduria_humana,
     obtener_mapa_curaduria,
+    vaciar_historico_oci,
+    vaciar_historico_oci_local,
 )
 
 __all__ = [
@@ -14,4 +16,6 @@ __all__ = [
     "procesar_archivo_ui",
     "guardar_curaduria_humana",
     "obtener_mapa_curaduria",
+    "vaciar_historico_oci",
+    "vaciar_historico_oci_local",
 ]

@@ -28,6 +28,7 @@ from src.ui.services import (
     guardar_curaduria_humana,
     obtener_mapa_curaduria,
     fusionar_paquetes,
+    vaciar_historico_oci,
     vaciar_historico_oci_local,
     obtener_ids_procesados_sesion,
 )
@@ -374,8 +375,8 @@ elif modo == "⚡ Ejecutar Pipeline":
             st.caption("Esta acción eliminará de forma irreversible todos los paquetes JSON persistidos en el almacenamiento.")
             conf_oci_v2 = st.checkbox("Confirmo que deseo vaciar el histórico", key="chk_conf_v2")
             if st.button("🚨 Sí, vaciar permanentemente", type="primary", disabled=not conf_oci_v2, key="btn_vaciar_hist_v2", use_container_width=True):
-                vaciar_historico_oci_local()
-                st.toast("Histórico de OCI vaciado correctamente.")
+                n_del = vaciar_historico_oci()
+                st.toast(f"Histórico de OCI vaciado correctamente ({n_del} objetos eliminados).")
                 st.rerun()
 
     # Fila 2: Los 3 checks distribuidos a lo largo de toda la fila para lectura completa
@@ -566,8 +567,8 @@ elif modo == "☁️ Histórico OCI Object Storage":
             st.caption("Esta acción eliminará de forma permanente todos los paquetes almacenados en el storage.")
             conf_oci_v3 = st.checkbox("Confirmo eliminar el histórico", key="chk_conf_v3")
             if st.button("🚨 Sí, vaciar almacenamiento", type="primary", disabled=not conf_oci_v3, key="btn_vaciar_hist_v3"):
-                vaciar_historico_oci_local()
-                st.toast("Histórico de OCI vaciado exitosamente.")
+                n_del = vaciar_historico_oci()
+                st.toast(f"Histórico de OCI vaciado exitosamente ({n_del} objetos eliminados).")
                 st.rerun()
 
     paquetes = obtener_ultimos_paquetes(limite=50)
