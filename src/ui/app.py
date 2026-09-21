@@ -463,31 +463,33 @@ elif modo == "⚡ Ejecutar Pipeline":
                     )
                     t_total = time.time() - t_ini
 
-                    # Modo acumulativo si está activo
-                    if acumular_lote:
-                        p_n8n_path = Path("data/paquete_procesado_n8n.json")
-                        d_prev_n8n = json.loads(p_n8n_path.read_text(encoding="utf-8")) if p_n8n_path.exists() else None
-                        paquete_n8n = fusionar_paquetes(d_prev_n8n, paquete_n8n)
+                    es_asincrono = paquete_n8n.get("metadata_paquete", {}).get("modo_ejecucion") == "asincrono"
 
-                    # Guardar tanto en paquete específico de n8n como en el general
-                    with open("data/paquete_procesado_n8n.json", "w", encoding="utf-8") as f:
-                        json.dump(paquete_n8n, f, ensure_ascii=False, indent=2)
-                    with open("data/paquete_procesado.json", "w", encoding="utf-8") as f:
-                        json.dump(paquete_n8n, f, ensure_ascii=False, indent=2)
+                    if not es_asincrono:
+                        # Modo acumulativo si está activo (solo para respuestas sincrónicas con datos)
+                        if acumular_lote:
+                            p_n8n_path = Path("data/paquete_procesado_n8n.json")
+                            d_prev_n8n = json.loads(p_n8n_path.read_text(encoding="utf-8")) if p_n8n_path.exists() else None
+                            paquete_n8n = fusionar_paquetes(d_prev_n8n, paquete_n8n)
 
-                    if paquete_n8n.get("metadata_paquete", {}).get("modo_ejecucion") == "asincrono":
+                        # Guardar tanto en paquete específico de n8n como en el general
+                        with open("data/paquete_procesado_n8n.json", "w", encoding="utf-8") as f:
+                            json.dump(paquete_n8n, f, ensure_ascii=False, indent=2)
+                        with open("data/paquete_procesado.json", "w", encoding="utf-8") as f:
+                            json.dump(paquete_n8n, f, ensure_ascii=False, indent=2)
+
+                        st.success(f"¡Flujo n8n completado exitosamente en **{t_total:.2f}s**!")
+                        st.json(paquete_n8n.get("metricas", {}))
+                        st.info("Revisa los copys generados en **'💼 Curaduría de Activos'**.")
+                    else:
                         st.success(f"🚀 ¡Lote recibido por n8n en **{t_total:.2f}s**!")
                         st.info(f"ℹ️ {paquete_n8n['metadata_paquete'].get('mensaje_n8n')}")
                         st.markdown(
                             """
                             > **Nota:** n8n está procesando el lote con el LLM y subirá los **4 archivos especializados a OCI Object Storage**. 
-                            > Cuando finalice en n8n, encuéntralos y curálos directamente en **'💼 Curaduría de Activos'** o en **'☁️ Histórico OCI Object Storage'**.
+                            > Cuando finalice en n8n, encuéntralos y curálos directamente en **'💼 Curaduría de Activos'** (opciones `Storage: activos/...`) o en **'☁️ Histórico OCI Object Storage'**.
                             """
                         )
-                    else:
-                        st.success(f"¡Flujo n8n completado exitosamente en **{t_total:.2f}s**!")
-                        st.json(paquete_n8n.get("metricas", {}))
-                        st.info("Revisa los copys generados en **'💼 Curaduría de Activos'**.")
                 except ValueError as ve:
                     st.info(f"ℹ️ {ve}")
                 except Exception as e:
