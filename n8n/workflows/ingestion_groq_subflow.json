@@ -2,28 +2,17 @@
   "name": "CCely_WF_003",
   "nodes": [
     {
-      "parameters": {},
-      "type": "n8n-nodes-base.manualTrigger",
-      "typeVersion": 1,
-      "position": [
-        -368,
-        928
-      ],
-      "id": "6c60651d-1604-404d-89af-6eaa8d6879af",
-      "name": "When clicking ‘Execute workflow’"
-    },
-    {
       "parameters": {
         "jsCode": "const dataset = {\n  \"interacciones\": [\n    {\n      \"id\": \"msg_001\",\n      \"autor\": \"Carlos Mendoza\",\n      \"canal\": \"#logros-y-empleos\",\n      \"tipo\": \"testimonio\",\n      \"texto\": \"Quiero compartirles que hoy firmé mi contrato formal como Desarrollador Junior Cloud en una consultora internacional. Todo lo aprendido en la formación de Oracle ONE y los laboratorios prácticos marcaron la diferencia absoluta en mi prueba técnica. Infinitas gracias a la comunidad por el apoyo constante!\"\n    },\n    {\n      \"id\": \"msg_002\",\n      \"autor\": \"Lucía Fernández\",\n      \"canal\": \"#dudas-programacion\",\n      \"tipo\": \"pregunta_tecnica\",\n      \"texto\": \"Hola comunidad, estoy teniendo un problema con una llamada a la API de Gemini en Python. Me sale un error de ResourceExhausted cuando envío más de 10 peticiones seguidas. ¿Alguien ha implementado exponential backoff o manejo de rate limits con la librería oficial de Google GenAI?\"\n    },\n    {\n      \"id\": \"msg_003\",\n      \"autor\": \"Mateo Rivas\",\n      \"canal\": \"#logros-y-empleos\",\n      \"tipo\": \"testimonio\",\n      \"texto\": \"Ayer me confirmaron mi primer contrato como Data Analyst para una startup de Chile gracias a los proyectos que desarrollamos en las formaciones de Alura y Oracle ONE. No se rindan, el esfuerzo constante rinde frutos!\"\n    },\n    {\n      \"id\": \"msg_004\",\n      \"autor\": \"Andrea Gómez\",\n      \"canal\": \"#dudas-cloud-oci\",\n      \"tipo\": \"pregunta_tecnica\",\n      \"texto\": \"Hola a todos, estoy intentando subir archivos a OCI Object Storage usando el SDK de Python pero me arroja un error 401 NotAuthenticated. ¿Cómo debo configurar las claves API en el archivo ~/.oci/config para la instancia VM?\"\n    },\n    {\n      \"id\": \"msg_005\",\n      \"autor\": \"Sebastián Ramos\",\n      \"canal\": \"#proyectos-showcase\",\n      \"tipo\": \"showcase\",\n      \"texto\": \"Acabo de desplegar mi bot de Telegram con IA usando Gemini Flash y OCI Compute Always Free. Pueden probarlo y darme feedback: https://t.me/sebas_oracle_bot. Todo el backend corre en un contenedor Docker con menos de 500MB de RAM!\"\n    },\n    {\n      \"id\": \"msg_006\",\n      \"autor\": \"Valeria Silva\",\n      \"canal\": \"#feedback-cursos\",\n      \"tipo\": \"feedback\",\n      \"texto\": \"El módulo de Prompt Engineering y Few-Shot Learning estuvo genial. Me gustaría que agregaran una clase extra sobre cómo prevenir prompt injection en sistemas que leen entradas de usuarios en foros públicos.\"\n    },\n    {\n      \"id\": \"msg_007\",\n      \"autor\": \"Martín Peña\",\n      \"canal\": \"#dudas-gemini-api\",\n      \"tipo\": \"pregunta_tecnica\",\n      \"texto\": \"Alguien sabe cuál es el límite de tokens por minuto (TPM) en la capa gratuita de Google Gemini 1.5 Flash cuando enviamos peticiones por streaming?\"\n    },\n    {\n      \"id\": \"msg_008\",\n      \"autor\": \"Daniela Paredes\",\n      \"canal\": \"#logros-y-empleos\",\n      \"tipo\": \"testimonio\",\n      \"texto\": \"Presenté la demo de mi proyecto de Hackathon a mi jefe actual en el área de soporte y me ascendieron a Líder Técnico de Automatización de Procesos. ¡Este programa ONE realmente transforma vidas profesionales!\"\n    },\n    {\n      \"id\": \"msg_009\",\n      \"autor\": \"Esteban Morales\",\n      \"canal\": \"#dudas-docker\",\n      \"tipo\": \"pregunta_tecnica\",\n      \"texto\": \"Cuando despliego Streamlit dentro de un contenedor Docker en Ubuntu Server de OCI, no puedo acceder desde el navegador en el puerto 8501. ¿Qué reglas de seguridad debo abrir en la VCN de Oracle Cloud?\"\n    },\n    {\n      \"id\": \"msg_010\",\n      \"autor\": \"Camila Torres\",\n      \"canal\": \"#feedback-cursos\",\n      \"tipo\": \"feedback\",\n      \"texto\": \"Me encantaría que el equipo organizador de Oracle ONE hiciera un workshop en vivo sobre cómo preparar el perfil de LinkedIn y el portafolio en GitHub para reclutadores de tecnología. La formación técnica es excelente, pero potenciar la marca personal nos daría un impulso tremendo.\"\n    },\n    {\n      \"id\": \"msg_011\",\n      \"autor\": \"Javier Rojas\",\n      \"canal\": \"#logros-y-empleos\",\n      \"tipo\": \"testimonio\",\n      \"texto\": \"Después de 6 meses de reconversión laboral desde contabilidad hacia backend con Java y Spring Boot en Oracle ONE, acabo de recibir mi oferta laboral como Desarrollador Trainee. Gracias a mis tutores y compañeros por resolver cada duda!\"\n    },\n    {\n      \"id\": \"msg_012\",\n      \"autor\": \"Paula Benítez\",\n      \"canal\": \"#dudas-cloud-oci\",\n      \"tipo\": \"pregunta_tecnica\",\n      \"texto\": \"Una pregunta rápida: ¿cuál es la mejor práctica para automatizar el respaldo diario de una base de datos Oracle Autonomous Database (Always Free) hacia OCI Object Storage usando OCI CLI o cron jobs?\"\n    },\n    {\n      \"id\": \"msg_013\",\n      \"autor\": \"Tomás Herrera\",\n      \"canal\": \"#proyectos-showcase\",\n      \"tipo\": \"showcase\",\n      \"texto\": \"Diseñé un clasificador de sentimientos de tickets de soporte técnico con Gemini 1.5 Pro y FastAPI. Logramos un 92% de precisión comparado con la categorización manual humana. Les comparto el repositorio con la documentación completa.\"\n    },\n    {\n      \"id\": \"msg_014\",\n      \"autor\": \"Gabriel Medina\",\n      \"canal\": \"#dudas-programacion\",\n      \"tipo\": \"pregunta_tecnica\",\n      \"texto\": \"¿Cómo puedo forzar a que Google Gemini siempre responda con un esquema JSON estricto en Python sin que a veces incluya bloques markdown como ```json? Me está rompiendo el json.loads() en backend.\"\n    },\n    {\n      \"id\": \"msg_015\",\n      \"autor\": \"Sofía Castro\",\n      \"canal\": \"#logros-y-empleos\",\n      \"tipo\": \"testimonio\",\n      \"texto\": \"Oficialmente soy graduada de la promoción G10 de Oracle Next Education y fui seleccionada para una pasantía remunerada en ingeniería de datos en una multinacional de telecomunicaciones. ¡Los sueños se cumplen estudiando con disciplina!\"\n    }\n  ]\n};\n\n// Devuelve los 15 registros como items independientes listos para Gemini\nreturn dataset.interacciones.map(item => ({ json: item }));\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -144,
-        928
+        -400,
+        336
       ],
-      "id": "687180cd-b114-4d2b-ad8d-1096f681c5c8",
-      "name": "Code in JavaScript"
+      "id": "e4227270-de60-4732-b0b1-f093d41f43ee",
+      "name": "Code in JavaScript1"
     },
     {
       "parameters": {
@@ -42,11 +31,11 @@
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "typeVersion": 1.9,
       "position": [
-        304,
-        928
+        48,
+        336
       ],
-      "id": "ba248560-f5fd-45c5-afd6-ba1a6887a894",
-      "name": "Basic LLM Chain",
+      "id": "a942c2aa-7e65-4b12-836e-70174b46492c",
+      "name": "Basic LLM Chain1",
       "retryOnFail": true,
       "waitBetweenTries": 5000
     },
@@ -57,11 +46,11 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        80,
-        928
+        -176,
+        336
       ],
-      "id": "76287d16-87e2-40ab-aac9-cc4485c208bf",
-      "name": "Loop Over Items"
+      "id": "5649dcd9-88d9-43a7-9eae-daa77c211593",
+      "name": "Loop Over Items1"
     },
     {
       "parameters": {
@@ -70,26 +59,26 @@
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
       "position": [
-        880,
-        1040
+        624,
+        448
       ],
-      "id": "cb15fb9a-9fc6-469a-ac1c-1bdd84834beb",
-      "name": "Wait",
+      "id": "adf9f02b-aa08-4f3a-9296-a8d9235d8f1c",
+      "name": "Wait1",
       "webhookId": "e2ca8732-8cd6-4cd8-8e1a-5decc8c232f9"
     },
     {
       "parameters": {
-        "model": "groq/compound-mini",
+        "model": "openai/gpt-oss-120b",
         "options": {}
       },
       "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
       "typeVersion": 1,
       "position": [
-        312,
-        1144
+        32,
+        576
       ],
-      "id": "bdeb2385-c0f7-46ac-aac1-18472f04166e",
-      "name": "Groq Chat Model",
+      "id": "c3c36344-a2ab-4e08-91f9-d056875a926d",
+      "name": "Groq Chat Model1",
       "credentials": {
         "groqApi": {
           "id": "dYH7OO8GOD58Q2lm",
@@ -105,11 +94,11 @@
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.3,
       "position": [
-        440,
-        1144
+        208,
+        576
       ],
-      "id": "a6c02231-eecc-4cf0-8afa-26aa3db9497e",
-      "name": "Structured Output Parser1"
+      "id": "64aa1bd4-034c-48e2-a1e3-6a6da2b07244",
+      "name": "Structured Output Parser"
     },
     {
       "parameters": {
@@ -148,25 +137,25 @@
             {
               "id": "502b656e-0272-42d2-a1e8-f22e193be12a",
               "name": "=id",
-              "value": "={{ $('Loop Over Items').item.json.id }}",
+              "value": "={{ $('Loop Over Items1').item.json.id }}",
               "type": "string"
             },
             {
               "id": "d223770f-aace-40d2-9f0f-185a6f3202ab",
               "name": "autor",
-              "value": "={{ $('Loop Over Items').item.json.autor }}",
+              "value": "={{ $('Loop Over Items1').item.json.autor }}",
               "type": "string"
             },
             {
               "id": "d12ffb05-bafd-4f4d-8bc2-c0a5c6c02f54",
               "name": "canal",
-              "value": "={{ $('Loop Over Items').item.json.canal }}",
+              "value": "={{ $('Loop Over Items1').item.json.canal }}",
               "type": "string"
             },
             {
               "id": "f50b402f-87fd-4287-9bcb-19416ba8a243",
               "name": "texto_original",
-              "value": "={{ $('Loop Over Items').item.json.texto }}",
+              "value": "={{ $('Loop Over Items1').item.json.texto }}",
               "type": "string"
             }
           ]
@@ -176,11 +165,11 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.5,
       "position": [
-        656,
-        928
+        400,
+        336
       ],
-      "id": "c7f860cb-de85-41ea-8cfe-7f323e54cc4e",
-      "name": "Edit Fields"
+      "id": "0a7b5e0a-94ba-4f72-bd93-808a796decbc",
+      "name": "Edit Fields1"
     },
     {
       "parameters": {
@@ -291,11 +280,11 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
       "position": [
-        368,
-        560
+        112,
+        -32
       ],
-      "id": "09a2f1e4-fd8b-4d96-a09e-0ebdda9bd25a",
-      "name": "Route by Content Type"
+      "id": "92f717d5-272d-4fa2-9040-346ba39ebafb",
+      "name": "Route by Content Type1"
     },
     {
       "parameters": {
@@ -304,27 +293,27 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        656,
-        592
+        400,
+        0
       ],
-      "id": "79a5be40-f381-4d23-b4f0-19eaa77ece71",
-      "name": "Consolidar Paquete OCI"
+      "id": "b31a37bd-7862-44cf-8d82-b198d258abf7",
+      "name": "Consolidar Paquete OCI1"
     },
     {
       "parameters": {
         "operation": "upload",
         "bucketName": "communitylab-activos-marketing",
-        "fileName": "={{ 'activos/' + $now.toFormat('yyyy-MM-dd') + '/' + $json.nombre_archivo }}",
+        "fileName": "={{ 'activos/' + $now.toFormat('yyyy-MM-dd') + '/' + $binary.data.fileName }}",
         "additionalFields": {}
       },
       "type": "n8n-nodes-base.s3",
       "typeVersion": 1,
       "position": [
-        1104,
-        592
+        848,
+        0
       ],
-      "id": "4545f798-b77b-432e-91a7-b86a157d83a5",
-      "name": "Upload a file",
+      "id": "14ecaca9-4970-4c91-818e-9b2e32e4a1b4",
+      "name": "Upload a file1",
       "credentials": {
         "s3": {
           "id": "wBmNi7O2F3CGYxUW",
@@ -335,167 +324,156 @@
     {
       "parameters": {
         "operation": "toJson",
+        "mode": "each",
         "options": {
           "format": true,
           "fileName": "={{ 'activos/' + $now.toFormat('yyyy-MM-dd') + '/' + $json.nombre_archivo }}"
-        },
-        "mode": "each"
+        }
       },
       "type": "n8n-nodes-base.convertToFile",
       "typeVersion": 1.1,
       "position": [
-        880,
-        592
+        624,
+        0
       ],
-      "id": "9585737c-9ea0-4f7d-bb64-bf6c93e5d876",
-      "name": "Convert to File"
+      "id": "d2a8b4a7-ed18-408b-b0e4-d418d2fe606b",
+      "name": "Convert to File1"
     }
   ],
   "pinData": {},
   "connections": {
-    "When clicking ‘Execute workflow’": {
+    "Code in JavaScript1": {
       "main": [
         [
           {
-            "node": "Code in JavaScript",
+            "node": "Loop Over Items1",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Code in JavaScript": {
+    "Basic LLM Chain1": {
       "main": [
         [
           {
-            "node": "Loop Over Items",
+            "node": "Edit Fields1",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Loop Over Items": {
+    "Loop Over Items1": {
       "main": [
         [
           {
-            "node": "Route by Content Type",
+            "node": "Route by Content Type1",
             "type": "main",
             "index": 0
           }
         ],
         [
           {
-            "node": "Basic LLM Chain",
+            "node": "Basic LLM Chain1",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Basic LLM Chain": {
+    "Wait1": {
       "main": [
         [
           {
-            "node": "Edit Fields",
+            "node": "Loop Over Items1",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Wait": {
-      "main": [
-        [
-          {
-            "node": "Loop Over Items",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Groq Chat Model": {
+    "Groq Chat Model1": {
       "ai_languageModel": [
         [
           {
-            "node": "Basic LLM Chain",
+            "node": "Basic LLM Chain1",
             "type": "ai_languageModel",
             "index": 0
           }
         ]
       ]
     },
-    "Structured Output Parser1": {
+    "Structured Output Parser": {
       "ai_outputParser": [
         [
           {
-            "node": "Basic LLM Chain",
+            "node": "Basic LLM Chain1",
             "type": "ai_outputParser",
             "index": 0
           }
         ]
       ]
     },
-    "Edit Fields": {
+    "Edit Fields1": {
       "main": [
         [
           {
-            "node": "Wait",
+            "node": "Wait1",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Route by Content Type": {
+    "Route by Content Type1": {
       "main": [
         [
           {
-            "node": "Consolidar Paquete OCI",
+            "node": "Consolidar Paquete OCI1",
             "type": "main",
             "index": 0
           }
         ],
         [
           {
-            "node": "Consolidar Paquete OCI",
+            "node": "Consolidar Paquete OCI1",
             "type": "main",
             "index": 0
           }
         ],
         [
           {
-            "node": "Consolidar Paquete OCI",
+            "node": "Consolidar Paquete OCI1",
             "type": "main",
             "index": 0
           }
         ],
         [
           {
-            "node": "Consolidar Paquete OCI",
+            "node": "Consolidar Paquete OCI1",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Consolidar Paquete OCI": {
+    "Consolidar Paquete OCI1": {
       "main": [
         [
           {
-            "node": "Convert to File",
+            "node": "Convert to File1",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Convert to File": {
+    "Convert to File1": {
       "main": [
         [
           {
-            "node": "Upload a file",
+            "node": "Upload a file1",
             "type": "main",
             "index": 0
           }
@@ -508,12 +486,11 @@
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "0a8bf1df-9b08-49e4-b6b8-ee5c04ee9bf1",
+  "versionId": "c1582104-143d-42b4-a3a4-4eb0a5c4ce45",
   "meta": {
-    "templateCredsSetupCompleted": true,
     "instanceId": "cb0b9a3b8b392f0b0fbc26be213326cbdfd285ed78e8eb9be9b7984b7130dd64"
   },
   "nodeGroups": [],
-  "id": "ki81pkq4eAUIzQES",
+  "id": "NOHpmxRdZanXenxK",
   "tags": []
 }
