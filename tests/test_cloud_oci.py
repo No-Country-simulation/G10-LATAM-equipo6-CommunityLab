@@ -1,6 +1,10 @@
-"""Pruebas unitarias para el cliente de OCI Object Storage usando Mocks."""
+"""Pruebas unitarias para el cliente de OCI Object Storage (src/cloud_oci).
+
+Cubre tanto el modo Cloud (con Mocks) como el modo Fallback Local.
+"""
 
 import json
+from pathlib import Path
 from unittest.mock import MagicMock, patch
 import pytest
 
@@ -14,7 +18,20 @@ def mock_oci_config():
         "tenancy": "ocid1.tenancy.oc1..test",
         "fingerprint": "11:22:33:44:55:66:77:88",
         "key_file": "/tmp/dummy_key.pem",
-        "region": "sa-bogota-1"
+        "region": "us-ashburn-1",
+    }
+
+
+@pytest.fixture
+def sample_payload() -> dict:
+    return {
+        "metadata_paquete": {"version": "1.0.0", "total": 1},
+        "activos": [
+            {
+                "interaccion": {"id": "msg_001", "autor": "Carlos Test"},
+                "activo": {"sentimiento": "positivo", "post_linkedin": "Gran post de prueba"},
+            }
+        ],
     }
 
 
@@ -23,7 +40,8 @@ def test_init_with_explicit_config(mock_oci_config):
         manager = OCIStorageManager(
             config=mock_oci_config,
             bucket_name="test-bucket",
-            namespace_name="test-namespace"
+            namespace_name="test-namespace",
+            allow_local_fallback=False,
         )
         assert manager.bucket_name == "test-bucket"
         assert manager.get_namespace() == "test-namespace"
@@ -39,17 +57,18 @@ def test_upload_json_asset_dict(mock_oci_config):
         manager = OCIStorageManager(
             config=mock_oci_config,
             bucket_name="communitylab-bucket",
-            namespace_name="test-namespace"
+            namespace_name="test-namespace",
+            allow_local_fallback=False,
         )
 
         sample_data = {
             "metadata": {"origen": "discord"},
-            "activos": {"total": 5}
+            "activos": {"total": 5},
         }
 
         result = manager.upload_json_asset(
             data=sample_data,
-            object_name="activos/2026-09-18/paquete-test.json"
+            object_name="activos/2026-09-18/paquete-test.json",
         )
 
         assert result["status"] == "success"
@@ -72,7 +91,8 @@ def test_get_asset(mock_oci_config):
         manager = OCIStorageManager(
             config=mock_oci_config,
             bucket_name="communitylab-bucket",
-            namespace_name="test-namespace"
+            namespace_name="test-namespace",
+            allow_local_fallback=False,
         )
 
         data = manager.get_asset("activos/2026-09-18/paquete-test.json")
@@ -81,7 +101,7 @@ def test_get_asset(mock_oci_config):
         mock_instance.get_object.assert_called_once_with(
             namespace_name="test-namespace",
             bucket_name="communitylab-bucket",
-            object_name="activos/2026-09-18/paquete-test.json"
+            object_name="activos/2026-09-18/paquete-test.json",
         )
 
 
@@ -99,7 +119,8 @@ def test_list_assets(mock_oci_config):
         manager = OCIStorageManager(
             config=mock_oci_config,
             bucket_name="communitylab-bucket",
-            namespace_name="test-namespace"
+            namespace_name="test-namespace",
+            allow_local_fallback=False,
         )
 
         assets = manager.list_assets(prefix="activos")
@@ -121,15 +142,56 @@ def test_create_preauthenticated_request(mock_oci_config):
         manager = OCIStorageManager(
             config=mock_oci_config,
             bucket_name="communitylab-bucket",
-            namespace_name="test-namespace"
+            namespace_name="test-namespace",
+            allow_local_fallback=False,
         )
 
         par_result = manager.create_preauthenticated_request(
             object_name="activos/paquete.json",
-            expires_in_hours=12
+            expires_in_hours=12,
         )
 
         assert par_result["id"] == "par-id-123"
         assert "access_url" in par_result
-        assert "objectstorage.sa-bogota-1.oraclecloud.com" in par_result["access_url"]
+        assert "objectstorage.us-ashburn-1.oraclecloud.com" in par_result["access_url"]
         mock_instance.create_preauthenticated_request.assert_called_once()
+
+
+def test_oci_local_fallback_mode_upload_and_read(tmp_path: Path, sample_payload: dict):
+    """Verifica que el modo fallback local guarde en disco y permita recuperar el JSON."""
+    manager = OCIStorageManager(allow_local_fallback=True)
+    manager.is_local_mode = True
+    manager.LOCAL_FALLBACK_DIR = tmp_path
+
+    # Subida
+    res = manager.upload_json_asset(sample_payload, object_name="test/paquete.json")
+    assert res["status"] == "success_local_fallback"
+    assert res["object_name"] == "test/paquete.json"
+    assert (tmp_path / "test/paquete.json").exists()
+
+    # Lectura
+    recuperado = manager.get_asset("test/paquete.json")
+    assert recuperado["metadata_paquete"]["version"] == "1.0.0"
+    assert len(recuperado["activos"]) == 1
+
+    # Listado
+    lista = manager.list_assets(prefix="test")
+    assert len(lista) == 1
+    assert "paquete.json" in lista[0]["name"]
+
+
+def test_oci_local_fallback_par():
+    """Verifica que en modo local se genere una URL PAR simulada."""
+    manager = OCIStorageManager(allow_local_fallback=True)
+    manager.is_local_mode = True
+    par = manager.create_preauthenticated_request("activos/paquete.json", expires_in_hours=12)
+    assert par["id"] == "par-mock-local-id"
+    assert "http://" in par["access_url"]
+    assert "expires_at" in par
+
+
+def test_oci_upload_invalid_type_raises():
+    """Verifica que tipos no soportados lancen TypeError."""
+    manager = OCIStorageManager(allow_local_fallback=True)
+    with pytest.raises(TypeError, match="Tipo de dato no soportado"):
+        manager.upload_json_asset(12345)

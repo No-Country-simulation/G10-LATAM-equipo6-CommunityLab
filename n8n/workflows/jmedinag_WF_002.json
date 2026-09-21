@@ -1,0 +1,331 @@
+{
+  "name": "jmedinag_WF_002",
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Analiza la siguiente interacción de la comunidad:\n\nID: {{ $json.id }}\nAutor: {{ $json.autor }}\nCanal: {{ $json.canal }}\nTipo Original: {{ $json.tipo }}\nTexto del mensaje:\n\"{{ $json.texto }}\"\n",
+        "hasOutputParser": true,
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=Eres el Motor Inteligente de Transformación de CommunityLab (Hackathon Oracle ONE & Alura). Tu tarea es analizar un mensaje orgánico de una comunidad técnica y devolver un único objeto JSON válido sin texto introductorio, explicaciones ni bloques de formato markdown.  ### Reglas de Extracción y Clasificación: 1. \"sentimiento\": Clasifica en exactamente uno de: [\"positivo\", \"neutro\", \"negativo\"]. 2. \"tipo_contenido\": Clasifica en exactamente uno de:    - \"logro_contratacion\": Testimonios de nuevo empleo, ascenso, contratación o éxito en entrevistas gracias a la formación.    - \"duda_tecnica\": Preguntas sobre código, librerías, cloud (OCI), bases de datos o errores técnicos.    - \"feedback_general\": Sugerencias, opiniones de cursos o comentarios de la comunidad.    - \"showcase\": Demostraciones de proyectos personales o bots creados por los estudiantes. 3. \"temas_clave\": Array de strings con entre 1 y 4 tecnologías o conceptos clave identificados (ej: [\"OCI\", \"Docker\", \"Python\", \"SQL\"]). 4. \"post_linkedin\":    - Si \"tipo_contenido\" es \"logro_contratacion\" o \"showcase\": Redacta un copy persuasivo para LinkedIn en estilo storytelling, con gancho (hook), lección aprendida, llamado a la acción y 3-4 hashtags relevantes (#OracleONE #AluraLATAM #TechTalent).    - En cualquier otro caso: Retorna null. 5. \"tip_tecnico_faq\":    - Si \"tipo_contenido\" es \"duda_tecnica\": Redacta una solución técnica precisa, clara y concisa (estilo FAQ o tip de documentación técnica) explicando cómo resolver el problema o buena práctica.    - En cualquier otro caso: Retorna null.  ### Esquema JSON de Salida Obligatorio: {   \"sentimiento\": \"positivo | neutro | negativo\",   \"tipo_contenido\": \"logro_contratacion | duda_tecnica | feedback_general | showcase\",   \"temas_clave\": [\"tag1\", \"tag2\"],   \"post_linkedin\": \"Texto del post o null\",   \"tip_tecnico_faq\": \"Texto de la respuesta técnica o null\" }"
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        0,
+        -80
+      ],
+      "id": "28a92ac3-f343-4f9d-8f9f-a1d458586d4f",
+      "name": "Basic LLM Chain",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -288,
+        80
+      ],
+      "id": "c696d5e1-0aee-4a19-a1c5-51ff880c9107",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "amount": 12
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        576,
+        128
+      ],
+      "id": "6f426d64-bfbb-44d1-a2a8-8f3955dd6e35",
+      "name": "Wait",
+      "webhookId": "3124d430-0c3b-4c3e-95f8-81014faa97b0"
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-20b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        -48,
+        144
+      ],
+      "id": "4c9649ca-5435-4d50-a8ab-70f51038ebe5",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "dYH7OO8GOD58Q2lm",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"$schema\": \"http://json-schema.org/draft-07/schema#\",\n  \"title\": \"CommunityLabAssetOutput\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"sentimiento\": {\n      \"type\": \"string\",\n      \"enum\": [\"positivo\", \"neutro\", \"negativo\"],\n      \"description\": \"Sentimiento del mensaje\"\n    },\n    \"tipo_contenido\": {\n      \"type\": \"string\",\n      \"enum\": [\"logro_contratacion\", \"duda_tecnica\", \"feedback_general\", \"showcase\"],\n      \"description\": \"Categoría de contenido identificada\"\n    },\n    \"temas_clave\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"string\"\n      },\n      \"description\": \"Lista de tecnologías o conceptos clave identificados\"\n    },\n    \"post_linkedin\": {\n      \"type\": [\"string\", \"null\"],\n      \"description\": \"Copy optimizado para LinkedIn si aplica, de lo contrario null\"\n    },\n    \"tip_tecnico_faq\": {\n      \"type\": [\"string\", \"null\"],\n      \"description\": \"Respuesta técnica estructurada o FAQ si aplica, de lo contrario null\"\n    }\n  },\n  \"required\": [\n    \"sentimiento\",\n    \"tipo_contenido\",\n    \"temas_clave\",\n    \"post_linkedin\",\n    \"tip_tecnico_faq\"\n  ]\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        176,
+        128
+      ],
+      "id": "84ee68c7-7df9-442b-b5b8-005c1efc3d3d",
+      "name": "Structured Output Parser1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "0000f74e-abda-4723-9835-3d2b2c470b0b",
+              "name": "sentimiento",
+              "value": "={{ $json.output.sentimiento }}",
+              "type": "string"
+            },
+            {
+              "id": "80594c9e-2ee8-42d2-96d2-b886ef569739",
+              "name": "tipo_contenido",
+              "value": "={{ $json.output.tipo_contenido }}",
+              "type": "string"
+            },
+            {
+              "id": "386a9821-6d19-48f7-8cd1-7c3e7ef9216e",
+              "name": "temas_clave",
+              "value": "={{ $json.output.temas_clave }}",
+              "type": "array"
+            },
+            {
+              "id": "fdea6ed7-a46f-46b9-96b8-3f04e988dee4",
+              "name": "post_linkedin",
+              "value": "={{ $json.output.post_linkedin }}",
+              "type": "string"
+            },
+            {
+              "id": "6ccd090b-b9aa-4cb8-a57b-8a952b05a510",
+              "name": "tip_tecnico_faq",
+              "value": "={{ $json.output.tip_tecnico_faq }}",
+              "type": "string"
+            },
+            {
+              "id": "502b656e-0272-42d2-a1e8-f22e193be12a",
+              "name": "=id",
+              "value": "={{ $('Loop Over Items').item.json.body.id }}",
+              "type": "string"
+            },
+            {
+              "id": "d223770f-aace-40d2-9f0f-185a6f3202ab",
+              "name": "autor",
+              "value": "={{ $('Loop Over Items').item.json.body.autor }}",
+              "type": "string"
+            },
+            {
+              "id": "d12ffb05-bafd-4f4d-8bc2-c0a5c6c02f54",
+              "name": "=canal",
+              "value": "={{ $('Loop Over Items').item.json.body.canal_origen }}",
+              "type": "string"
+            },
+            {
+              "id": "f50b402f-87fd-4287-9bcb-19416ba8a243",
+              "name": "texto_original",
+              "value": "={{ $('Loop Over Items').item.json.body.texto_original }}",
+              "type": "string"
+            },
+            {
+              "id": "ac043210-a2a3-4b85-ad50-ae8e0be890d6",
+              "name": "estado",
+              "value": "={{ $('Loop Over Items').item.json.body.estado }}",
+              "type": "string"
+            },
+            {
+              "id": "663bd01a-4321-4c22-9ba1-0e256b0d45fb",
+              "name": "version",
+              "value": "={{ $('Loop Over Items').item.json.body.version }}",
+              "type": "number"
+            },
+            {
+              "id": "feb31283-48d5-4160-a06f-feb0aa5c7896",
+              "name": "feedback_user",
+              "value": "={{ $('Loop Over Items').item.json.body.feedback_usuario }}",
+              "type": "string"
+            },
+            {
+              "id": "b7e73311-bbea-4eb3-9dd1-3202b9fa88bb",
+              "name": "fuente_información",
+              "value": "={{ $('Loop Over Items').item.json.body.fuente_origen }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        352,
+        0
+      ],
+      "id": "d5cdf76e-06df-4bb3-860f-4d8cf32b21b4",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "operation": "upload",
+        "bucketName": "hackathon-data-bucket",
+        "fileName": "={{ $json.id }}_analisis.json",
+        "binaryData": false,
+        "fileContent": "={{ JSON.stringify($json) }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.s3",
+      "typeVersion": 1,
+      "position": [
+        -144,
+        -288
+      ],
+      "id": "86dd0f1d-9cf2-4bd0-8079-b359ef52d82c",
+      "name": "insert OCI",
+      "credentials": {
+        "s3": {
+          "id": "wF0laNIEtgqr9a2D",
+          "name": "S3 account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "ingesta-comunidad",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -576,
+        80
+      ],
+      "id": "53d65301-f435-4845-a609-4c61a2ae2f2d",
+      "name": "Webhook",
+      "webhookId": "b4bc911c-1022-4614-bc02-84440432bcdf"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "insert OCI",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser1": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "insert OCI": {
+      "main": [
+        []
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "dbe82d25-2e61-4671-a0a7-aa14c92e53d1",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "cb0b9a3b8b392f0b0fbc26be213326cbdfd285ed78e8eb9be9b7984b7130dd64"
+  },
+  "nodeGroups": [],
+  "id": "YNRhYemizz2AoAV6",
+  "tags": []
+}
