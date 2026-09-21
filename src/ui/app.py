@@ -167,7 +167,48 @@ if modo == "💼 Curaduría de Activos":
                 datos_paquete = json.load(f)
         else:
             nombre_obj = fuente_seleccionada.replace("Storage: ", "")
-            datos_paquete = cargar_paquete(nombre_obj)
+            raw_datos = cargar_paquete(nombre_obj)
+            if raw_datos:
+                # Normalizar si viene del formato especializado de OCI
+                if "activos" in raw_datos and raw_datos["activos"] and "activo" not in raw_datos["activos"][0]:
+                    norm_activos = []
+                    for act in raw_datos["activos"]:
+                        tipo_c = act.get("tipo_contenido") or raw_datos.get("metadata", {}).get("categoria", "feedback_general")
+                        sent_c = act.get("sentimiento", "positivo" if "logro" in tipo_c or "showcase" in tipo_c else "neutro")
+                        norm_activos.append({
+                            "interaccion": {
+                                "id": act.get("id", "N/A"),
+                                "autor": act.get("autor", "Anónimo"),
+                                "canal": act.get("canal", "#general"),
+                                "texto": act.get("comentario") or act.get("pregunta_original") or act.get("post_linkedin") or "",
+                            },
+                            "activo": {
+                                "tipo_contenido": tipo_c,
+                                "sentimiento": sent_c,
+                                "temas_clave": act.get("temas_clave", []),
+                                "post_linkedin": act.get("post_linkedin"),
+                                "tip_tecnico_faq": act.get("tip_tecnico_faq"),
+                            },
+                            "motor_orquestacion": "n8n_oci_storage",
+                        })
+                    datos_paquete = {
+                        "metadata_paquete": {
+                            "total_procesados_exitosamente": len(norm_activos),
+                            "motor_orquestacion": "OCI Object Storage (n8n)",
+                        },
+                        "metricas": {
+                            "distribucion_sentimiento": {
+                                "positivo": sum(1 for a in norm_activos if a["activo"]["sentimiento"] == "positivo"),
+                                "neutro": sum(1 for a in norm_activos if a["activo"]["sentimiento"] == "neutro"),
+                                "negativo": sum(1 for a in norm_activos if a["activo"]["sentimiento"] == "negativo"),
+                            },
+                            "total_posts_linkedin_generados": sum(1 for a in norm_activos if a["activo"].get("post_linkedin")),
+                            "total_tips_faq_generados": sum(1 for a in norm_activos if a["activo"].get("tip_tecnico_faq")),
+                        },
+                        "activos": norm_activos,
+                    }
+                else:
+                    datos_paquete = raw_datos
 
         if datos_paquete and "activos" in datos_paquete:
             meta = datos_paquete.get("metadata_paquete", {})
@@ -544,10 +585,20 @@ elif modo == "☁️ Histórico OCI Object Storage":
 
         for p in paquetes:
             with st.container():
-                c1, c2, c3 = st.columns([3, 1, 1])
+                c1, c2, c3, c4 = st.columns([3, 1, 1, 1])
                 with c1:
                     st.code(p["name"])
                 with c2:
                     st.write(f"{p['size']} bytes")
                 with c3:
                     st.caption(p.get("created_at", "N/A")[:19] if p.get("created_at") else "Local")
+                with c4:
+                    if st.button("🔗 Generar PAR", key=f"par_{p['name']}"):
+                        from src.cloud_oci.storage_client import OCIStorageManager
+                        sm = OCIStorageManager(allow_local_fallback=True)
+                        par = sm.create_preauthenticated_request(p["name"], expires_in_hours=24)
+                        st.session_state[f"url_{p['name']}"] = par["access_url"]
+
+                if f"url_{p['name']}" in st.session_state:
+                    st.success(f"URL de acceso temporal: [Abrir Activo]({st.session_state[f'url_{p[\"name\"]}']})")
+                    st.caption(st.session_state[f"url_{p['name']}"])
