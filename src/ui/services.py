@@ -327,6 +327,12 @@ def procesar_archivo_n8n_ui(
             "resultado_webhook": resultado_raw,
         }
 
+    # Si n8n devolvió una lista pero el primer item ya es el paquete estructurado (ej. All Incoming Items de n8n)
+    if isinstance(resultado_raw, list) and len(resultado_raw) > 0:
+        primer_item = resultado_raw[0]
+        if isinstance(primer_item, dict) and ("activos" in primer_item or "metadata_paquete" in primer_item):
+            resultado_raw = primer_item
+
     # Si n8n ya devolvió un paquete estructurado
     if isinstance(resultado_raw, dict) and "activos" in resultado_raw:
         paquete = resultado_raw
