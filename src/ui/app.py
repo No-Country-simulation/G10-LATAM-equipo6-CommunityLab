@@ -343,6 +343,7 @@ elif modo == "⚡ Ejecutar Pipeline":
     archivo_subido = st.file_uploader("Opcional: Sube un archivo JSON con nuevas interacciones", type=["json"])
 
     ruta_a_procesar = dataset_defecto
+    temp_path = None
     if archivo_subido is not None:
         temp_path = Path(f"data/temp_{archivo_subido.name}")
         temp_path.write_bytes(archivo_subido.read())
@@ -473,6 +474,12 @@ elif modo == "⚡ Ejecutar Pipeline":
                     st.info(f"ℹ️ {ve}")
                 except Exception as e:
                     st.error(f"{e}")
+                finally:
+                    if temp_path and temp_path.exists():
+                        try:
+                            temp_path.unlink()
+                        except Exception:
+                            pass
 
     # -------------------------------------------------------------------------
     # COLUMNA 2: MOTOR PYTHON NATIVO (MOTOR 2)
@@ -533,6 +540,12 @@ elif modo == "⚡ Ejecutar Pipeline":
                     st.info(f"ℹ️ {ve}")
                 except Exception as e:
                     st.error(f"Error en Pipeline Python: {e}")
+                finally:
+                    if temp_path and temp_path.exists():
+                        try:
+                            temp_path.unlink()
+                        except Exception:
+                            pass
 
     # -------------------------------------------------------------------------
     # SECCIÓN: REGISTRO DE LOGS EN VIVO (logs/communitylab.log)
