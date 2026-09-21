@@ -371,6 +371,11 @@
             "node": "Route by Content Type1",
             "type": "main",
             "index": 0
+          },
+          {
+            "node": "Consolidar Paquete OCI1",
+            "type": "main",
+            "index": 0
           }
         ],
         [
@@ -428,34 +433,10 @@
     },
     "Route by Content Type1": {
       "main": [
-        [
-          {
-            "node": "Consolidar Paquete OCI1",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Consolidar Paquete OCI1",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Consolidar Paquete OCI1",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Consolidar Paquete OCI1",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        [],
+        [],
+        [],
+        []
       ]
     },
     "Consolidar Paquete OCI1": {
