@@ -139,3 +139,26 @@ def test_pipeline_resiliencia_continua_ante_fallas_individuales(dataset_oficial:
     assert meta["total_fallidos"] == 1
     assert len(paquete["fallidos"]) == 1
     assert paquete["fallidos"][0]["id"] == "msg_001"
+
+
+def test_pipeline_subir_a_oci_4_archivos_especializados(dataset_oficial: Path, mock_ai_service):
+    """Verifica que el pipeline Python suba los 4 archivos temáticos consistentes con n8n."""
+    mock_storage = MagicMock()
+    mock_storage.upload_json_asset.return_value = {"status": "success"}
+
+    pipeline = CommunityLabPipeline(
+        ai_service=mock_ai_service,
+        storage_manager=mock_storage,
+        delay_between_calls=0.0,
+    )
+    paquete = pipeline.procesar_archivo(dataset_oficial, limite=3)
+    res = pipeline.subir_a_oci(paquete)
+
+    assert res["status"] == "success"
+    assert len(res["archivos_subidos"]) == 4
+    assert "marketing_linkedin_logros.json" in res["archivos_subidos"]
+    assert "marketing_showcase.json" in res["archivos_subidos"]
+    assert "faqs_soporte_tecnico.json" in res["archivos_subidos"]
+    assert "metricas_feedback_comunidad.json" in res["archivos_subidos"]
+    assert mock_storage.upload_json_asset.call_count == 4
+

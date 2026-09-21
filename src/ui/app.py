@@ -387,7 +387,7 @@ elif modo == "⚡ Ejecutar Pipeline":
         subir_oci = st.checkbox(
             "Subir a OCI Storage (Motor Python)",
             value=True,
-            help="Persiste el paquete resultante del motor Python en OCI Object Storage. n8n ya sube sus 4 archivos especializados automáticamente.",
+            help="Sube automáticamente los 4 archivos temáticos especializados (logros, showcase, faqs, feedback) al bucket de OCI, igual que n8n.",
         )
     with c_chk2:
         acumular_lote = st.checkbox(
@@ -521,21 +521,9 @@ elif modo == "⚡ Ejecutar Pipeline":
                     )
                     t_total = time.time() - t_ini
 
-                    # Modo acumulativo si está activo
-                    if acumular_lote:
-                        p_py_path = Path("data/paquete_procesado_python.json")
-                        d_prev = json.loads(p_py_path.read_text(encoding="utf-8")) if p_py_path.exists() else None
-                        paquete = fusionar_paquetes(d_prev, paquete)
-
-                    # Guardar tanto en paquete específico de Python como en el general
-                    with open("data/paquete_procesado_python.json", "w", encoding="utf-8") as f:
-                        json.dump(paquete, f, ensure_ascii=False, indent=2)
-                    with open("data/paquete_procesado.json", "w", encoding="utf-8") as f:
-                        json.dump(paquete, f, ensure_ascii=False, indent=2)
-
                     st.success(f"¡Pipeline Python completado exitosamente en **{t_total:.2f}s**!")
                     st.json(paquete.get("metricas", {}))
-                    st.info("Revisa los copys generados en **'💼 Curaduría de Activos'**.")
+                    st.info("Los 4 archivos especializados fueron actualizados en OCI Object Storage. Selecciónalos en **'💼 Curaduría de Activos'**.")
                 except ValueError as ve:
                     st.info(f"ℹ️ {ve}")
                 except Exception as e:

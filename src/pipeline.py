@@ -248,12 +248,112 @@ class CommunityLabPipeline:
         object_name: Optional[str] = None,
         object_name_suffix: Optional[str] = None,
     ) -> Dict[str, Any]:
-        """Sube el paquete procesado a OCI Object Storage a través de OCIStorageManager."""
-        return self.storage_manager.upload_json_asset(
-            paquete,
-            object_name=object_name,
-            object_name_suffix=object_name_suffix,
-        )
+        """Sube los 4 archivos temáticos especializados a OCI Object Storage homologados con n8n.
+
+        1. marketing_linkedin_logros.json
+        2. marketing_showcase.json
+        3. faqs_soporte_tecnico.json
+        4. metricas_feedback_comunidad.json
+        """
+        now = datetime.now(timezone.utc)
+        date_folder = now.strftime("%Y-%m-%d")
+        iso_now = now.isoformat()
+        archivo_origen = paquete.get("metadata_paquete", {}).get("archivo_origen", "interacciones.json")
+        activos = paquete.get("activos", [])
+        total_items = len(activos)
+
+        # 1. Separar por categorías
+        logros_items = []
+        showcase_items = []
+        faqs_items = []
+        feedback_items = []
+
+        for item in activos:
+            inter = item.get("interaccion", {})
+            act = item.get("activo", {})
+            tipo = act.get("tipo_contenido", "")
+
+            # Formato estándar plano por interacción
+            item_plano = {
+                "id": inter.get("id"),
+                "autor": inter.get("autor"),
+                "canal": inter.get("canal"),
+                "tipo_contenido": tipo,
+                "sentimiento": act.get("sentimiento"),
+                "temas_clave": act.get("temas_clave", []),
+            }
+
+            if tipo == "logro_contratacion":
+                item_plano["comentario"] = inter.get("texto")
+                item_plano["post_linkedin"] = act.get("post_linkedin")
+                logros_items.append(item_plano)
+            elif tipo == "showcase":
+                item_plano["descripcion_proyecto"] = inter.get("texto")
+                item_plano["post_linkedin"] = act.get("post_linkedin")
+                showcase_items.append(item_plano)
+            elif tipo == "duda_tecnica":
+                item_plano["pregunta_original"] = inter.get("texto")
+                item_plano["tip_tecnico_faq"] = act.get("tip_tecnico_faq")
+                faqs_items.append(item_plano)
+            else:
+                item_plano["comentario"] = inter.get("texto")
+                feedback_items.append(item_plano)
+
+        # 2. Estructurar los 4 archivos
+        base_meta = {
+            "version": "1.0.0",
+            "plataforma": "CommunityLab",
+            "motor_orquestacion": "python_gemini",
+            "fecha_generacion": iso_now,
+            "origen_comunidad": archivo_origen,
+            "total_interacciones": total_items,
+        }
+
+        archivos = {
+            "marketing_linkedin_logros.json": {
+                "nombre_archivo": "marketing_linkedin_logros.json",
+                "metadata": {**base_meta, "categoria": "logros_contratacion"},
+                "activos": logros_items,
+            },
+            "marketing_showcase.json": {
+                "nombre_archivo": "marketing_showcase.json",
+                "metadata": {**base_meta, "categoria": "proyectos_showcase"},
+                "activos": showcase_items,
+            },
+            "faqs_soporte_tecnico.json": {
+                "nombre_archivo": "faqs_soporte_tecnico.json",
+                "metadata": {**base_meta, "categoria": "dudas_tecnicas_faqs"},
+                "activos": faqs_items,
+            },
+            "metricas_feedback_comunidad.json": {
+                "nombre_archivo": "metricas_feedback_comunidad.json",
+                "metadata": {**base_meta, "categoria": "feedback_metricas"},
+                "metricas_salud": {
+                    "sentimientos": paquete.get("metricas", {}).get("distribucion_sentimiento", {}),
+                    "total_feedback": len(feedback_items),
+                },
+                "activos": feedback_items,
+            },
+        }
+
+        # 3. Subir los 4 archivos a OCI Object Storage
+        subidos = {}
+        for fname, data in archivos.items():
+            remote_path = f"activos/{date_folder}/{fname}"
+            res = self.storage_manager.upload_json_asset(
+                data=data,
+                object_name=remote_path,
+            )
+            subidos[fname] = res
+
+        logger.info("☁️ [Python Pipeline] 4 archivos temáticos subidos exitosamente a OCI bajo activos/%s/", date_folder)
+        return {
+            "status": "success",
+            "date_folder": date_folder,
+            "archivos_subidos": list(archivos.keys()),
+            "detalles": subidos,
+        }
+
 
 
 def main():
