@@ -302,6 +302,31 @@ def procesar_archivo_n8n_ui(
             "Verifica que la máquina virtual de OCI (http://147.15.9.116:5678) o el contenedor Docker local estén en ejecución."
         )
 
+    # Si n8n respondió de forma asíncrona inmediata (Opción A)
+    if isinstance(resultado_raw, dict) and resultado_raw.get("status") in ["recibido", "procesando_en_segundo_plano"]:
+        tot = resultado_raw.get("total_recibidos", len(interacciones))
+        msg = resultado_raw.get("mensaje", f"Lote de {tot} interacciones recibido por n8n.")
+        return {
+            "metadata_paquete": {
+                "version": "1.0.0",
+                "motor_orquestacion": "n8n_asincrono_oci",
+                "webhook_origen": url,
+                "generado_en": datetime.now(timezone.utc).isoformat(),
+                "archivo_origen": Path(ruta_archivo).name,
+                "total_registros_origen": len(interacciones),
+                "total_procesados_exitosamente": tot,
+                "total_fallidos": 0,
+                "modo_ejecucion": "asincrono",
+                "mensaje_n8n": msg,
+            },
+            "metricas": {
+                "total_interacciones_enviadas": tot,
+                "estado_pipeline": "procesando_en_background_n8n",
+            },
+            "activos": [],
+            "resultado_webhook": resultado_raw,
+        }
+
     # Si n8n ya devolvió un paquete estructurado
     if isinstance(resultado_raw, dict) and "activos" in resultado_raw:
         paquete = resultado_raw

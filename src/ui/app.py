@@ -475,9 +475,19 @@ elif modo == "⚡ Ejecutar Pipeline":
                     with open("data/paquete_procesado.json", "w", encoding="utf-8") as f:
                         json.dump(paquete_n8n, f, ensure_ascii=False, indent=2)
 
-                    st.success(f"¡Flujo n8n completado exitosamente en **{t_total:.2f}s**!")
-                    st.json(paquete_n8n.get("metricas", {}))
-                    st.info("Revisa los copys generados en **'💼 Curaduría de Activos'**.")
+                    if paquete_n8n.get("metadata_paquete", {}).get("modo_ejecucion") == "asincrono":
+                        st.success(f"🚀 ¡Lote recibido por n8n en **{t_total:.2f}s**!")
+                        st.info(f"ℹ️ {paquete_n8n['metadata_paquete'].get('mensaje_n8n')}")
+                        st.markdown(
+                            """
+                            > **Nota:** n8n está procesando el lote con el LLM y subirá los **4 archivos especializados a OCI Object Storage**. 
+                            > Cuando finalice en n8n, encuéntralos y curálos directamente en **'💼 Curaduría de Activos'** o en **'☁️ Histórico OCI Object Storage'**.
+                            """
+                        )
+                    else:
+                        st.success(f"¡Flujo n8n completado exitosamente en **{t_total:.2f}s**!")
+                        st.json(paquete_n8n.get("metricas", {}))
+                        st.info("Revisa los copys generados en **'💼 Curaduría de Activos'**.")
                 except ValueError as ve:
                     st.info(f"ℹ️ {ve}")
                 except Exception as e:
