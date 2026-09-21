@@ -26,6 +26,7 @@ from src.ui.services import (
     procesar_archivo_ui,
     procesar_archivo_n8n_ui,
     guardar_curaduria_humana,
+    obtener_mapa_curaduria,
     fusionar_paquetes,
     vaciar_historico_oci_local,
     obtener_ids_procesados_sesion,
@@ -215,6 +216,8 @@ if modo == "💼 Curaduría de Activos":
             else:
                 activos_a_mostrar = list(activos)
 
+            mapa_curaduria = obtener_mapa_curaduria()
+
             # Renderizado de tarjetas de activos
             for idx, item in enumerate(activos_a_mostrar, start=1):
                 interaccion = item["interaccion"]
@@ -232,8 +235,19 @@ if modo == "💼 Curaduría de Activos":
                 lote_tag = item.get("lote_id", "")
                 badge_lote = f"[{lote_tag}] " if lote_tag else ""
 
+                # Verificar si ya fue curado previamente en OCI
+                cur_info = mapa_curaduria.get(interaccion["id"]) or mapa_curaduria.get(f"{interaccion['id']} ({badge_motor})")
+                estado_cur = cur_info.get("estado") if cur_info else "pendiente"
+
+                if estado_cur == "aprobado":
+                    badge_estado = "🟢 APROBADO"
+                elif estado_cur == "rechazado":
+                    badge_estado = "🔴 DESCARTADO"
+                else:
+                    badge_estado = "⏳ PENDIENTE"
+
                 with st.expander(
-                    f"#{idx} | [{badge_motor}] {badge_lote}[{activo['tipo_contenido'].upper()}] {interaccion['autor']} ({interaccion['canal']}) — ⏱️ {hora_str}",
+                    f"#{idx} | {badge_estado} | [{badge_motor}] {badge_lote}[{activo['tipo_contenido'].upper()}] {interaccion['autor']} ({interaccion['canal']}) — ⏱️ {hora_str}",
                     expanded=(idx == 1),
                 ):
                     c_left, c_right = st.columns([1, 1])
@@ -244,7 +258,7 @@ if modo == "💼 Curaduría de Activos":
                         st.caption(
                             f"Motor: **{badge_motor}** | ID: `{interaccion['id']}` | "
                             f"Lote: `{lote_tag or 'previo'}` | ⏱️ Hora: **{hora_str}** | "
-                            f"Sentimiento: **{activo['sentimiento']}**"
+                            f"Sentimiento: **{activo['sentimiento']}** | Estado: **{badge_estado}**"
                         )
 
                         # Etiquetas / Temas clave
@@ -254,11 +268,17 @@ if modo == "💼 Curaduría de Activos":
                     with c_right:
                         st.markdown("#### ✍️ Activo Generado")
 
+                        if estado_cur == "aprobado":
+                            st.success(f"✅ **Aprobado en OCI:** {cur_info.get('fecha_curaduria', '')[:19]}")
+                        elif estado_cur == "rechazado":
+                            st.warning(f"❌ **Descartado en OCI:** {cur_info.get('fecha_curaduria', '')[:19]}")
+
                         if activo.get("post_linkedin"):
                             st.markdown("**Copy para LinkedIn:**")
+                            copy_valor_defecto = cur_info.get("copy_aprobado") if cur_info else activo["post_linkedin"]
                             copy_editado = st.text_area(
                                 "Editar copy antes de aprobar:",
-                                value=activo["post_linkedin"],
+                                value=copy_valor_defecto,
                                 height=150,
                                 key=f"copy_{interaccion['id']}_{motor_val}_{idx}",
                             )
@@ -267,19 +287,21 @@ if modo == "💼 Curaduría de Activos":
                             with btn_col1:
                                 if st.button("✅ Aprobar Copy", key=f"btn_ap_{interaccion['id']}_{motor_val}_{idx}"):
                                     guardar_curaduria_humana(
-                                        id_interaccion=f"{interaccion['id']} ({badge_motor})",
+                                        id_interaccion=interaccion["id"],
                                         copy_aprobado=copy_editado,
                                         estado_aprobacion="aprobado",
                                     )
-                                    st.success("¡Copy registrado como Aprobado!")
+                                    st.success("¡Copy registrado y sincronizado en OCI como Aprobado!")
+                                    st.rerun()
                             with btn_col2:
                                 if st.button("❌ Descartar", key=f"btn_desc_{interaccion['id']}_{motor_val}_{idx}"):
                                     guardar_curaduria_humana(
-                                        id_interaccion=f"{interaccion['id']} ({badge_motor})",
+                                        id_interaccion=interaccion["id"],
                                         copy_aprobado=copy_editado,
                                         estado_aprobacion="rechazado",
                                     )
-                                    st.warning("Copy descartado.")
+                                    st.warning("Copy descartado y sincronizado en OCI.")
+                                    st.rerun()
 
                         elif activo.get("tip_tecnico_faq"):
                             st.markdown("**Tip Técnico / Respuesta FAQ:**")

@@ -490,3 +490,36 @@ def guardar_curaduria_humana(
 
     logger.info("Curaduría registrada para '%s': estado=%s", id_interaccion, estado_aprobacion)
     return nuevo_registro
+
+
+def obtener_mapa_curaduria() -> Dict[str, Dict[str, Any]]:
+    """Obtiene el historial de curaduría de OCI Object Storage indexado por ID de interacción."""
+    registros: List[Dict[str, Any]] = []
+    try:
+        sm = OCIStorageManager(allow_local_fallback=True)
+        if not sm.is_local_mode:
+            data = sm.get_asset("curaduria/curaduria_aprobados.json")
+            if isinstance(data, list):
+                registros = data
+            elif isinstance(data, dict) and "aprobados" in data:
+                registros = data["aprobados"]
+    except Exception:
+        registros = []
+
+    if not registros:
+        local_p = Path("data/curaduria_aprobados.json")
+        if local_p.exists():
+            try:
+                registros = json.loads(local_p.read_text(encoding="utf-8"))
+            except Exception:
+                registros = []
+
+    mapa: Dict[str, Dict[str, Any]] = {}
+    for r in registros:
+        id_int = r.get("id_interaccion", "")
+        if id_int:
+            mapa[id_int] = r
+            # También indexar sin badge por si se guardó con o sin prefijo
+            id_limpio = id_int.split(" ")[0]
+            mapa[id_limpio] = r
+    return mapa
