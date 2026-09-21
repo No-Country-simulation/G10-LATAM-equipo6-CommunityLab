@@ -392,7 +392,11 @@ elif modo == "⚡ Ejecutar Pipeline":
     st.markdown("<div style='height: 8px;'></div>", unsafe_allow_html=True)
     c_chk1, c_chk2, c_chk3 = st.columns([1, 1, 1])
     with c_chk1:
-        subir_oci = st.checkbox("Subir a OCI Storage", value=True)
+        subir_oci = st.checkbox(
+            "Subir a OCI Storage (Motor Python)",
+            value=True,
+            help="Persiste el paquete resultante del motor Python en OCI Object Storage. n8n ya sube sus 4 archivos especializados automáticamente.",
+        )
     with c_chk2:
         acumular_lote = st.checkbox(
             "Acumular con previos",
@@ -454,7 +458,7 @@ elif modo == "⚡ Ejecutar Pipeline":
                         webhook_url=webhook_url,
                         limite=limite_val,
                         canal_filtro=canal_val,
-                        upload_oci=subir_oci,
+                        upload_oci=False,  # n8n ya persiste sus 4 archivos especializados en OCI
                         ids_a_omitir=ids_omitir,
                     )
                     t_total = time.time() - t_ini
