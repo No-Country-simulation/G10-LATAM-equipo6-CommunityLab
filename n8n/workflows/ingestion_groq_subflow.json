@@ -1,15 +1,15 @@
 {
-  "name": "JLMansilla001",
+  "name": "CCely_WF_003",
   "nodes": [
     {
       "parameters": {},
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        -672,
-        320
+        -368,
+        928
       ],
-      "id": "57ce2b6b-b0c5-4bda-81b1-a78f90b7e05f",
+      "id": "6c60651d-1604-404d-89af-6eaa8d6879af",
       "name": "When clicking ‘Execute workflow’"
     },
     {
@@ -19,10 +19,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -448,
-        320
+        -144,
+        928
       ],
-      "id": "a31b4405-847e-4df8-a22b-8698b17f02c9",
+      "id": "687180cd-b114-4d2b-ad8d-1096f681c5c8",
       "name": "Code in JavaScript"
     },
     {
@@ -42,10 +42,10 @@
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "typeVersion": 1.9,
       "position": [
-        0,
-        320
+        304,
+        928
       ],
-      "id": "e102491f-e6c9-41c2-8d4a-e6239e7731c3",
+      "id": "ba248560-f5fd-45c5-afd6-ba1a6887a894",
       "name": "Basic LLM Chain",
       "retryOnFail": true,
       "waitBetweenTries": 5000
@@ -57,10 +57,10 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        -224,
-        320
+        80,
+        928
       ],
-      "id": "d9fa172e-89e6-41a8-be4a-a4dd149eb22c",
+      "id": "76287d16-87e2-40ab-aac9-cc4485c208bf",
       "name": "Loop Over Items"
     },
     {
@@ -70,25 +70,25 @@
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
       "position": [
-        576,
-        432
+        880,
+        1040
       ],
-      "id": "4acd5e37-7568-4bf6-af82-82f66d162b11",
+      "id": "cb15fb9a-9fc6-469a-ac1c-1bdd84834beb",
       "name": "Wait",
       "webhookId": "e2ca8732-8cd6-4cd8-8e1a-5decc8c232f9"
     },
     {
       "parameters": {
-        "model": "openai/gpt-oss-20b",
+        "model": "groq/compound-mini",
         "options": {}
       },
       "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
       "typeVersion": 1,
       "position": [
-        16,
-        544
+        312,
+        1144
       ],
-      "id": "a9641378-00e1-491e-9def-9fe84b3501e0",
+      "id": "bdeb2385-c0f7-46ac-aac1-18472f04166e",
       "name": "Groq Chat Model",
       "credentials": {
         "groqApi": {
@@ -105,10 +105,10 @@
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.3,
       "position": [
-        144,
-        544
+        440,
+        1144
       ],
-      "id": "3e19da75-9424-42bc-afee-b419d5337741",
+      "id": "a6c02231-eecc-4cf0-8afa-26aa3db9497e",
       "name": "Structured Output Parser1"
     },
     {
@@ -176,10 +176,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.5,
       "position": [
-        352,
-        320
+        656,
+        928
       ],
-      "id": "3316b661-18a0-4422-b601-18d12f847014",
+      "id": "c7f860cb-de85-41ea-8cfe-7f323e54cc4e",
       "name": "Edit Fields"
     },
     {
@@ -285,30 +285,70 @@
           ]
         },
         "options": {
-          "fallbackOutput": "extra"
+          "fallbackOutput": "none"
         }
       },
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
       "position": [
-        64,
-        -80
+        368,
+        560
       ],
-      "id": "410d76ae-f7db-4d4b-b2f7-23e059c01798",
+      "id": "09a2f1e4-fd8b-4d96-a09e-0ebdda9bd25a",
       "name": "Route by Content Type"
     },
     {
       "parameters": {
-        "jsCode": "// Nodo de consolidación: Recopila todos los items enrutados y genera el paquete final para OCI\nconst allItems = $input.all().map(item => item.json);\n\nconst total = allItems.length;\nconst hoy = new Date().toISOString();\n\n// Cálculo de métricas de sentimiento\nconst sentimientos = {\n  positivo: allItems.filter(i => i.sentimiento === 'positivo').length,\n  neutro: allItems.filter(i => i.sentimiento === 'neutro').length,\n  negativo: allItems.filter(i => i.sentimiento === 'negativo').length\n};\n\n// Agrupación por activos de destino\nconst marketing_linkedin = allItems\n  .filter(i => ['logro_contratacion', 'showcase'].includes(i.tipo_contenido) && i.post_linkedin)\n  .map(i => ({\n    id: i.id,\n    autor: i.autor,\n    canal: i.canal,\n    tipo_contenido: i.tipo_contenido,\n    temas_clave: i.temas_clave,\n    post_linkedin: i.post_linkedin\n  }));\n\nconst faqs_tecnicas = allItems\n  .filter(i => i.tipo_contenido === 'duda_tecnica' && i.tip_tecnico_faq)\n  .map(i => ({\n    id: i.id,\n    autor: i.autor,\n    canal: i.canal,\n    temas_clave: i.temas_clave,\n    pregunta_original: i.texto_original,\n    tip_tecnico_faq: i.tip_tecnico_faq\n  }));\n\nconst feedback_comunidad = allItems\n  .filter(i => i.tipo_contenido === 'feedback_general')\n  .map(i => ({\n    id: i.id,\n    autor: i.autor,\n    canal: i.canal,\n    temas_clave: i.temas_clave,\n    comentario: i.texto_original,\n    sentimiento: i.sentimiento\n  }));\n\n// Construcción del paquete oficial de distribución para OCI\nconst paqueteOCI = {\n  metadata: {\n    version: '1.0.0',\n    plataforma: 'CommunityLab',\n    fecha_generacion: hoy,\n    origen_comunidad: 'Discord_Oracle_Next_Education_G10',\n    total_interacciones: total\n  },\n  metricas_salud: {\n    sentimientos,\n    distribucion_tipo: {\n      logro_contratacion: allItems.filter(i => i.tipo_contenido === 'logro_contratacion').length,\n      duda_tecnica: allItems.filter(i => i.tipo_contenido === 'duda_tecnica').length,\n      showcase: allItems.filter(i => i.tipo_contenido === 'showcase').length,\n      feedback_general: allItems.filter(i => i.tipo_contenido === 'feedback_general').length\n    }\n  },\n  activos: {\n    marketing_linkedin,\n    faqs_tecnicas,\n    feedback_comunidad\n  }\n};\n\nreturn [{ json: paqueteOCI }];\n"
+        "jsCode": "// Nodo de consolidación: Recopila todos los items enrutados y genera los 4 paquetes especializados para OCI\nconst allItems = $input.all().map(item => item.json);\nconst total = allItems.length;\nconst hoy = new Date().toISOString();\n\n// Cálculo de métricas de sentimiento\nconst sentimientos = {\n  positivo: allItems.filter(i => i.sentimiento === 'positivo').length,\n  neutro: allItems.filter(i => i.sentimiento === 'neutro').length,\n  negativo: allItems.filter(i => i.sentimiento === 'negativo').length\n};\n\nconst distribucion_tipo = {\n  logro_contratacion: allItems.filter(i => i.tipo_contenido === 'logro_contratacion').length,\n  duda_tecnica: allItems.filter(i => i.tipo_contenido === 'duda_tecnica').length,\n  showcase: allItems.filter(i => i.tipo_contenido === 'showcase').length,\n  feedback_general: allItems.filter(i => i.tipo_contenido === 'feedback_general').length\n};\n\nconst baseMetadata = {\n  version: '1.0.0',\n  plataforma: 'CommunityLab',\n  fecha_generacion: hoy,\n  origen_comunidad: 'Discord_Oracle_Next_Education_G10',\n  total_interacciones: total\n};\n\n// 1. Rama A: Logros / Contrataciones\nconst paqueteLogros = {\n  metadata: { ...baseMetadata, categoria: 'logros_contratacion' },\n  activos: allItems\n    .filter(i => i.tipo_contenido === 'logro_contratacion' && i.post_linkedin)\n    .map(i => ({\n      id: i.id,\n      autor: i.autor,\n      canal: i.canal,\n      temas_clave: i.temas_clave,\n      post_linkedin: i.post_linkedin\n    }))\n};\n\n// 2. Rama B: Dudas Técnicas / FAQs\nconst paqueteFaqs = {\n  metadata: { ...baseMetadata, categoria: 'dudas_tecnicas_faqs' },\n  activos: allItems\n    .filter(i => i.tipo_contenido === 'duda_tecnica' && i.tip_tecnico_faq)\n    .map(i => ({\n      id: i.id,\n      autor: i.autor,\n      canal: i.canal,\n      temas_clave: i.temas_clave,\n      pregunta_original: i.texto_original,\n      tip_tecnico_faq: i.tip_tecnico_faq\n    }))\n};\n\n// 3. Rama C: Showcase de Proyectos\nconst paqueteShowcase = {\n  metadata: { ...baseMetadata, categoria: 'proyectos_showcase' },\n  activos: allItems\n    .filter(i => i.tipo_contenido === 'showcase' && i.post_linkedin)\n    .map(i => ({\n      id: i.id,\n      autor: i.autor,\n      canal: i.canal,\n      temas_clave: i.temas_clave,\n      post_linkedin: i.post_linkedin\n    }))\n};\n\n// 4. Rama D: Feedback y Métricas de Comunidad\nconst paqueteFeedback = {\n  metadata: { ...baseMetadata, categoria: 'feedback_metricas' },\n  metricas_salud: { sentimientos, distribucion_tipo },\n  activos: allItems\n    .filter(i => i.tipo_contenido === 'feedback_general')\n    .map(i => ({\n      id: i.id,\n      autor: i.autor,\n      canal: i.canal,\n      temas_clave: i.temas_clave,\n      comentario: i.texto_original,\n      sentimiento: i.sentimiento\n    }))\n};\n\n// Emitir 4 items separados, cada uno con su nombre de archivo OCI\nreturn [\n  { json: { nombre_archivo: 'marketing_linkedin_logros.json', ...paqueteLogros } },\n  { json: { nombre_archivo: 'faqs_soporte_tecnico.json', ...paqueteFaqs } },\n  { json: { nombre_archivo: 'marketing_showcase.json', ...paqueteShowcase } },\n  { json: { nombre_archivo: 'metricas_feedback_comunidad.json', ...paqueteFeedback } }\n];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        400,
-        -80
+        656,
+        592
       ],
-      "id": "7b1c4e20-3329-4d89-9a21-fa2b8c9d0011",
+      "id": "79a5be40-f381-4d23-b4f0-19eaa77ece71",
       "name": "Consolidar Paquete OCI"
+    },
+    {
+      "parameters": {
+        "operation": "upload",
+        "bucketName": "communitylab-activos-marketing",
+        "fileName": "={{ 'activos/' + $now.toFormat('yyyy-MM-dd') + '/' + $json.nombre_archivo }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.s3",
+      "typeVersion": 1,
+      "position": [
+        1104,
+        592
+      ],
+      "id": "4545f798-b77b-432e-91a7-b86a157d83a5",
+      "name": "Upload a file",
+      "credentials": {
+        "s3": {
+          "id": "wBmNi7O2F3CGYxUW",
+          "name": "S3 account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "toJson",
+        "options": {
+          "format": true,
+          "fileName": "={{ 'activos/' + $now.toFormat('yyyy-MM-dd') + '/' + $json.nombre_archivo }}"
+        },
+        "mode": "each"
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        880,
+        592
+      ],
+      "id": "9585737c-9ea0-4f7d-bb64-bf6c93e5d876",
+      "name": "Convert to File"
     }
   ],
   "pinData": {},
@@ -437,8 +477,29 @@
             "type": "main",
             "index": 0
           }
-        ],
-        []
+        ]
+      ]
+    },
+    "Consolidar Paquete OCI": {
+      "main": [
+        [
+          {
+            "node": "Convert to File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File": {
+      "main": [
+        [
+          {
+            "node": "Upload a file",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     }
   },
@@ -447,11 +508,12 @@
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "7454e819-e23e-4e57-8b2e-d391902f1531",
+  "versionId": "0a8bf1df-9b08-49e4-b6b8-ee5c04ee9bf1",
   "meta": {
+    "templateCredsSetupCompleted": true,
     "instanceId": "cb0b9a3b8b392f0b0fbc26be213326cbdfd285ed78e8eb9be9b7984b7130dd64"
   },
   "nodeGroups": [],
-  "id": "Ll4nwPHBxhqcCmJi",
+  "id": "ki81pkq4eAUIzQES",
   "tags": []
 }

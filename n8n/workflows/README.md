@@ -15,13 +15,14 @@ Este directorio almacena los flujos de n8n exportados para control de versiones 
   * `Route by Content Type (Switch)`: Enrutamiento exclusivo por `tipo_contenido` con cuatro categorías conocidas y una salida fallback. En esta fase, todas las salidas regresan directamente a `Wait`; la preparación especializada y la persistencia OCI quedan pendientes.
   * `Wait` (12s) para control estricto de cuota (TPM/RPM).
 
-#### Salidas lógicas del Switch
-
-| `tipo_contenido` | Destino previsto |
-|---|---|
-| `logro_contratacion` | LinkedIn Success Story |
-| `duda_tecnica` | Technical FAQ |
-| `showcase` | LinkedIn Project Showcase |
-| `feedback_general` | Community Analytics |
-| Cualquier otro valor | Manual Review |
+### 2. `ingestion_groq_subflow.json`
+* **Descripción:** Pipeline end-to-end con clasificación LLM (Groq Compound), enrutamiento condicional y persistencia en OCI Object Storage.
+* **Componentes de Persistencia OCI:**
+  * `Consolidar Paquete OCI`: Genera 4 paquetes estructurados e independientes (uno por categoría):
+    1. `activos/{fecha}/marketing_linkedin_logros.json` (Historias de éxito para LinkedIn y Newsletter).
+    2. `activos/{fecha}/faqs_soporte_tecnico.json` (FAQs y tips técnicos de soporte).
+    3. `activos/{fecha}/marketing_showcase.json` (Proyectos y bots de la comunidad).
+    4. `activos/{fecha}/metricas_feedback_comunidad.json` (Métricas de sentimiento y salud de comunidad).
+  * `Convert to File`: Convierte cada uno de los 4 paquetes en binario en memoria (`mode: each`).
+  * `Upload a file (S3)`: Sube los 4 objetos directamente al bucket `communitylab-activos-marketing` de OCI.
 
