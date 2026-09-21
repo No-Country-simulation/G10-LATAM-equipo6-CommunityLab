@@ -323,7 +323,7 @@ def test_obtener_ids_procesados_sesion(tmp_path: Path, monkeypatch):
             return tmp_path / "inexistente.json"
 
         mock_path.side_effect = side_effect
-        ids = obtener_ids_procesados_sesion()
+        ids = obtener_ids_procesados_sesion(consultar_oci=False)
         assert ids == {"msg_001", "msg_002", "msg_003"}
 
 

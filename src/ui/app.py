@@ -380,9 +380,9 @@ elif modo == "⚡ Ejecutar Pipeline":
                 st.toast(f"Histórico de OCI vaciado correctamente ({n_del} objetos eliminados).")
                 st.rerun()
 
-    # Fila 2: Los 3 checks distribuidos a lo largo de toda la fila para lectura completa
+    # Fila 2: Controles de ejecución OCI y deduplicación
     st.markdown("<div style='height: 8px;'></div>", unsafe_allow_html=True)
-    c_chk1, c_chk2, c_chk3 = st.columns([1, 1, 1])
+    c_chk1, c_chk2 = st.columns([1, 1])
     with c_chk1:
         subir_oci = st.checkbox(
             "Subir a OCI Storage (Motor Python)",
@@ -390,16 +390,10 @@ elif modo == "⚡ Ejecutar Pipeline":
             help="Sube automáticamente los 4 archivos temáticos especializados (logros, showcase, faqs, feedback) al bucket de OCI, igual que n8n.",
         )
     with c_chk2:
-        acumular_lote = st.checkbox(
-            "Acumular con previos",
-            value=True,
-            help="Si está marcado, los nuevos activos procesados se suman a los anteriores sin sobrescribirlos.",
-        )
-    with c_chk3:
         omitir_ya_procesados = st.checkbox(
-            "Omitir ya procesados",
+            "Omitir interacciones ya procesadas en OCI",
             value=True,
-            help="Si está marcado, excluye los registros procesados previamente en esta sesión y toma los siguientes nuevos.",
+            help="Si está marcado, consulta OCI Object Storage para excluir los registros procesados previamente y toma los siguientes nuevos del dataset.",
         )
 
     st.markdown("---")

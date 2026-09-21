@@ -94,9 +94,33 @@ def fusionar_paquetes(
     }
 
 
-def obtener_ids_procesados_sesion() -> Set[str]:
-    """Recopila todos los IDs de interacciones ya presentes en los lotes de la sesión activa."""
+def obtener_ids_procesados_sesion(consultar_oci: bool = True) -> Set[str]:
+    """Recopila todos los IDs de interacciones ya presentes en OCI Object Storage o en almacenamiento local."""
     ids: Set[str] = set()
+
+    # 1. Intentar consultar directamente desde OCI Object Storage si está habilitado
+    if consultar_oci:
+        try:
+            sm = OCIStorageManager(allow_local_fallback=True)
+            if not sm.is_local_mode:
+                paquetes = sm.list_assets(prefix="activos", limit=50)
+                for p in paquetes:
+                    nombre = p.get("name", "")
+                    if nombre.endswith(".json"):
+                        try:
+                            data = sm.get_asset(nombre)
+                            if isinstance(data, dict):
+                                for act in data.get("activos", []):
+                                    if isinstance(act, dict):
+                                        id_val = act.get("id") or act.get("interaccion", {}).get("id")
+                                        if id_val:
+                                            ids.add(id_val)
+                        except Exception:
+                            pass
+        except Exception as e_oci:
+            logger.warning("No se pudieron consultar IDs previos de OCI: %s", e_oci)
+
+    # 2. Fallback a archivos locales si existen
     for fpath in ["data/paquete_procesado_python.json", "data/paquete_procesado_n8n.json", "data/paquete_procesado.json"]:
         p = Path(fpath)
         if p.exists():
