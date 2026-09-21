@@ -599,6 +599,8 @@ elif modo == "☁️ Histórico OCI Object Storage":
                         par = sm.create_preauthenticated_request(p["name"], expires_in_hours=24)
                         st.session_state[f"url_{p['name']}"] = par["access_url"]
 
-                if f"url_{p['name']}" in st.session_state:
-                    st.success(f"URL de acceso temporal: [Abrir Activo]({st.session_state[f'url_{p[\"name\"]}']})")
-                    st.caption(st.session_state[f"url_{p['name']}"])
+                par_key = f"url_{p['name']}"
+                if par_key in st.session_state:
+                    par_url = st.session_state[par_key]
+                    st.success(f"URL de acceso temporal: [Abrir Activo]({par_url})")
+                    st.caption(par_url)
