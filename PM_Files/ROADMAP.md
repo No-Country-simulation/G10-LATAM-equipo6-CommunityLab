@@ -47,34 +47,60 @@ Para optimizar la colaboración y garantizar aprendizaje transversal, el equipo 
 ## 📅 Cronograma Detallado Sprint a Sprint (Semanas 0 a 5)
 
 ```mermaid
+%%{init: {
+  'theme': 'base',
+  'themeVariables': {
+    'doneTaskBkgColor': '#10B981',
+    'doneTaskBorderColor': '#059669',
+    'activeTaskBkgColor': '#3B82F6',
+    'activeTaskBorderColor': '#1D4ED8',
+    'taskBkgColor': '#94A3B8',
+    'taskBorderColor': '#64748B',
+    'critBkgColor': '#F59E0B',
+    'critBorderColor': '#D97706',
+    'todayLineColor': '#EF4444'
+  }
+}}%%
 gantt
-    title Cronograma de Trabajo - CommunityLab
+    title Cronograma de Trabajo - CommunityLab (Equipo 6)
     dateFormat  YYYY-MM-DD
+    axisFormat  %d/%m
+    
     section S0: Setup & OCI VM
-    First Meet & Roles           :done, 2026-09-14, 2026-09-16
-    Repo, Dataset & VM OCI Ready :done, 2026-09-16, 2026-09-18
-    Sprint Demo Meet S0          :done, 2026-09-18, 2026-09-19
+    First Meet & Roles                :done, s0_1, 2026-09-14, 2026-09-16
+    Repo, Dataset & VM OCI Ready      :done, s0_2, 2026-09-16, 2026-09-18
+    Sprint Demo Meet S0               :crit, done, s0_3, 2026-09-18, 2026-09-19
+    
     section S1: Ingesta & IA Pipeline
-    Pipeline n8n + LLM Resiliente:done, 2026-09-21, 2026-09-23
-    Extracción Estructurada JSON :done, 2026-09-21, 2026-09-24
-    Sprint Demo Meet S1          :done, 2026-09-24, 2026-09-25
+    Pipeline n8n + LLM Resiliente     :done, s1_1, 2026-09-21, 2026-09-23
+    Extracción Estructurada JSON      :done, s1_2, 2026-09-21, 2026-09-24
+    Sprint Demo Meet S1               :crit, done, s1_3, 2026-09-24, 2026-09-25
+    
     section S2: Persistencia OCI & Routing
-    Bifurcaciones de Contenido   :done, 2026-09-28, 2026-09-30
-    Conexión OCI Object Storage  :done, 2026-09-28, 2026-10-01
-    Sprint Demo Meet S2          :done, 2026-10-01, 2026-10-02
-    section S3: UI Streamlit en VM
-    Desarrollo Panel Streamlit   :done, 2026-10-05, 2026-10-07
-    Curaduria Cloud OCI Native   :done, 2026-10-06, 2026-10-08
-    Sprint Demo Meet S3          :done, 2026-10-08, 2026-10-09
+    Bifurcaciones de Contenido        :done, s2_1, 2026-09-28, 2026-09-30
+    Conexión OCI Object Storage       :done, s2_2, 2026-09-28, 2026-10-01
+    Sprint Demo Meet S2               :crit, done, s2_3, 2026-10-01, 2026-10-02
+    
+    section S3: UI Streamlit & Cloud
+    Desarrollo Panel Streamlit        :done, s3_1, 2026-10-05, 2026-10-07
+    Curaduria Cloud OCI Native        :done, s3_2, 2026-10-06, 2026-10-08
+    Sprint Demo Meet S3               :crit, done, s3_3, 2026-10-08, 2026-10-09
+    
     section S4: Integración E2E & QA
-    Pruebas E2E & Stress QA      :active, 2026-10-12, 2026-10-14
-    Grabación Demo Preliminar    :2026-10-13, 2026-10-15
-    Sprint Demo Meet S4          :2026-10-15, 2026-10-16
+    Pruebas E2E & Blindaje QA (49/49) :active, s4_1, 2026-10-12, 2026-10-14
+    Grabación Demo Preliminar         :active, s4_2, 2026-10-13, 2026-10-15
+    Sprint Demo Meet S4               :crit, s4_3, 2026-10-15, 2026-10-16
+    
     section S5: Pitch & Demo Day
-    Video Demo Final YouTube     :2026-10-19, 2026-10-22
-    Pre Demo Meet (Jueves)       :2026-10-22, 2026-10-23
-    Demo Day (Presentación)      :2026-10-27, 2026-10-29
+    Video Demo Final YouTube          :s5_1, 2026-10-19, 2026-10-22
+    Pre Demo Meet (Jueves)            :crit, s5_2, 2026-10-22, 2026-10-23
+    Demo Day (Presentación Oficial)   :crit, s5_3, 2026-10-27, 2026-10-29
 ```
+
+> 🟢 **Verde (`done`):** Tareas completadas con éxito.  
+> 🔵 **Azul (`active`):** Tareas actualmente en desarrollo activo.  
+> 🟠 **Ámbar / Naranja (`crit`):** Hitos críticos y Sprint Demo Meets obligatorios.  
+> ⚪ **Gris:** Tareas programadas pendientes para los próximos sprints.
 
 ---
 
