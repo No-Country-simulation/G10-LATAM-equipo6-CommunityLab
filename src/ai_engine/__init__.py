@@ -1,4 +1,4 @@
-"""Exportación pública de modelos y utilidades de validación para el motor de IA."""
+"""Exportación pública de modelos, servicios y utilidades para el motor de IA."""
 
 from .schemas import (
     SentimientoEnum,
@@ -13,6 +13,7 @@ from .validator import (
     validate_interaction,
     validate_batch_file,
 )
+from .gemini_service import GeminiService
 
 __all__ = [
     "SentimientoEnum",
@@ -24,4 +25,5 @@ __all__ = [
     "validate_asset_output",
     "validate_interaction",
     "validate_batch_file",
+    "GeminiService",
 ]
