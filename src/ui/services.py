@@ -539,26 +539,31 @@ def guardar_curaduria_humana(
     registros = [r for r in registros if r.get("id_interaccion") != id_interaccion]
     registros.append(nuevo_registro)
 
+    sincronizado_en_oci = False
     # Persistir en OCI Object Storage
     if persistir_oci:
         try:
             if not sm:
                 sm = OCIStorageManager(allow_local_fallback=True)
-            sm.upload_json_asset(
-                data=registros,
-                object_name="curaduria/curaduria_aprobados.json",
-            )
-            logger.info("Curaduría sincronizada en OCI Object Storage: curaduria/curaduria_aprobados.json")
+            if not sm.is_local_mode:
+                sm.upload_json_asset(
+                    data=registros,
+                    object_name="curaduria/curaduria_aprobados.json",
+                )
+                sincronizado_en_oci = True
+                logger.info("Curaduría sincronizada en OCI Object Storage: curaduria/curaduria_aprobados.json")
         except Exception as e_oci:
             logger.warning("No se pudo sincronizar curaduría en OCI: %s", e_oci)
 
-    # Guardar también localmente como respaldo ligero
-    path = Path(ruta_registro)
-    path.parent.mkdir(parents=True, exist_ok=True)
-    with open(path, "w", encoding="utf-8") as f:
-        json.dump(registros, f, ensure_ascii=False, indent=2)
+    # Si OCI no está activo o falló, o si persistir_oci es False (modo offline o tests), guardar en disco local
+    if not sincronizado_en_oci:
+        path = Path(ruta_registro)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        with open(path, "w", encoding="utf-8") as f:
+            json.dump(registros, f, ensure_ascii=False, indent=2)
+        logger.info("Curaduría guardada localmente (modo fallback/offline): %s", ruta_registro)
 
-    logger.info("Curaduría registrada para '%s': estado=%s", id_interaccion, estado_aprobacion)
+    logger.info("Curaduría registrada para '%s': estado=%s (OCI=%s)", id_interaccion, estado_aprobacion, sincronizado_en_oci)
     return nuevo_registro
 
 
