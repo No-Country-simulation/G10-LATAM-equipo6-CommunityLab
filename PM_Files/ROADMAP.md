@@ -91,10 +91,10 @@ gantt
 
 ---
 
-### Semana 1: Ingesta de Datos & Pipeline de LLM (En curso — Prácticamente Completado 🎉)
+### Semana 1: Ingesta de Datos & Pipeline de LLM (Completada con éxito 🎉)
 * **Objetivo:** Ingerir las interacciones de la comunidad y procesarlas a través del LLM devolviendo el JSON estructurado obligatorio.
 * **Lunes:** *Sprint Planning Meet*. Asignación formal de tareas.
-* **Desarrollo:**
+* **Entregables logrados:**
   - [x] Ingesta y parseo del lote de 15 mensajes en el contenedor de n8n montado desde `./data/`.
   - [x] Conexión con LLM (Gemini / Groq) mediante `Basic LLM Chain`.
   - [x] Implementación de patrón tolerante a fallos y *Rate Limits* (nodo `Loop Over Items` + `Wait` de 10s).
@@ -106,10 +106,10 @@ gantt
 
 ---
 
-### Semana 2: Enrutamiento Condicional & Persistencia en OCI Object Storage
+### Semana 2: Enrutamiento Condicional & Persistencia en OCI Object Storage (Completada con éxito 🎉)
 * **Objetivo:** Bifurcar los contenidos clasificados y guardar los paquetes de marketing directamente en la nube de Oracle (Always Free).
 * **Lunes:** *Sprint Planning Meet*.
-* **Desarrollo:**
+* **Entregables logrados:**
   - [x] Configuración del Bucket en **OCI Object Storage** y credenciales API / Customer Secret Key (S3-compatible).
   - [x] Enrutamiento condicional en n8n con nodo `Switch` (`n8n/workflows/ingestion_groq_subflow.json`):
     - Rama A: Logros/Contrataciones $\rightarrow$ Copys optimizados para LinkedIn y Newsletter.
@@ -143,17 +143,18 @@ gantt
 
 ---
 
-### Semana 4: Pruebas E2E, Blindaje QA & Grabación Preliminar
+### Semana 4: Pruebas E2E, Blindaje QA & Grabación Preliminar (En curso — Tareas avanzadas 🚀)
 * **Objetivo:** Estabilizar la aplicación integral, ejecutar pruebas de carga/QA y preparar el material audiovisual.
 * **Lunes:** *Sprint Planning Meet*.
-* **Desarrollo:**
-  - [ ] Pruebas exhaustivas por parte del equipo de QA (Edwin, Raúl, Rodrigo):
-    - Manejo de entradas malformadas o textos vacíos.
-    - Resistencia ante caídas de red o cuotas de API.
-    - Validación de consistencia en OCI Object Storage.
-  - [ ] Automatización de pruebas unitarias y de integración (`tests/`).
+* **Desarrollo y Avances:**
+  - [x] **Automatización de pruebas unitarias y de integración:** Suite de 49 pruebas automatizadas en `tests/` cubriendo ingesta, validación Pydantic, cliente OCI, pipeline y UI (100% pasando).
+  - [x] **Blindaje y resiliencia ante caídas de red o cuotas:** Circuit Breaker implementado y reintentos con backoff exponencial para llamadas a LLMs.
+  - [x] **Validación de consistencia en OCI Object Storage:** Verificación de subida, descarga y deduplicación de activos en la nube de Oracle.
+  - [x] **Optimización de recursos en la VM OCI Always Free:** Arquitectura sin estado (Stateless) que no satura el disco con volcados JSON locales.
+  - [ ] Pruebas exhaustivas manuales por parte del equipo de QA (Edwin, Raúl, Rodrigo) con entradas atípicas de usuarios.
+  - [ ] Refinamiento del prototipo Frontend en Streamlit (Carol Huarancay).
+  - [ ] Apertura de regla de red (puerto 8501) en la consola OCI (José Medina / César Cely).
   - [ ] Guión detallado del video demo y primer ensayo general de grabación.
-  - [ ] Optimización de consumo de RAM/CPU en la VM OCI Always Free.
 * **Jueves:** *Sprint Demo Meet S4*. Demostración E2E libre de fallos y presentación del video preliminar.
 * **Fin de semana:** Subir entregables a No Country.
 
