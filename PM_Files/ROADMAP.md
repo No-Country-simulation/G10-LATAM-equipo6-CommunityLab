@@ -55,19 +55,19 @@ gantt
     Repo, Dataset & VM OCI Ready :done, 2026-09-16, 2026-09-18
     Sprint Demo Meet S0          :done, 2026-09-18, 2026-09-19
     section S1: Ingesta & IA Pipeline
-    Pipeline n8n + LLM Resiliente:active, 2026-09-21, 2026-09-23
-    Extracción Estructurada JSON :active, 2026-09-21, 2026-09-24
-    Sprint Demo Meet S1          :2026-09-24, 2026-09-25
+    Pipeline n8n + LLM Resiliente:done, 2026-09-21, 2026-09-23
+    Extracción Estructurada JSON :done, 2026-09-21, 2026-09-24
+    Sprint Demo Meet S1          :done, 2026-09-24, 2026-09-25
     section S2: Persistencia OCI & Routing
-    Bifurcaciones de Contenido   :2026-09-28, 2026-09-30
-    Conexión OCI Object Storage  :2026-09-28, 2026-10-01
-    Sprint Demo Meet S2          :2026-10-01, 2026-10-02
+    Bifurcaciones de Contenido   :done, 2026-09-28, 2026-09-30
+    Conexión OCI Object Storage  :done, 2026-09-28, 2026-10-01
+    Sprint Demo Meet S2          :done, 2026-10-01, 2026-10-02
     section S3: UI Streamlit en VM
-    Desarrollo Panel Streamlit   :2026-10-05, 2026-10-07
-    Despliegue Docker Streamlit  :2026-10-06, 2026-10-08
-    Sprint Demo Meet S3          :2026-10-08, 2026-10-09
+    Desarrollo Panel Streamlit   :done, 2026-10-05, 2026-10-07
+    Curaduria Cloud OCI Native   :done, 2026-10-06, 2026-10-08
+    Sprint Demo Meet S3          :done, 2026-10-08, 2026-10-09
     section S4: Integración E2E & QA
-    Pruebas E2E & Stress QA      :2026-10-12, 2026-10-14
+    Pruebas E2E & Stress QA      :active, 2026-10-12, 2026-10-14
     Grabación Demo Preliminar    :2026-10-13, 2026-10-15
     Sprint Demo Meet S4          :2026-10-15, 2026-10-16
     section S5: Pitch & Demo Day
@@ -123,17 +123,22 @@ gantt
 
 ---
 
-### Semana 3: Panel de Curaduría en Streamlit & Despliegue en VM OCI
-* **Objetivo:** Dotar a la solución de una interfaz gráfica moderna (desplegada en la VM de OCI) para que los Community Managers revisen, editen y aprueben copys.
+### Semana 3: Panel de Curaduría en Streamlit & Despliegue en VM OCI (Completada con éxito 🎉)
+* **Objetivo:** Dotar a la solución de una interfaz gráfica moderna (desplegada en la VM de OCI) para que los Community Managers revisen, editen y aprueben copys, con arquitectura cloud-native contra OCI Object Storage.
 * **Lunes:** *Sprint Planning Meet*.
-* **Desarrollo:**
-  - [ ] Interfaz web con **Streamlit** en `src/ui/`:
-    - Vista 1: Dashboard de salud de comunidad (gráficos de sentimiento y temas en tendencia).
-    - Vista 2: Bandeja de curaduría (editor de textos, botones "Aprobar", "Rechazar" y "Regenerar").
-    - Vista 3: Explorador de activos archivados en OCI Object Storage.
-  - [ ] Disparo interactivo desde Streamlit hacia n8n mediante Webhook (`POST /webhook/...`).
-  - [ ] Despliegue de Streamlit en la VM de OCI Compute (puerto `8501`) mediante Docker Compose integrado.
-* **Jueves:** *Sprint Demo Meet S3*. Recorrido interactivo completo desde la carga de datos hasta la aprobación en pantalla sobre la IP pública.
+* **Entregables logrados:**
+  - [x] Interfaz web con **Streamlit** en `src/ui/app.py`:
+    - Vista 1: Bandeja de curaduría cloud-first con estados dinámicos (`🟢 APROBADO`, `🔴 DESCARTADO`, `🔵 LEÍDO` para FAQs y Feedback) persistidos en `curaduria/curaduria_aprobados.json` en OCI.
+    - Vista 2: Orquestador interactivo dual (Motor 1 n8n vía Webhook HTTP y Motor 2 Pipeline Python Nativo con Gemini 2.5).
+    - Vista 3: Explorador y gestor de activos archivados en OCI Object Storage (`activos/{YYYY-MM-DD}/*.json`) con capacidad de vaciado en nube.
+  - [x] Generación homologada de **4 archivos temáticos especializados** en OCI para ambos motores:
+    - `marketing_linkedin_logros.json`
+    - `marketing_showcase.json`
+    - `faqs_soporte_tecnico.json`
+    - `metricas_feedback_comunidad.json`
+  - [x] Arquitectura *Stateless* en VM: Eliminación de archivos temporales locales redundantes y deduplicación inteligente consultando directamente OCI Object Storage.
+  - [x] Suite de 49 pruebas unitarias e integrales automáticas (`pytest tests/ -v`).
+* **Jueves:** *Sprint Demo Meet S3*. Recorrido interactivo completo desde la carga de datos hasta la curaduría en tiempo real con persistencia en OCI.
 * **Fin de semana:** Subir entregables a No Country.
 
 ---

@@ -3,9 +3,9 @@
 **Proyecto:** CommunityLab — Hackathon ONE G10 (Oracle & Alura / No Country)  
 **Equipo:** Equipo 6 - LATAM  
 **Destinatarios:** Integrantes del Equipo (Célula Frontend, Célula Cloud, Célula IA & Mentores)  
-**Fecha:** 20 de septiembre de 2026  
-**Rama Oficial:** `feat/backend-pipeline-max`  
-**Estado:** 100% Funcional — 44/44 Tests Unitarios Pasando
+**Fecha:** 21 de septiembre de 2026  
+**Rama Oficial:** `feat/semana3-integration-e2e`  
+**Estado:** 100% Funcional — 49/49 Tests Unitarios e Integrales Pasando
 
 ---
 
@@ -13,47 +13,50 @@
 
 **CommunityLab** es una plataforma diseñada para ingerir interacciones orgánicas de comunidades de aprendizaje técnico (como Discord o foros de Alura / Oracle ONE), analizarlas mediante modelos de lenguaje avanzados (LLMs) y transformarlas automáticamente en:
 
-1. **Publicaciones para Redes Sociales (LinkedIn y X):** Copys estructurados con ganchos persuasivos, lecciones aprendidas y hashtags relevantes.
-2. **Contenido Educativo y FAQs Dinámicas:** Tips técnicos paso a paso para resolver dudas recurrentes de los estudiantes.
-3. **Persistencia en la Nube:** Almacenamiento seguro en **Oracle Cloud Infrastructure (OCI) Object Storage** en la capa Always Free.
-4. **Panel de Curaduría Humana:** Interfaz interactiva donde los Community Managers pueden filtrar, editar, aprobar o descartar publicaciones.
+1. **Publicaciones para Redes Sociales (LinkedIn y X):** Copys estructurados con ganchos persuasivos, lecciones aprendidas y hashtags relevantes (`marketing_linkedin_logros.json`).
+2. **Showcase de Proyectos:** Casos de estudio y proyectos construidos por la comunidad (`marketing_showcase.json`).
+3. **Contenido Educativo y FAQs Dinámicas:** Tips técnicos paso a paso para resolver dudas recurrentes de los estudiantes (`faqs_soporte_tecnico.json`).
+4. **Métricas de Salud y Feedback:** Monitoreo de sentimiento, felicitaciones y áreas de mejora (`metricas_feedback_comunidad.json`).
+5. **Persistencia Cloud-Native en OCI:** Almacenamiento seguro en **Oracle Cloud Infrastructure (OCI) Object Storage** en la capa Always Free (`communitylab-activos-marketing`), eliminando la necesidad de persistir JSONs redundantes en el disco de la VM (Arquitectura Stateless).
+6. **Panel de Curaduría Humana (Streamlit):** Interfaz interactiva donde los Community Managers pueden filtrar, editar, aprobar (`🟢 APROBADO`), descartar (`🔴 DESCARTADO`) o marcar como leídos (`🔵 LEÍDO`) los activos generados.
 
 ---
 
 ## 🏗️ 2. Arquitectura del Pipeline
 
-El sistema cuenta con una **arquitectura dual de orquestación** que permite ejecutar y contrastar dos motores diferentes:
+El sistema cuenta con una **arquitectura dual de orquestación homologada** que permite ejecutar y contrastar dos motores diferentes que generan la misma estructura temática en OCI:
 
 ```mermaid
 flowchart TD
     subgraph INGESTA ["1. Capa de Ingesta & Normalización"]
         RAW[Dataset JSON: data/interacciones_ejemplo.json] --> DL[data_loader.py]
         DL --> VAL[Validación Pydantic CommunityInteraction]
-        DL --> DEDUP[Filtro Omitir IDs Procesados en Sesión]
+        DL --> DEDUP[Filtro Omitir IDs Procesados en OCI Storage]
     end
 
-    subgraph ORQUESTACION ["2. Motores de Inferencia (Dual Engine)"]
+    subgraph ORQUESTACION ["2. Motores de Inferencia Homologados"]
         DEDUP --> CHOOSE{Selección de Motor}
-        CHOOSE -->|Motor 1: Orquestador n8n| N8N[Webhook HTTP: POST /webhook/communitylab-ingesta\nn8n Container: Loop + LLM Chain]
-        CHOOSE -->|Motor 2: Pipeline Python Nativo| PY[src/pipeline.py\nSDK google-genai: Gemini 2.5 Flash/Lite]
+        CHOOSE -->|Motor 1: Orquestador n8n| N8N[Webhook HTTP: POST /webhook/communitylab-ingesta<br/>Loop + LLM Chain + Switch]
+        CHOOSE -->|Motor 2: Pipeline Python Nativo| PY[src/pipeline.py<br/>SDK google-genai: Gemini 2.5 Flash]
     end
 
-    subgraph CONSOLIDACION ["3. Consolidación & Métricas"]
-        PY --> FUS[Modo Acumulativo: fusionar_paquetes]
-        N8N --> FUS
-        FUS --> MET[Cálculo de Sentimientos, Tipos y Copys]
+    subgraph ESPECIALIZACION ["3. 4 Archivos Especializados en Memoria"]
+        PY & N8N --> F1[marketing_linkedin_logros.json]
+        PY & N8N --> F2[marketing_showcase.json]
+        PY & N8N --> F3[faqs_soporte_tecnico.json]
+        PY & N8N --> F4[metricas_feedback_comunidad.json]
     end
 
-    subgraph PERSISTENCIA ["4. Capa de Almacenamiento"]
-        MET --> OCI[src/cloud_oci/storage_client.py]
-        OCI --> BUCKET[("OCI Object Storage / Local Fallback<br/>activos/YYYY-MM-DD/paquete-distribucion-motor-HHMMSS.json")]
+    subgraph PERSISTENCIA ["4. Persistencia en la Nube (OCI Storage)"]
+        F1 & F2 & F3 & F4 --> OCI[src/cloud_oci/storage_client.py]
+        OCI --> BUCKET[("OCI Object Storage: communitylab-activos-marketing<br/>activos/YYYY-MM-DD/*.json")]
     end
 
-    subgraph PRESENTACION ["5. Panel de Curaduría & Logs"]
-        BUCKET -.-> UI[Streamlit: src/ui/app.py]
-        UI --> LOGS[Visor de Logs Diarios: logs/communitylab-YYYY-MM-DD.log]
-        UI --> CUR[Curaduría: Editar, Aprobar, Descartar]
-        CUR --> APPROVED[(data/curaduria_aprobados.json)]
+    subgraph PRESENTACION ["5. Panel de Curaduría & Auditoría"]
+        BUCKET --> UI[Streamlit: src/ui/app.py]
+        UI --> LOGS[Visor de Logs: logs/communitylab-YYYY-MM-DD.log]
+        UI --> CUR[Curaduría: Aprobar 🟢, Descartar 🔴, Leer 🔵]
+        CUR --> CUR_CLOUD[("OCI: curaduria/curaduria_aprobados.json")]
     end
 ```
 
@@ -210,11 +213,11 @@ Abre tu navegador en: **`http://localhost:8501`**.
    - Permite editar el copy para LinkedIn o el tip técnico y pulsar **Aprobar** o **Rechazar**.
 2. **⚡ Ejecutar Pipeline:**
    - **Fila 1:** `Límite de registros` | `Filtrar por canal` | `[🗑️ Vaciar Lotes Locales]` | `[⚠️ Vaciar Histórico OCI ⌄]`.
-   - **Fila 2:** `[☑️ Subir a OCI Storage]` | `[☑️ Acumular con previos]` | `[☑️ Omitir ya procesados]`.
-   - Selector de motor para ejecutar con **Python Nativo** o con **n8n**.
+   - **Fila 2:** `[☑️ Subir a OCI Storage (Motor Python)]` | `[☑️ Omitir interacciones ya procesadas en OCI]`.
+   - Selector de motor para ejecutar con **🐍 Motor 2: Pipeline Python Nativo** o con **🌐 Motor 1: Orquestador n8n**.
    - Visor de logs en vivo en la parte inferior con botones de refresco y limpieza.
 3. **☁️ Histórico OCI Object Storage:**
-   - Explora todos los paquetes persistidos en el almacenamiento y permite su vaciado seguro con confirmación previa.
+   - Explora todos los paquetes persistidos en el almacenamiento (`activos/{YYYY-MM-DD}/*.json`) y permite su vaciado seguro con confirmación previa directo en la nube.
 
 ---
 
@@ -242,14 +245,14 @@ Probar la ejecución contra el motor de n8n:
 
 ## 📊 8. Comparativa Técnica de Motores
 
-| Característica            | 🐍 Motor Python Nativo                        | 🔄 Orquestador n8n Local           |
+| Característica            | 🐍 Motor Python Nativo                        | 🔄 Orquestador n8n                 |
 | :------------------------ | :-------------------------------------------- | :--------------------------------- |
-| **Entorno de Ejecución**  | Proceso nativo Python / CLI / Streamlit       | Contenedor Docker en puerto 5678   |
-| **Modelo de IA**          | Google Gemini 2.5 Flash (Fallback a 2.5 Lite) | Groq (Llama 3 / Mixtral) o Gemini  |
+| **Entorno de Ejecución**  | Proceso nativo Python (In-Process / Zero-Hop) | Contenedor Docker en puerto 5678   |
+| **Modelo de IA**          | Google Gemini 2.5 Flash                       | Groq (Llama 3 / Mixtral) o Gemini  |
 | **Tiempo de Respuesta**   | Ultrarrápido (~2 a 4 segundos por lote)       | Secuencial con pausas de seguridad |
-| **Validación de Esquema** | Pydantic V2 estricto en código                | Structured Output Parser           |
-| **Identificador de Lote** | `[py_HHMMSS]`                                 | `[n8n_HHMMSS]`                     |
-| **Sufijo en OCI**         | `paquete-distribucion-python-*.json`          | `paquete-distribucion-n8n-*.json`  |
+| **Validación de Esquema** | Pydantic V2 estricto en código (C/Rust)       | Structured Output Parser           |
+| **Archivos en OCI**       | 4 Archivos Temáticos Especializados           | 4 Archivos Temáticos Especializados|
+| **Persistencia**          | Directa a Bucket OCI Always Free              | Directa a Bucket OCI Always Free   |
 
 ---
 

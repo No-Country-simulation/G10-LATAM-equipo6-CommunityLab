@@ -32,17 +32,30 @@ http://localhost:5678
 
 ---
 
-## 🚀 Patrón Arquitectónico del Pipeline en n8n
+## 🚀 Patrones Arquitectónicos del Pipeline en n8n
 
-Para procesar las 15 interacciones orgánicas evitando bloqueos de permisos y cuotas de API (*Rate Limits*):
+### 1. Ingesta Integrada vía Webhook HTTP (Interacción directa con Streamlit)
+Utilizado para el disparo interactivo desde la UI ([`n8n/workflows/communitylab_ingesta_local_webhook.json`](workflows/communitylab_ingesta_local_webhook.json)):
+1. **Webhook Trigger:** Expone el endpoint `POST /webhook/communitylab-ingesta` que recibe el lote de interacciones pre-filtrado por Streamlit.
+2. **Normalización & Batching:** Procesa las interacciones individualmente o en micro-lotes sin generar archivos locales temporales.
+3. **Inferencia LLM:** Emplea Google Gemini o Groq con esquemas estructurados para clasificar y generar copys.
+4. **Bifurcación y Enrutamiento:** Separa los activos en los 4 formatos especializados:
+   - `marketing_linkedin_logros.json`
+   - `marketing_showcase.json`
+   - `faqs_soporte_tecnico.json`
+   - `metricas_feedback_comunidad.json`
+5. **Persistencia en OCI Object Storage:** Carga directa al Bucket `communitylab-activos-marketing` bajo el prefijo `activos/{YYYY-MM-DD}/`.
+6. **Respuesta al Webhook:** Retorna el paquete consolidado a Streamlit para su inspección inmediata.
 
-1. **Ingesta de Datos:** Nodo `Code` que lee y emite individualmente los 15 registros de `data/interacciones_ejemplo.json`.
-2. **Control de Flujo (Batching):** Nodo `Loop Over Items` con `Batch Size: 1` para procesamiento secuencial.
-3. **Inferencia LLM:** Nodo `Basic LLM Chain` conectado a `Groq Chat Model` (con `openai/gpt-oss-20b`) o `Google Gemini Chat Model`, forzando la clasificación con un System Prompt estandarizado.
+### 2. Flujo Autónomo en Lote (Batching con Rate Limiting)
+Para procesar interacciones directamente en lote desde el almacenamiento:
+1. **Ingesta de Datos:** Nodo `Code` que lee y emite individualmente los registros del dataset.
+2. **Control de Flujo:** Nodo `Loop Over Items` con `Batch Size: 1` para procesamiento secuencial.
+3. **Inferencia LLM:** Nodo `Basic LLM Chain` conectado a Groq o Gemini con System Prompt estandarizado.
 4. **Validación Estructurada:** Subnodo `Structured Output Parser` que valida y extrae tipadamente `sentimiento`, `tipo_contenido`, `temas_clave`, `post_linkedin` y `tip_tecnico_faq`.
-5. **Consolidación y Enriquecimiento (Metadata):** Nodo `Edit Fields (Set)` que fusiona los datos del autor original (`id`, `autor`, `canal`, `texto_original`) con los activos generados por la IA en un objeto plano unificado.
-6. **Resiliencia & Rate Limiting:** Nodo `Wait` de 12 segundos que pausa la ejecución antes de avanzar al siguiente item, protegiendo el límite de TPM/RPM de la API.
-7. **Cierre de Ciclo:** La salida de `Wait` regresa al `Loop Over Items` hasta procesar el lote completo.
+5. **Consolidación (Metadata):** Nodo `Edit Fields (Set)` que fusiona los datos del autor original con los activos generados.
+6. **Resiliencia & Rate Limiting:** Nodo `Wait` para proteger el límite de TPM/RPM de la API.
+7. **Cierre de Ciclo:** La salida de `Wait` regresa al loop hasta completar el lote.
 
 ---
 
