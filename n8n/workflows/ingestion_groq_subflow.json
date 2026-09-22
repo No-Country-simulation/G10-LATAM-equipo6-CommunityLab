@@ -1,19 +1,6 @@
 {
-  "name": "CCely_WF_004",
+  "name": "CCely_WF_005",
   "nodes": [
-    {
-      "parameters": {
-        "jsCode": "const dataset = {\n  \"interacciones\": [\n    {\n      \"id\": \"msg_001\",\n      \"autor\": \"Carlos Mendoza\",\n      \"canal\": \"#logros-y-empleos\",\n      \"tipo\": \"testimonio\",\n      \"texto\": \"Quiero compartirles que hoy firmé mi contrato formal como Desarrollador Junior Cloud en una consultora internacional. Todo lo aprendido en la formación de Oracle ONE y los laboratorios prácticos marcaron la diferencia absoluta en mi prueba técnica. Infinitas gracias a la comunidad por el apoyo constante!\"\n    },\n    {\n      \"id\": \"msg_002\",\n      \"autor\": \"Lucía Fernández\",\n      \"canal\": \"#dudas-programacion\",\n      \"tipo\": \"pregunta_tecnica\",\n      \"texto\": \"Hola comunidad, estoy teniendo un problema con una llamada a la API de Gemini en Python. Me sale un error de ResourceExhausted cuando envío más de 10 peticiones seguidas. ¿Alguien ha implementado exponential backoff o manejo de rate limits con la librería oficial de Google GenAI?\"\n    },\n    {\n      \"id\": \"msg_003\",\n      \"autor\": \"Mateo Rivas\",\n      \"canal\": \"#logros-y-empleos\",\n      \"tipo\": \"testimonio\",\n      \"texto\": \"Ayer me confirmaron mi primer contrato como Data Analyst para una startup de Chile gracias a los proyectos que desarrollamos en las formaciones de Alura y Oracle ONE. No se rindan, el esfuerzo constante rinde frutos!\"\n    },\n    {\n      \"id\": \"msg_004\",\n      \"autor\": \"Andrea Gómez\",\n      \"canal\": \"#dudas-cloud-oci\",\n      \"tipo\": \"pregunta_tecnica\",\n      \"texto\": \"Hola a todos, estoy intentando subir archivos a OCI Object Storage usando el SDK de Python pero me arroja un error 401 NotAuthenticated. ¿Cómo debo configurar las claves API en el archivo ~/.oci/config para la instancia VM?\"\n    },\n    {\n      \"id\": \"msg_005\",\n      \"autor\": \"Sebastián Ramos\",\n      \"canal\": \"#proyectos-showcase\",\n      \"tipo\": \"showcase\",\n      \"texto\": \"Acabo de desplegar mi bot de Telegram con IA usando Gemini Flash y OCI Compute Always Free. Pueden probarlo y darme feedback: https://t.me/sebas_oracle_bot. Todo el backend corre en un contenedor Docker con menos de 500MB de RAM!\"\n    },\n    {\n      \"id\": \"msg_006\",\n      \"autor\": \"Valeria Silva\",\n      \"canal\": \"#feedback-cursos\",\n      \"tipo\": \"feedback\",\n      \"texto\": \"El módulo de Prompt Engineering y Few-Shot Learning estuvo genial. Me gustaría que agregaran una clase extra sobre cómo prevenir prompt injection en sistemas que leen entradas de usuarios en foros públicos.\"\n    },\n    {\n      \"id\": \"msg_007\",\n      \"autor\": \"Martín Peña\",\n      \"canal\": \"#dudas-gemini-api\",\n      \"tipo\": \"pregunta_tecnica\",\n      \"texto\": \"Alguien sabe cuál es el límite de tokens por minuto (TPM) en la capa gratuita de Google Gemini 1.5 Flash cuando enviamos peticiones por streaming?\"\n    },\n    {\n      \"id\": \"msg_008\",\n      \"autor\": \"Daniela Paredes\",\n      \"canal\": \"#logros-y-empleos\",\n      \"tipo\": \"testimonio\",\n      \"texto\": \"Presenté la demo de mi proyecto de Hackathon a mi jefe actual en el área de soporte y me ascendieron a Líder Técnico de Automatización de Procesos. ¡Este programa ONE realmente transforma vidas profesionales!\"\n    },\n    {\n      \"id\": \"msg_009\",\n      \"autor\": \"Esteban Morales\",\n      \"canal\": \"#dudas-docker\",\n      \"tipo\": \"pregunta_tecnica\",\n      \"texto\": \"Cuando despliego Streamlit dentro de un contenedor Docker en Ubuntu Server de OCI, no puedo acceder desde el navegador en el puerto 8501. ¿Qué reglas de seguridad debo abrir en la VCN de Oracle Cloud?\"\n    },\n    {\n      \"id\": \"msg_010\",\n      \"autor\": \"Camila Torres\",\n      \"canal\": \"#feedback-cursos\",\n      \"tipo\": \"feedback\",\n      \"texto\": \"Me encantaría que el equipo organizador de Oracle ONE hiciera un workshop en vivo sobre cómo preparar el perfil de LinkedIn y el portafolio en GitHub para reclutadores de tecnología. La formación técnica es excelente, pero potenciar la marca personal nos daría un impulso tremendo.\"\n    },\n    {\n      \"id\": \"msg_011\",\n      \"autor\": \"Javier Rojas\",\n      \"canal\": \"#logros-y-empleos\",\n      \"tipo\": \"testimonio\",\n      \"texto\": \"Después de 6 meses de reconversión laboral desde contabilidad hacia backend con Java y Spring Boot en Oracle ONE, acabo de recibir mi oferta laboral como Desarrollador Trainee. Gracias a mis tutores y compañeros por resolver cada duda!\"\n    },\n    {\n      \"id\": \"msg_012\",\n      \"autor\": \"Paula Benítez\",\n      \"canal\": \"#dudas-cloud-oci\",\n      \"tipo\": \"pregunta_tecnica\",\n      \"texto\": \"Una pregunta rápida: ¿cuál es la mejor práctica para automatizar el respaldo diario de una base de datos Oracle Autonomous Database (Always Free) hacia OCI Object Storage usando OCI CLI o cron jobs?\"\n    },\n    {\n      \"id\": \"msg_013\",\n      \"autor\": \"Tomás Herrera\",\n      \"canal\": \"#proyectos-showcase\",\n      \"tipo\": \"showcase\",\n      \"texto\": \"Diseñé un clasificador de sentimientos de tickets de soporte técnico con Gemini 1.5 Pro y FastAPI. Logramos un 92% de precisión comparado con la categorización manual humana. Les comparto el repositorio con la documentación completa.\"\n    },\n    {\n      \"id\": \"msg_014\",\n      \"autor\": \"Gabriel Medina\",\n      \"canal\": \"#dudas-programacion\",\n      \"tipo\": \"pregunta_tecnica\",\n      \"texto\": \"¿Cómo puedo forzar a que Google Gemini siempre responda con un esquema JSON estricto en Python sin que a veces incluya bloques markdown como ```json? Me está rompiendo el json.loads() en backend.\"\n    },\n    {\n      \"id\": \"msg_015\",\n      \"autor\": \"Sofía Castro\",\n      \"canal\": \"#logros-y-empleos\",\n      \"tipo\": \"testimonio\",\n      \"texto\": \"Oficialmente soy graduada de la promoción G10 de Oracle Next Education y fui seleccionada para una pasantía remunerada en ingeniería de datos en una multinacional de telecomunicaciones. ¡Los sueños se cumplen estudiando con disciplina!\"\n    }\n  ]\n};\n\n// Devuelve los 15 registros como items independientes listos para Gemini\nreturn dataset.interacciones.map(item => ({ json: item }));\n"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        -432,
-        448
-      ],
-      "id": "dd20ba78-c8e2-4d9a-8000-4f565a1fb6cc",
-      "name": "Code in JavaScript1"
-    },
     {
       "parameters": {
         "promptType": "define",
@@ -31,10 +18,10 @@
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "typeVersion": 1.9,
       "position": [
-        16,
-        448
+        -48,
+        288
       ],
-      "id": "28f008a3-e559-4bf4-b2d3-9350706e7849",
+      "id": "cb6b065d-4ef5-4592-9ea0-a91a7b3d8d44",
       "name": "Basic LLM Chain1",
       "retryOnFail": true,
       "waitBetweenTries": 5000
@@ -46,10 +33,10 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        -208,
-        448
+        -272,
+        288
       ],
-      "id": "42679acf-a1a3-4b64-9228-8382d3f1a3f8",
+      "id": "23230abd-dcf7-47db-a17d-e1dc4dc05f78",
       "name": "Loop Over Items1"
     },
     {
@@ -59,25 +46,25 @@
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
       "position": [
-        592,
-        560
+        528,
+        400
       ],
-      "id": "5b298d42-bce5-4a8d-a9db-de312890b1f4",
+      "id": "e42850e1-626b-46e0-b089-2c1a1c8e2b68",
       "name": "Wait1",
-      "webhookId": "e2ca8732-8cd6-4cd8-8e1a-5decc8c232f9"
+      "webhookId": "475c843d-c122-434f-aeaa-380743824fb8"
     },
     {
       "parameters": {
-        "model": "openai/gpt-oss-120b",
+        "model": "openai/gpt-oss-safeguard-20b",
         "options": {}
       },
       "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
       "typeVersion": 1,
       "position": [
-        24,
-        664
+        -40,
+        504
       ],
-      "id": "8e97e8ae-e5e5-41e1-bb14-5a6957b49e67",
+      "id": "fdf63526-de61-4008-a323-3a6ec82cc570",
       "name": "Groq Chat Model1",
       "credentials": {
         "groqApi": {
@@ -94,10 +81,10 @@
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.3,
       "position": [
-        152,
-        664
+        88,
+        504
       ],
-      "id": "d364fe5d-9437-46e7-87fc-e88478fe2741",
+      "id": "20d03de1-4b4d-4c33-b907-c739e283d50d",
       "name": "Structured Output Parser"
     },
     {
@@ -165,10 +152,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.5,
       "position": [
-        368,
-        448
+        304,
+        288
       ],
-      "id": "c0fb89a0-451e-4a6e-980c-816e2d3819db",
+      "id": "864b769d-3911-4609-a324-4de32df2de9e",
       "name": "Edit Fields1"
     },
     {
@@ -178,10 +165,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        80,
-        144
+        16,
+        -16
       ],
-      "id": "e9fd1836-fee7-487c-9540-365d80ad20e7",
+      "id": "11dd928f-e631-4864-9da4-3d526df9aca4",
       "name": "Consolidar Paquete OCI1"
     },
     {
@@ -194,10 +181,10 @@
       "type": "n8n-nodes-base.s3",
       "typeVersion": 1,
       "position": [
-        592,
-        144
+        528,
+        -16
       ],
-      "id": "9742aa62-8269-4653-8e98-3dc48483d2f2",
+      "id": "f5fc8f94-bbe5-4572-b260-45fc27cc3153",
       "name": "Upload a file1",
       "credentials": {
         "s3": {
@@ -218,26 +205,72 @@
       "type": "n8n-nodes-base.convertToFile",
       "typeVersion": 1.1,
       "position": [
-        368,
-        144
+        304,
+        -16
       ],
-      "id": "5fde64f7-e60a-48f9-9846-3c0379b31f67",
+      "id": "0dd770d4-716f-4b35-98ab-de165ba7e881",
       "name": "Convert to File1"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "communitylab-ingesta",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -720,
+        288
+      ],
+      "id": "08ebf188-0c79-45d6-9aee-38d1ad796f85",
+      "name": "Webhook",
+      "webhookId": "6741e965-46ea-47b6-a308-273c27fa7b1a"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extrae las interacciones recibidas desde la UI de Streamlit o petición HTTP\nconst body = $json.body || $json;\nconst items = body.interacciones || body.data || (Array.isArray(body) ? body : [body]);\n\nif (!items || items.length === 0) {\n  throw new Error('No se recibieron interacciones en el body de la petición');\n}\n\nreturn items.map(item => ({ json: item }));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -496,
+        288
+      ],
+      "id": "45e0caed-c5a4-4e4b-a95a-b25764a10350",
+      "name": "Extract Interactions"
+    },
+    {
+      "parameters": {
+        "respondWith": "allIncomingItems",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        976,
+        -16
+      ],
+      "id": "0080fbf6-92d5-4802-ac1b-a34f856c3575",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "jsCode": "const itemsProcesados = $('Loop Over Items1').all();\nconst archivosSubidos = $('Upload a file1').all();\n\nconst postsCount = itemsProcesados.filter(i => i.json?.post_linkedin).length;\nconst tipsCount = itemsProcesados.filter(i => i.json?.tip_tecnico_faq).length;\n\nconst sentimientoDist = {\n  positivo: itemsProcesados.filter(i => i.json?.sentimiento === 'positivo').length,\n  neutro: itemsProcesados.filter(i => i.json?.sentimiento === 'neutro').length,\n  negativo: itemsProcesados.filter(i => i.json?.sentimiento === 'negativo').length\n};\n\nconst activos = itemsProcesados.map(item => ({\n  interaccion: {\n    id: item.json?.id || \"N/A\",\n    autor: item.json?.autor || \"Comunidad\",\n    canal: item.json?.canal || \"#general\",\n    texto: item.json?.comentario || item.json?.pregunta_original || item.json?.post_linkedin || \"\"\n  },\n  activo: {\n    tipo_contenido: item.json?.tipo_contenido || \"feedback_general\",\n    sentimiento: item.json?.sentimiento || \"neutro\",\n    temas_clave: item.json?.temas_clave || [],\n    post_linkedin: item.json?.post_linkedin || null,\n    tip_tecnico_faq: item.json?.tip_tecnico_faq || null\n  },\n  motor_orquestacion: \"n8n_oci_cloud\"\n}));\n\nreturn [{\n  json: {\n    status: \"completado\",\n    metadata_paquete: {\n      motor_orquestacion: \"n8n_oci_cloud\",\n      total_procesados_exitosamente: itemsProcesados.length,\n      total_archivos_oci: archivosSubidos.length\n    },\n    metricas: {\n      total_posts_linkedin_generados: postsCount,\n      total_tips_faq_generados: tipsCount,\n      distribucion_sentimiento: sentimientoDist\n    },\n    activos: activos\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        752,
+        -16
+      ],
+      "id": "05111315-9566-4280-900e-480e6dddcbd0",
+      "name": "Preparar Respuesta"
     }
   ],
   "pinData": {},
   "connections": {
-    "Code in JavaScript1": {
-      "main": [
-        [
-          {
-            "node": "Loop Over Items1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Basic LLM Chain1": {
       "main": [
         [
@@ -332,6 +365,50 @@
           }
         ]
       ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Extract Interactions",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Interactions": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload a file1": {
+      "main": [
+        [
+          {
+            "node": "Preparar Respuesta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar Respuesta": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
@@ -339,11 +416,11 @@
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "e947091f-7b19-4269-b67b-1abed526d1a0",
+  "versionId": "5bfc7948-3c2d-4d72-9627-1c663f18146f",
   "meta": {
     "instanceId": "cb0b9a3b8b392f0b0fbc26be213326cbdfd285ed78e8eb9be9b7984b7130dd64"
   },
   "nodeGroups": [],
-  "id": "0nZC9ksVszIbNIc8",
+  "id": "rXDvhA9R1gh9NNOA",
   "tags": []
 }
