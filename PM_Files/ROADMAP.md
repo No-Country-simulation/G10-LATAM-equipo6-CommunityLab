@@ -179,7 +179,7 @@ gantt
   - [x] **Optimización de recursos en la VM OCI Always Free:** Arquitectura sin estado (Stateless) que no satura el disco con volcados JSON locales.
   - [ ] Pruebas exhaustivas manuales por parte del equipo de QA (Edwin, Raúl, Rodrigo) con entradas atípicas de usuarios.
   - [ ] Refinamiento del prototipo Frontend en Streamlit (Carol Huarancay).
-  - [ ] Apertura de regla de red (puerto 8501) en la consola OCI (José Medina / César Cely).
+  - [x] Apertura de regla de red (puerto 8501) en la consola OCI (José Medina / César Cely) — Verificado acceso público `200 OK`.
   - [ ] Guión detallado del video demo y primer ensayo general de grabación.
 * **Jueves:** *Sprint Demo Meet S4*. Demostración E2E libre de fallos y presentación del video preliminar.
 * **Fin de semana:** Subir entregables a No Country.
