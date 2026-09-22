@@ -6,3 +6,7 @@ oci>=2.120.0
 streamlit>=1.35.0
 pandas>=2.0.0
 pytest>=8.0.0
+# Dynamic Channels (Bots)
+python-telegram-bot>=22.0
+discord.py>=2.5.0
+slack-bolt>=1.20.0
