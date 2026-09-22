@@ -338,8 +338,8 @@ def procesar_archivo_n8n_ui(
         raise ValueError("No hay interacciones nuevas para procesar: todas las de este criterio ya fueron procesadas en esta sesión.")
 
     url = webhook_url or os.getenv(
-        "N8N_LOCAL_WEBHOOK_URL",
-        os.getenv("N8N_WEBHOOK_URL", "http://localhost:5678/webhook/communitylab-ingesta"),
+        "N8N_WEBHOOK_URL",
+        os.getenv("N8N_LOCAL_WEBHOOK_URL", "http://147.15.9.116:5678/webhook/communitylab-ingesta"),
     )
 
     payload = {
