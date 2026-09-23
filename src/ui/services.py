@@ -21,6 +21,7 @@ from src.ingestion.data_loader import (
 )
 from src.pipeline import CommunityLabPipeline
 from src.utils.logger import setup_logger
+from src.utils.config import get_n8n_webhook_url, is_production
 
 logger = setup_logger("CommunityLabUIServices")
 
@@ -337,10 +338,7 @@ def procesar_archivo_n8n_ui(
     if not interacciones:
         raise ValueError("No hay interacciones nuevas para procesar: todas las de este criterio ya fueron procesadas en esta sesión.")
 
-    url = webhook_url or os.getenv(
-        "N8N_LOCAL_WEBHOOK_URL",
-        os.getenv("N8N_WEBHOOK_URL", "http://localhost:5678/webhook/communitylab-ingesta"),
-    )
+    url = webhook_url or get_n8n_webhook_url()
 
     payload = {
         "origen": "CommunityLab-Streamlit",
@@ -432,7 +430,7 @@ def procesar_archivo_n8n_ui(
 
             now_utc = datetime.now(timezone.utc)
             activos_formateados.append({
-                "motor_orquestacion": "n8n_local",
+                "motor_orquestacion": "n8n_produccion" if is_production() else "n8n_local",
                 "procesado_en": now_utc.isoformat(),
                 "lote_id": f"n8n_{now_utc.strftime('%H%M%S')}",
                 "interaccion": {

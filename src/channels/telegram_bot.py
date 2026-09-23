@@ -16,7 +16,9 @@ from telegram.ext import (
 
 from src.channels.dispatcher import ChannelMessageDispatcher
 
-logger = logging.getLogger("CommunityLab.Channels.Telegram")
+from src.utils.logger import setup_logger
+from src.utils.config import get_telegram_token
+logger = setup_logger("CommunityLab.Channels.Telegram")
 
 
 class CommunityLabTelegramBot:
@@ -33,7 +35,7 @@ class CommunityLabTelegramBot:
             token: Token de la API de Telegram. Si es None, lee TELEGRAM_BOT_TOKEN de .env.
             dispatcher: Instancia de ChannelMessageDispatcher para procesar con IA.
         """
-        self.token = os.getenv("TELEGRAM_BOT_TOKEN") if token is None else token
+        self.token = get_telegram_token() if token is None else token
         self.dispatcher = dispatcher or ChannelMessageDispatcher()
         self.application: Optional[Application] = None
 
@@ -68,6 +70,7 @@ class CommunityLabTelegramBot:
             "• `/start` - Iniciar bot y ver bienvenida\n"
             "• `/help` - Ver ayuda técnica"
         )
+        logger.info("[Telegram] Comando /start ejecutado por %s (Chat ID: %s)", nombre, update.effective_chat.id if update.effective_chat else None)
         await update.effective_message.reply_text(saludo, parse_mode="Markdown")
 
     async def handle_help(self, update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -82,6 +85,7 @@ class CommunityLabTelegramBot:
             "2. Análisis semántico y extracción de copys (Gemini Flash).\n"
             "3. Acumulación en el paquete de distribución para curaduría."
         )
+        logger.info("[Telegram] Comando /help ejecutado por %s (Chat ID: %s)", update.effective_user.first_name if update.effective_user else 'Usuario', update.effective_chat.id if update.effective_chat else None)
         await update.effective_message.reply_text(ayuda, parse_mode="Markdown")
 
     async def handle_incoming_text(
@@ -96,6 +100,7 @@ class CommunityLabTelegramBot:
         msg_id = f"tg_{update.effective_message.message_id}"
         chat_id = update.effective_chat.id if update.effective_chat else None
 
+        logger.info("[Telegram] Mensaje entrante de %s (Chat ID: %s, Msg ID: %s): '%s'", usuario, chat_id, msg_id, texto)
         if chat_id:
             await context.bot.send_chat_action(chat_id=chat_id, action="typing")
 
@@ -108,7 +113,12 @@ class CommunityLabTelegramBot:
                 metadata={"chat_id": chat_id, "username": update.effective_user.username},
             )
             respuesta_md = respuestas["telegram_markdown"]
-            await update.effective_message.reply_text(respuesta_md, parse_mode="Markdown")
+            try:
+                await update.effective_message.reply_text(respuesta_md, parse_mode="Markdown")
+            except Exception as parse_err:
+                logger.warning("Error de entidades en Markdown (%s). Enviando en texto plano...", parse_err)
+                await update.effective_message.reply_text(respuesta_md)
+            logger.info("[Telegram] Respuesta enviada exitosamente a %s (Chat ID: %s, Msg ID: %s)", usuario, chat_id, msg_id)
 
         except Exception as e:
             logger.error("Error procesando mensaje de Telegram: %s", e)
@@ -120,5 +130,5 @@ class CommunityLabTelegramBot:
         """Inicia el bot en modo Long Polling continuo."""
         app = self.build_application()
         logger.info("Iniciando Telegram Bot en modo Long Polling...")
-        print("🤖 [Telegram Bot] Conectado y escuchando mensajes vía Long Polling...")
+        print("[Telegram Bot] Conectado y escuchando mensajes vía Long Polling...")
         app.run_polling()

@@ -1,0 +1,169 @@
+{
+  "name": "CommunityLab_Telegram_Dinamico",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -200,
+        200
+      ],
+      "id": "tg-trigger-001",
+      "name": "Telegram Trigger"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Analiza el siguiente mensaje recibido en el bot de la comunidad:\n\nAutor: {{ $json.message.from.first_name || 'Usuario' }}\nTexto: \"{{ $json.message.text }}\"\n\nInstrucciones:\n1. Clasifica el sentimiento (positivo, neutro, negativo).\n2. Determina el tipo_contenido (logro_contratacion, duda_tecnica, showcase, feedback_general).\n3. Extrae temas_clave tecnologicos.\n4. Si es logro_contratacion o showcase, redacta un post_linkedin inspirador.\n5. Si es duda_tecnica, redacta un tip_tecnico_faq util.\n6. Redacta una respuesta_chat clara, amable y directa para responderle en Telegram.",
+        "hasOutputParser": true,
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=Eres el asistente de IA de CommunityLab (Oracle Next Education & Alura). Tu labor es responder a los miembros de la comunidad con empatia tecnica, clasificar la consulta y estructurar activos de conocimiento."
+            }
+          ]
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        100,
+        200
+      ],
+      "id": "tg-chain-001",
+      "name": "Procesador IA CommunityLab"
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-20b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        20,
+        420
+      ],
+      "id": "tg-model-001",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "dAfNMioPwJHVr5V2",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"$schema\": \"http://json-schema.org/draft-07/schema#\",\n  \"title\": \"CommunityLabTelegramOutput\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"sentimiento\": {\n      \"type\": \"string\",\n      \"enum\": [\n        \"positivo\",\n        \"neutro\",\n        \"negativo\"\n      ],\n      \"description\": \"Sentimiento del mensaje\"\n    },\n    \"tipo_contenido\": {\n      \"type\": \"string\",\n      \"enum\": [\n        \"logro_contratacion\",\n        \"duda_tecnica\",\n        \"feedback_general\",\n        \"showcase\"\n      ],\n      \"description\": \"Categoria de contenido\"\n    },\n    \"temas_clave\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"string\"\n      },\n      \"description\": \"Temas o tecnologias identificadas\"\n    },\n    \"respuesta_chat\": {\n      \"type\": \"string\",\n      \"description\": \"Respuesta directa y conversacional para el usuario\"\n    },\n    \"post_linkedin\": {\n      \"type\": [\n        \"string\",\n        \"null\"\n      ],\n      \"description\": \"Post sugerido para LinkedIn si aplica\"\n    },\n    \"tip_tecnico_faq\": {\n      \"type\": [\n        \"string\",\n        \"null\"\n      ],\n      \"description\": \"Tip tecnico estructurado o solucion\"\n    }\n  },\n  \"required\": [\n    \"sentimiento\",\n    \"tipo_contenido\",\n    \"temas_clave\",\n    \"respuesta_chat\"\n  ]\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        200,
+        420
+      ],
+      "id": "tg-parser-001",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Formatear mensaje Markdown para Telegram\nconst output = $json.output || $json;\nconst tgItem = $('Telegram Trigger').item.json.message;\nconst autor = (tgItem.from && tgItem.from.first_name) ? tgItem.from.first_name : 'Compa\u00f1ero';\n\nconst sentimientoEmoji = output.sentimiento === 'positivo' ? '\ud83d\udfe2 Positivo' : (output.sentimiento === 'negativo' ? '\ud83d\udd34 Negativo' : '\u26aa Neutro');\n\nlet msg = `\ud83e\udd16 *CommunityLab Assistant*\\n\\n`;\n\nif (output.respuesta_chat) {\n  msg += `${output.respuesta_chat}\\n\\n`;\n}\n\nif (output.tip_tecnico_faq) {\n  msg += `\ud83d\udca1 *Tip T\u00e9cnico / FAQ:*\\n${output.tip_tecnico_faq}\\n\\n`;\n}\n\nmsg += `\ud83d\udcca *An\u00e1lisis de Comunidad:*\\n`;\nmsg += `\u2022 Sentimiento: ${sentimientoEmoji}\\n`;\nmsg += `\u2022 Categor\u00eda: \\`${output.tipo_contenido || 'general'}\\`\\n`;\n\nif (output.temas_clave && output.temas_clave.length > 0) {\n  msg += `\u2022 Temas: ${output.temas_clave.join(', ')}\\n`;\n}\n\nif (output.post_linkedin) {\n  msg += `\\n\ud83d\ude80 *Post LinkedIn Propuesto:*\\n${output.post_linkedin}\\n`;\n}\n\nreturn [{\n  json: {\n    chat_id: tgItem.chat.id,\n    mensaje_telegram: msg,\n    raw_output: output\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        400,
+        200
+      ],
+      "id": "tg-format-001",
+      "name": "Formatear Respuesta Markdown"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chat_id }}",
+        "text": "={{ $json.mensaje_telegram }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        640,
+        200
+      ],
+      "id": "tg-send-001",
+      "name": "Enviar Respuesta Telegram"
+    }
+  ],
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Procesador IA CommunityLab",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Procesador IA CommunityLab",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Procesador IA CommunityLab",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Procesador IA CommunityLab": {
+      "main": [
+        [
+          {
+            "node": "Formatear Respuesta Markdown",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Formatear Respuesta Markdown": {
+      "main": [
+        [
+          {
+            "node": "Enviar Respuesta Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "tags": [],
+  "id": "TG001CommunityLb"
+}

@@ -424,10 +424,7 @@ elif modo == "⚡ Ejecutar Pipeline":
             unsafe_allow_html=True,
         )
         st.write("")
-        webhook_default = os.getenv(
-            "N8N_LOCAL_WEBHOOK_URL",
-            os.getenv("N8N_WEBHOOK_URL", "http://localhost:5678/webhook/communitylab-ingesta"),
-        )
+        webhook_default = get_n8n_webhook_url()
         with st.expander("⚙️ Configuración Endpoint Webhook n8n", expanded=False):
             webhook_url = st.text_input("URL Webhook:", value=webhook_default)
 

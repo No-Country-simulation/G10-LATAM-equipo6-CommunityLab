@@ -1,4 +1,11 @@
 import sys
+if sys.platform == 'win32':
+    try:
+        sys.stdout.reconfigure(encoding='utf-8')
+        sys.stderr.reconfigure(encoding='utf-8')
+    except Exception:
+        pass
+import sys
 import pathlib
 
 # Asegurar que el root del proyecto este en sys.path
@@ -15,6 +22,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+from src.utils.logger import setup_logger
+from src.utils.config import get_entorno_deploy, get_active_config_summary
 from src.channels.dispatcher import ChannelMessageDispatcher
 from src.channels.telegram_bot import CommunityLabTelegramBot
 from src.channels.discord_bot import CommunityLabDiscordBot
@@ -32,18 +41,23 @@ def main():
     )
     args = parser.parse_args()
 
+    # Inicializar logging centralizado en consola y archivo rotativo (logs/communitylab-*.log)
+    setup_logger("CommunityLab")
+    entorno = get_entorno_deploy()
+    print(f"[CONFIG] Entorno de despliegue activo: {entorno}")
+
     dispatcher = ChannelMessageDispatcher()
 
     if args.channel == "telegram":
-        print(">> Iniciando bot de Telegram (Long Polling)...")
+        print("[START] Iniciando bot de Telegram (Long Polling)...")
         bot = CommunityLabTelegramBot(dispatcher=dispatcher)
         bot.run_polling()
     elif args.channel == "discord":
-        print(">> Iniciando bot de Discord (WebSocket Gateway)...")
+        print("[START] Iniciando bot de Discord (WebSocket Gateway)...")
         bot = CommunityLabDiscordBot(dispatcher=dispatcher)
         bot.start_bot()
     elif args.channel == "slack":
-        print(">> Iniciando bot de Slack (Socket Mode)...")
+        print("[START] Iniciando bot de Slack (Socket Mode)...")
         bot = CommunityLabSlackBot(dispatcher=dispatcher)
         bot.start_socket_mode()
 

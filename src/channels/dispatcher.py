@@ -16,7 +16,8 @@ from src.ai_engine.schemas import (
     TipoContenidoEnum,
 )
 
-logger = logging.getLogger("CommunityLab.Channels.Dispatcher")
+from src.utils.logger import setup_logger
+logger = setup_logger("CommunityLab.Channels.Dispatcher")
 
 
 class ChannelMessageDispatcher:
@@ -37,7 +38,7 @@ class ChannelMessageDispatcher:
         """
         self.ai_service = ai_service or GeminiService()
         self.persist_locally = persist_locally
-        self.storage_path = storage_path or Path("data/paquete_procesado_canales.json")
+        self.storage_path = storage_path or Path("data/paquete_procesado_canales_python.json")
 
     def process_incoming_message(
         self,
@@ -119,9 +120,11 @@ class ChannelMessageDispatcher:
             f"📌 *Tipo:* `{tipo_val}`\n\n"
         )
         if activo.post_linkedin:
-            texto_tg += f"💼 *Propuesta de Publicación (LinkedIn):*\n{activo.post_linkedin}\n\n"
+            post_limpio = activo.post_linkedin.replace("_", "\\_")
+            texto_tg += f"💼 *Propuesta de Publicación (LinkedIn):*\n{post_limpio}\n\n"
         if activo.tip_tecnico_faq:
-            texto_tg += f"💡 *Tip / Solución Técnica:*\n{activo.tip_tecnico_faq}\n"
+            tip_limpio = activo.tip_tecnico_faq.replace("_", "\\_")
+            texto_tg += f"💡 *Tip / Solución Técnica:*\n{tip_limpio}\n"
 
         # 2. Formato Embed para Discord
         color_hex = 0x10B981 if sentimiento_val == "positivo" else 0x6B7280
@@ -224,6 +227,7 @@ class ChannelMessageDispatcher:
 
             with open(self.storage_path, "w", encoding="utf-8") as f:
                 json.dump(paquete, f, ensure_ascii=False, indent=2)
+            logger.info("[Dispatcher] Activo guardado localmente en '%s' (Total acumulado: %d)", self.storage_path, len(paquete["activos"]))
 
         except Exception as e:
             logger.error("Error persistiendo interacción de canal localmente: %s", e)

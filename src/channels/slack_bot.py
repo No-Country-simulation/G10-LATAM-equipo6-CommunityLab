@@ -9,7 +9,9 @@ from slack_bolt.adapter.socket_mode import SocketModeHandler
 
 from src.channels.dispatcher import ChannelMessageDispatcher
 
-logger = logging.getLogger("CommunityLab.Channels.Slack")
+from src.utils.logger import setup_logger
+from src.utils.config import get_slack_bot_token, get_slack_app_token
+logger = setup_logger("CommunityLab.Channels.Slack")
 
 
 class CommunityLabSlackBot:
@@ -28,8 +30,8 @@ class CommunityLabSlackBot:
             app_token: Token de app 'xapp-...'. Si es None, lee SLACK_APP_TOKEN de .env.
             dispatcher: Instancia de ChannelMessageDispatcher.
         """
-        self.bot_token = os.getenv("SLACK_BOT_TOKEN") if bot_token is None else bot_token
-        self.app_token = os.getenv("SLACK_APP_TOKEN") if app_token is None else app_token
+        self.bot_token = get_slack_bot_token() if bot_token is None else bot_token
+        self.app_token = get_slack_app_token() if app_token is None else app_token
         self.dispatcher = dispatcher or ChannelMessageDispatcher()
 
         self.app: Optional[App] = None
@@ -50,7 +52,8 @@ class CommunityLabSlackBot:
             channel_id = event.get("channel", "general")
             thread_ts = event.get("thread_ts", event.get("ts"))
 
-            logger.info("Slack mención recibida de '%s' en canal '%s'", user_id, channel_id)
+            logger.info("Slack mención recibida de '%s' en canal '%s': %s", user_id, channel_id, text_crudo[:80])
+            print(f"[Slack Bot] Mención recibida de '{user_id}' en #{channel_id}: {text_crudo[:60]}...", flush=True)
 
             try:
                 _, respuestas = self.dispatcher.process_incoming_message(
@@ -63,10 +66,39 @@ class CommunityLabSlackBot:
 
                 bloques = respuestas["slack_blocks"]
                 say(blocks=bloques, text="Análisis de CommunityLab completado", thread_ts=thread_ts)
+                logger.info("Respuesta enviada exitosamente a Slack para '%s'", user_id)
 
             except Exception as e:
                 logger.error("Error en Slack Bot: %s", e)
                 say(text=f"⚠️ Error procesando en CommunityLab: {e}", thread_ts=thread_ts)
+
+        @app.event("message")
+        def handle_message(body: Dict[str, Any], say: Callable[..., Any]) -> None:
+            event = body.get("event", {})
+            # Ignorar mensajes de bots o ediciones de mensajes
+            if event.get("bot_id") or event.get("subtype"):
+                return
+            channel_type = event.get("channel_type")
+            # Manejar mensajes directos (DM) al bot
+            if channel_type == "im":
+                user_id = event.get("user", "SlackUser")
+                text_crudo = event.get("text", "")
+                thread_ts = event.get("thread_ts", event.get("ts"))
+                logger.info("Slack DM recibido de '%s': %s", user_id, text_crudo[:80])
+                print(f"[Slack Bot] Mensaje Directo de '{user_id}': {text_crudo[:60]}...", flush=True)
+                try:
+                    _, respuestas = self.dispatcher.process_incoming_message(
+                        canal_origen="#slack-dm",
+                        autor=f"User_{user_id}",
+                        texto=text_crudo,
+                        mensaje_id_externo=f"slk_{event.get('ts')}",
+                        metadata={"user_id": user_id, "channel_type": "im"},
+                    )
+                    bloques = respuestas["slack_blocks"]
+                    say(blocks=bloques, text="Análisis de CommunityLab completado", thread_ts=thread_ts)
+                except Exception as e:
+                    logger.error("Error en Slack Bot DM: %s", e)
+                    say(text=f"⚠️ Error procesando en CommunityLab: {e}", thread_ts=thread_ts)
 
         self.app = app
         return app
@@ -78,7 +110,7 @@ class CommunityLabSlackBot:
 
         app = self.build_app()
         logger.info("Iniciando Slack Bot con Socket Mode...")
-        print("💬 [Slack Bot] Conectado y escuchando menciones vía Socket Mode...")
+        print("💬 [Slack Bot] Conectado y escuchando menciones vía Socket Mode...", flush=True)
         handler = SocketModeHandler(app, self.app_token)
         self.handler = handler
         handler.start()
