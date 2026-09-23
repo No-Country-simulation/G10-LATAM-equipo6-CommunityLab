@@ -1,4 +1,4 @@
-{
+﻿{
   "name": "CommunityLab_Slack_Dinamico",
   "id": "SK001CommunityLb",
   "nodes": [
@@ -151,7 +151,7 @@
           "parameters": [
             {
               "name": "Authorization",
-              "value": "Bearer xoxb-12123224294179-12132058272630-US61DAutFH5XxhDHYK0vyhQ7"
+              "value": "=Bearer {{ $env.SLACK2_LOCAL_BOT_TOKEN || $env.SLACK_BOT_TOKEN }}"
             },
             {
               "name": "Content-Type",

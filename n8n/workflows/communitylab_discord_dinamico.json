@@ -1,4 +1,4 @@
-{
+﻿{
   "name": "CommunityLab_Discord_Dinamico",
   "id": "DC001CommunityLb",
   "nodes": [
@@ -116,7 +116,7 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "https://discord.com/api/webhooks/1552163956368474112/HSdxkQZd-GjlEs_Roh04MYCIiAOirAZGLX3D6nhNwFIki2dSJ3qIP2ZtbyrxK4ODM77Z",
+        "url": "={{ $env.DISCORD_WEBHOOK_URL }}",
         "sendBody": true,
         "specifyBody": "json",
         "jsonBody": "={{ JSON.stringify($json) }}",
