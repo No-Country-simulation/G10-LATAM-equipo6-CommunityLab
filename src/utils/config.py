@@ -53,22 +53,35 @@ def get_discord_token() -> str:
 
 
 def get_slack_bot_token() -> str:
-    """Retorna el token bot (xoxb-...) de Slack segun el entorno de despliegue."""
+    """Retorna el token bot (xoxb-...) de Slack para App 1 (Python) segun el entorno."""
     if is_production():
         return os.getenv("SLACK_BOT_TOKEN", "").strip()
     return (
-        os.getenv("SLACK_LOCAL_BOT_TOKEN", "").strip()
+        os.getenv("SLACK1_LOCAL_BOT_TOKEN", "").strip()
+        or os.getenv("SLACK_LOCAL_BOT_TOKEN", "").strip()
         or os.getenv("SLACK_BOT_TOKEN", "").strip()
     )
 
 
 def get_slack_app_token() -> str:
-    """Retorna el app token (xapp-...) de Slack segun el entorno de despliegue."""
+    """Retorna el app token (xapp-...) de Slack para App 1 (Python Socket Mode) segun el entorno."""
     if is_production():
         return os.getenv("SLACK_APP_TOKEN", "").strip()
     return (
-        os.getenv("SLACK_LOCAL_APP_TOKEN", "").strip()
+        os.getenv("SLACK1_LOCAL_APP_TOKEN", "").strip()
+        or os.getenv("SLACK_LOCAL_APP_TOKEN", "").strip()
         or os.getenv("SLACK_APP_TOKEN", "").strip()
+    )
+
+
+def get_slack2_bot_token() -> str:
+    """Retorna el token bot (xoxb-...) de Slack para App 2 (n8n Webhook) segun el entorno."""
+    if is_production():
+        return os.getenv("SLACK2_BOT_TOKEN", os.getenv("SLACK_BOT_TOKEN", "")).strip()
+    return (
+        os.getenv("SLACK2_LOCAL_BOT_TOKEN", "").strip()
+        or os.getenv("SLACK_LOCAL_BOT_TOKEN", "").strip()
+        or os.getenv("SLACK_BOT_TOKEN", "").strip()
     )
 
 
@@ -129,4 +142,5 @@ def get_active_config_summary() -> Dict[str, Any]:
         "discord_token_active": mask(dc),
         "slack_bot_token_active": mask(sb),
         "slack_app_token_active": mask(sa),
+        "slack2_bot_token_active": mask(get_slack2_bot_token()),
     }

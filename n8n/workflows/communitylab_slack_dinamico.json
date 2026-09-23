@@ -37,7 +37,7 @@
         200
       ],
       "id": "sk-if-challenge",
-      "name": "\u00bfEs Verificaci\u00f3n de Slack?"
+      "name": "¿Es Verificación de Slack?"
     },
     {
       "parameters": {
@@ -59,7 +59,7 @@
     {
       "parameters": {
         "promptType": "define",
-        "text": "=Analiza la siguiente interaccion recibida en Slack de la comunidad:\n\nUsuario: {{ $json.body.event.user || 'Usuario Slack' }}\nCanal: {{ $json.body.event.channel || 'general' }}\nTexto: \"{{ $json.body.event.text }}\"\n\nInstrucciones:\n1. Clasifica el sentimiento (positivo, neutro, negativo).\n2. Determina el tipo_contenido (logro_contratacion, duda_tecnica, showcase, feedback_general).\n3. Extrae temas_clave tecnologicos.\n4. Si es logro_contratacion o showcase, redacta un post_linkedin inspirador.\n5. Si es duda_tecnica, redacta un tip_tecnico_faq estructurado.\n6. Redacta una respuesta_chat clara, amable y ejecutiva para responder en Slack.",
+        "text": "=Analiza la siguiente interaccion recibida en Slack de la comunidad:\n\nUsuario: {{ $json.body?.event?.user || $json.author || $json.body?.author || 'Usuario Slack' }}\nCanal: {{ $json.body?.event?.channel || $json.channel || $json.body?.channel || 'all-g10-latam-06' }}\nTexto: \"{{ $json.body?.event?.text || $json.content || $json.body?.content || $json.text || $json.body?.text }}\"\n\nInstrucciones:\n1. Clasifica el sentimiento (positivo, neutro, negativo).\n2. Determina el tipo_contenido (logro_contratacion, duda_tecnica, showcase, feedback_general).\n3. Extrae temas_clave tecnologicos.\n4. Si es logro_contratacion o showcase, redacta un post_linkedin inspirador.\n5. Si es duda_tecnica, redacta un tip_tecnico_faq estructurado.\n6. Redacta una respuesta_chat clara, amable y ejecutiva para responder en Slack.",
         "hasOutputParser": true,
         "messages": {
           "messageValues": [
@@ -72,7 +72,7 @@
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "typeVersion": 1.7,
       "position": [
-        260,
+        620,
         340
       ],
       "id": "sk-chain-001",
@@ -80,14 +80,14 @@
     },
     {
       "parameters": {
-        "model": "llama-3.3-70b-versatile",
+        "model": "openai/gpt-oss-20b",
         "options": {}
       },
       "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
       "typeVersion": 1,
       "position": [
-        180,
-        560
+        520,
+        520
       ],
       "id": "sk-model-001",
       "name": "Groq Chat Model",
@@ -106,20 +106,20 @@
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.3,
       "position": [
-        360,
-        560
+        720,
+        520
       ],
       "id": "sk-parser-001",
       "name": "Structured Output Parser"
     },
     {
       "parameters": {
-        "jsCode": "// Construir Slack Blocks para respuesta estructurada en hilo\nconst output = $json.output || $json;\nconst slackEvent = $('Slack Events Webhook').item.json.body.event || {};\n\nconst sentimientoBadge = output.sentimiento === 'positivo' ? ':large_green_circle: Positivo' : (output.sentimiento === 'negativo' ? ':red_circle: Negativo' : ':large_yellow_circle: Neutro');\n\nconst blocks = [\n  {\n    \"type\": \"header\",\n    \"text\": {\n      \"type\": \"plain_text\",\n      \"text\": \"\ud83e\udd16 CommunityLab Assistant\",\n      \"emoji\": true\n    }\n  },\n  {\n    \"type\": \"section\",\n    \"text\": {\n      \"type\": \"mrkdwn\",\n      \"text\": output.respuesta_chat || \"\u00a1Mensaje procesado correctamente!\"\n    }\n  },\n  {\n    \"type\": \"context\",\n    \"elements\": [\n      {\n        \"type\": \"mrkdwn\",\n        \"text\": `*Sentimiento:* ${sentimientoBadge} | *Categor\u00eda:* \\`${output.tipo_contenido}\\` | *Temas:* ${output.temas_clave ? output.temas_clave.join(', ') : 'N/A'}`\n      }\n    ]\n  }\n];\n\nif (output.tip_tecnico_faq) {\n  blocks.push({\n    \"type\": \"section\",\n    \"text\": {\n      \"type\": \"mrkdwn\",\n      \"text\": `*\ud83d\udca1 Tip T\u00e9cnico / Soluci\u00f3n:*\\n${output.tip_tecnico_faq}`\n    }\n  });\n}\n\nif (output.post_linkedin) {\n  blocks.push({\n    \"type\": \"section\",\n    \"text\": {\n      \"type\": \"mrkdwn\",\n      \"text\": `*\ud83d\ude80 Post de LinkedIn Sugerido:*\\n>${output.post_linkedin}`\n    }\n  });\n}\n\nreturn [{\n  json: {\n    channel: slackEvent.channel,\n    thread_ts: slackEvent.ts,\n    blocks: blocks,\n    text: output.respuesta_chat\n  }\n}];\n"
+        "jsCode": "// Construir Slack Blocks para respuesta estructurada en canal/hilo\nconst output = $json.output || $json;\nconst rawItem = $('Slack Events Webhook').item.json;\nconst slackEvent = rawItem.body?.event || {};\n\n// Canal de destino: evento de Slack o fallback al canal oficial #all-g10-latam-06\nconst targetChannel = slackEvent.channel || rawItem.body?.channel || rawItem.channel || 'C0C3C2BPBSB';\nconst targetThreadTs = slackEvent.ts || rawItem.body?.thread_ts || rawItem.thread_ts || undefined;\n\nconst sent = (output.sentimiento || 'neutro').toLowerCase();\nconst sentimientoBadge = sent === 'positivo' ? ':large_green_circle: Positivo' : (sent === 'negativo' ? ':red_circle: Negativo' : ':large_yellow_circle: Neutro');\n\nconst blocks = [\n  {\n    \"type\": \"header\",\n    \"text\": {\n      \"type\": \"plain_text\",\n      \"text\": \"🤖 CommunityLab Assistant\",\n      \"emoji\": true\n    }\n  },\n  {\n    \"type\": \"section\",\n    \"text\": {\n      \"type\": \"mrkdwn\",\n      \"text\": output.respuesta_chat || \"¡Mensaje procesado correctamente!\"\n    }\n  },\n  {\n    \"type\": \"context\",\n    \"elements\": [\n      {\n        \"type\": \"mrkdwn\",\n        \"text\": `*Sentimiento:* ${sentimientoBadge} | *Categoría:* \\`${output.tipo_contenido || 'General'}\\` | *Temas:* ${(output.temas_clave && Array.isArray(output.temas_clave)) ? output.temas_clave.join(', ') : (output.temas_clave || 'N/A')}`\n      }\n    ]\n  }\n];\n\nif (output.tip_tecnico_faq) {\n  blocks.push({\n    \"type\": \"section\",\n    \"text\": {\n      \"type\": \"mrkdwn\",\n      \"text\": `*💡 Tip Técnico / Solución:*\\n${output.tip_tecnico_faq}`\n    }\n  });\n}\n\nif (output.post_linkedin) {\n  blocks.push({\n    \"type\": \"section\",\n    \"text\": {\n      \"type\": \"mrkdwn\",\n      \"text\": `*🚀 Post de LinkedIn Sugerido:*\\n>${output.post_linkedin}`\n    }\n  });\n}\n\nconst payload = {\n  channel: targetChannel,\n  blocks: blocks,\n  text: output.respuesta_chat || \"CommunityLab Insight\"\n};\nif (targetThreadTs) {\n  payload.thread_ts = targetThreadTs;\n}\n\nreturn [{ json: payload }];\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        560,
+        880,
         340
       ],
       "id": "sk-format-001",
@@ -128,7 +128,7 @@
     {
       "parameters": {
         "respondWith": "json",
-        "responseBody": "={{ JSON.stringify($json) }}",
+        "responseBody": "={{ { \"status\": \"ok\", \"message\": \"Evento recibido y en procesamiento\" } }}",
         "options": {
           "responseCode": 200
         }
@@ -136,11 +136,55 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
       "position": [
-        800,
+        400,
         340
       ],
       "id": "sk-respond-event",
       "name": "Responder a Slack Event"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://slack.com/api/chat.postMessage",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer xoxb-12123224294179-12132058272630-US61DAutFH5XxhDHYK0vyhQ7"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json) }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1120,
+        340
+      ],
+      "id": "sk-send-slack-001",
+      "name": "Enviar Mensaje a Slack"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Filtrar reintentos automaticos de Slack (evitar respuestas duplicadas)\nconst headers = $json.headers || {};\nif (headers['x-slack-retry-num']) {\n  // Descartar reintento para evitar duplicidad\n  return [];\n}\nreturn [{ json: $json }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        200,
+        340
+      ],
+      "id": "sk-filter-retries",
+      "name": "Filtrar Reintentos Slack"
     }
   ],
   "connections": {
@@ -148,14 +192,14 @@
       "main": [
         [
           {
-            "node": "\u00bfEs Verificaci\u00f3n de Slack?",
+            "node": "¿Es Verificación de Slack?",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "\u00bfEs Verificaci\u00f3n de Slack?": {
+    "¿Es Verificación de Slack?": {
       "main": [
         [
           {
@@ -166,7 +210,7 @@
         ],
         [
           {
-            "node": "Procesador IA Slack",
+            "node": "Filtrar Reintentos Slack",
             "type": "main",
             "index": 0
           }
@@ -210,7 +254,29 @@
       "main": [
         [
           {
+            "node": "Enviar Mensaje a Slack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtrar Reintentos Slack": {
+      "main": [
+        [
+          {
             "node": "Responder a Slack Event",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Responder a Slack Event": {
+      "main": [
+        [
+          {
+            "node": "Procesador IA Slack",
             "type": "main",
             "index": 0
           }
@@ -221,5 +287,6 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "tags": []
+  "tags": [],
+  "active": true
 }
