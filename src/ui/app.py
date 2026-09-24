@@ -83,6 +83,30 @@ st.sidebar.info(
 # -----------------------------------------------------------------------------
 # VISTA 1: CURADURÍA DE ACTIVOS
 # -----------------------------------------------------------------------------
+def detectar_canal_digital(item: dict) -> tuple[str, str]:
+    """Detecta el canal digital de procedencia del activo (Telegram, Discord, Slack o Dataset Batch).
+
+    Retorna una tupla: (nombre_clave, badge_formateado_con_emoji)
+    """
+    bot_chan = (item.get("canal_origen_bot") or "").lower()
+    inter_chan = (item.get("interaccion", {}).get("canal") or "").lower()
+    inter_id = str(item.get("interaccion", {}).get("id") or "").lower()
+    tipo_inter = (item.get("interaccion", {}).get("tipo") or "").lower()
+    meta_ext = item.get("metadata_externa") or {}
+    meta_str = str(meta_ext).lower()
+
+    canal_comb = f"{bot_chan} {inter_chan} {inter_id} {tipo_inter} {meta_str}"
+
+    if "telegram" in canal_comb or inter_id.startswith("tg_") or "chat_id" in meta_str:
+        return "Telegram", "✈️ Telegram"
+    elif "discord" in canal_comb or inter_id.startswith("dc_") or inter_id.startswith("disc_"):
+        return "Discord", "🎮 Discord"
+    elif "slack" in canal_comb or inter_id.startswith("slk_") or inter_id.startswith("slack_") or "c0c" in canal_comb:
+        return "Slack", "💬 Slack"
+    else:
+        return "Dataset Batch", "📊 Dataset Batch"
+
+
 if modo == "💼 Curaduría de Activos":
     st.subheader("📋 Revisión y Aprobación de Copys para Publicación")
 
@@ -228,10 +252,11 @@ if modo == "💼 Curaduría de Activos":
             st.markdown("---")
 
             # Filtros interactivos
-            filtro_col1, filtro_col2, filtro_col3 = st.columns(3)
+            # Filtros interactivos (Tipo, Sentimiento, Motor y Canal Digital)
+            filtro_col1, filtro_col2, filtro_col3, filtro_col4 = st.columns(4)
             with filtro_col1:
                 tipo_filtro = st.selectbox(
-                    "Filtrar por tipo de contenido:",
+                    "Filtrar por tipo:",
                     ["Todos", "logro_contratacion", "duda_tecnica", "showcase", "feedback_general"],
                 )
             with filtro_col2:
@@ -241,8 +266,13 @@ if modo == "💼 Curaduría de Activos":
                 )
             with filtro_col3:
                 motor_filtro = st.selectbox(
-                    "Filtrar por motor ejecutor:",
-                    ["Todos", "🐍 Python Nativo", "🔄 n8n Local"],
+                    "Filtrar por motor:",
+                    ["Todos", "🐍 Python Nativo", "⚡ n8n Local"],
+                )
+            with filtro_col4:
+                canal_digital_filtro = st.selectbox(
+                    "Filtrar por canal de origen:",
+                    ["Todos", "✈️ Telegram", "🎮 Discord", "💬 Slack", "📊 Dataset Batch"],
                 )
 
             activos = datos_paquete.get("activos", [])
@@ -254,8 +284,11 @@ if modo == "💼 Curaduría de Activos":
                 activos = [a for a in activos if a["activo"]["sentimiento"] == sentimiento_filtro]
             if motor_filtro == "🐍 Python Nativo":
                 activos = [a for a in activos if "python" in (a.get("motor_orquestacion") or meta.get("motor_orquestacion", "")).lower()]
-            elif motor_filtro == "🔄 n8n Local":
+            elif motor_filtro == "⚡ n8n Local":
                 activos = [a for a in activos if "n8n" in (a.get("motor_orquestacion") or meta.get("motor_orquestacion", "")).lower()]
+            if canal_digital_filtro != "Todos":
+                nombre_clave = canal_digital_filtro.split(" ", 1)[1]
+                activos = [a for a in activos if detectar_canal_digital(a)[0] == nombre_clave]
 
             c_info1, c_info2 = st.columns([3, 2])
             with c_info1:
@@ -274,13 +307,14 @@ if modo == "💼 Curaduría de Activos":
             for idx, item in enumerate(activos_a_mostrar, start=1):
                 interaccion = item["interaccion"]
                 activo = item["activo"]
+                canal_nombre, badge_canal = detectar_canal_digital(item)
                 motor_val = (item.get("motor_orquestacion") or meta.get("motor_orquestacion", "")).lower()
                 if "python" in motor_val:
                     badge_motor = "🐍 PYTHON"
                 elif "n8n" in motor_val:
-                    badge_motor = "🔄 N8N"
+                    badge_motor = "⚡ N8N"
                 else:
-                    badge_motor = "⚙️ MOTOR"
+                    badge_motor = "🤖 MOTOR"
 
                 proc_time = item.get("procesado_en", "")
                 hora_str = proc_time[11:19] if len(proc_time) >= 19 else "Sesión"
@@ -292,29 +326,28 @@ if modo == "💼 Curaduría de Activos":
                 estado_cur = cur_info.get("estado") if cur_info else "pendiente"
 
                 if estado_cur == "aprobado":
-                    badge_estado = "🟢 APROBADO"
+                    badge_estado = "✅ APROBADO"
                 elif estado_cur == "rechazado":
-                    badge_estado = "🔴 DESCARTADO"
+                    badge_estado = "🚫 DESCARTADO"
                 elif estado_cur == "leido":
-                    badge_estado = "🔵 LEÍDO"
+                    badge_estado = "👁️ LEÍDO"
                 else:
                     badge_estado = "⏳ PENDIENTE"
 
                 with st.expander(
-                    f"#{idx} | {badge_estado} | [{badge_motor}] {badge_lote}[{activo['tipo_contenido'].upper()}] {interaccion['autor']} ({interaccion['canal']}) — ⏱️ {hora_str}",
+                    f"#{idx} | {badge_estado} | [{badge_canal}] [{badge_motor}] {badge_lote}[{activo['tipo_contenido'].upper()}] {interaccion['autor']} ({interaccion['canal']}) 👉 🕒 {hora_str}",
                     expanded=(idx == 1),
                 ):
                     c_left, c_right = st.columns([1, 1])
 
                     with c_left:
-                        st.markdown("#### 💬 Interacción Original")
-                        st.info(f"\"{interaccion['texto']}\"")
+                        st.markdown(f"#### 📥 Interacción Original &nbsp; `{badge_canal}`")
+                        st.info(f'"{interaccion["texto"]}"')
                         st.caption(
-                            f"Motor: **{badge_motor}** | ID: `{interaccion['id']}` | "
-                            f"Lote: `{lote_tag or 'previo'}` | ⏱️ Hora: **{hora_str}** | "
+                            f"Canal: **{badge_canal}** | Motor: **{badge_motor}** | ID: `{interaccion['id']}` | "
+                            f"Lote: `{lote_tag or 'previo'}` | 🕒 Hora: **{hora_str}** | "
                             f"Sentimiento: **{activo['sentimiento']}** | Estado: **{badge_estado}**"
                         )
-
                         # Etiquetas / Temas clave
                         tags_html = "".join([f'<span class="tag-chip">#{t}</span>' for t in activo.get("temas_clave", [])])
                         st.markdown(f"**Temas Clave:** {tags_html}", unsafe_allow_html=True)
