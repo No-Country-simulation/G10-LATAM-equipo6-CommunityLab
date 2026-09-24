@@ -1,4 +1,4 @@
-"""CommunityLab — Panel de Curaduría y Orquestación en Streamlit.
+﻿"""CommunityLab — Panel de Curaduría y Orquestación en Streamlit.
 
 Permite al equipo de Marketing y Community Managers de Oracle ONE / Alura
 inspeccionar los activos generados, editar copys, aprobar publicaciones
@@ -33,6 +33,7 @@ from src.ui.services import (
     obtener_ids_procesados_sesion,
 )
 from src.utils.logger import obtener_ultimas_lineas_log, limpiar_archivo_log
+from src.utils.config import get_n8n_webhook_url
 
 # Configuración de la página
 st.set_page_config(
