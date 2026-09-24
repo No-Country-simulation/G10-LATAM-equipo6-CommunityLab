@@ -86,34 +86,60 @@ st.sidebar.info(
 if modo == "💼 Curaduría de Activos":
     st.subheader("📋 Revisión y Aprobación de Copys para Publicación")
 
-    # Cargar paquetes directamente de OCI Object Storage (Fuente de Verdad en la Nube)
-    paquetes_disponibles = obtener_ultimos_paquetes(limite=30)
     opciones_fuente = []
 
-    # Exclusivamente paquetes en OCI Storage
+    # 1. Canales Dinamicos Interactivos (Telegram, Discord, Slack)
+    f_canales_py = Path("data/paquete_procesado_canales_python.json")
+    if f_canales_py.exists():
+        try:
+            with open(f_canales_py, "r", encoding="utf-8") as f:
+                c_py = json.load(f)
+                n_act = len(c_py.get("activos", []))
+                opciones_fuente.append(f"Canales (Python): {f_canales_py.as_posix()} ({n_act} activos)")
+        except Exception:
+            opciones_fuente.append(f"Canales (Python): {f_canales_py.as_posix()}")
+
+    f_canales_n8n = Path("data/paquete_procesado_canales_n8n.json")
+    if f_canales_n8n.exists():
+        try:
+            with open(f_canales_n8n, "r", encoding="utf-8") as f:
+                c_n8n = json.load(f)
+                n_act = len(c_n8n.get("activos", []))
+                opciones_fuente.append(f"Canales (n8n): {f_canales_n8n.as_posix()} ({n_act} activos)")
+        except Exception:
+            opciones_fuente.append(f"Canales (n8n): {f_canales_n8n.as_posix()}")
+
+    # 2. Lotes en OCI Object Storage (Pipeline Batch E2E)
+    paquetes_disponibles = obtener_ultimos_paquetes(limite=30)
     for p in paquetes_disponibles:
         opciones_fuente.append(f"Storage: {p['name']}")
 
-    # Fallback local únicamente si OCI está vacío o en modo offline
-    if not opciones_fuente:
-        for local_f in [Path("data/paquete_procesado_python.json"), Path("data/paquete_procesado.json")]:
-            if local_f.exists():
-                opciones_fuente.append(f"Local: {local_f.as_posix()}")
+    # 3. Lotes Locales Batch
+    for local_f in [Path("data/paquete_procesado_python.json"), Path("data/paquete_procesado_n8n.json"), Path("data/paquete_procesado.json")]:
+        if local_f.exists():
+            entry = f"Local: {local_f.as_posix()}"
+            if entry not in opciones_fuente:
+                opciones_fuente.append(entry)
 
     if not opciones_fuente:
         st.warning(
-            "⚠️ Aún no se han generado paquetes en OCI Object Storage. "
-            "Ejecuta el flujo en n8n o ve a la pestaña **'⚡ Ejecutar Pipeline'** para procesar interacciones."
+            "⚠️ Aun no se han generado paquetes de activos. "
+            "Ejecuta interacciones en Telegram/Discord/Slack o ve a la pestaña **'🚀 Ejecutar Pipeline'** para procesar interacciones."
         )
     else:
-        fuente_seleccionada = st.selectbox("Selecciona el lote de OCI a inspeccionar:", opciones_fuente)
+        c_sel1, c_sel2 = st.columns([3, 1])
+        with c_sel1:
+            fuente_seleccionada = st.selectbox("Selecciona la fuente o lote de activos a inspeccionar:", opciones_fuente)
 
         # Cargar datos del paquete
         datos_paquete = None
-        if fuente_seleccionada.startswith("Local:"):
-            local_p = Path(fuente_seleccionada.replace("Local: ", ""))
-            with open(local_p, "r", encoding="utf-8") as f:
-                datos_paquete = json.load(f)
+        if fuente_seleccionada.startswith("Local:") or fuente_seleccionada.startswith("Canales ("):
+            partes = fuente_seleccionada.split(":")
+            ruta_str = partes[1].strip().split(" ")[0]
+            local_p = Path(ruta_str)
+            if local_p.exists():
+                with open(local_p, "r", encoding="utf-8") as f:
+                    datos_paquete = json.load(f)
         else:
             nombre_obj = fuente_seleccionada.replace("Storage: ", "")
             raw_datos = cargar_paquete(nombre_obj)
@@ -160,7 +186,31 @@ if modo == "💼 Curaduría de Activos":
                     datos_paquete = raw_datos
 
         if datos_paquete and "activos" in datos_paquete:
+            if fuente_seleccionada.startswith("Canales ("):
+                with c_sel2:
+                    st.write("")
+                    st.write("")
+                    if st.button("☁️ Subir a Storage", use_container_width=True, help="Sube una copia histórica de estas interacciones a OCI Object Storage"):
+                        from src.cloud_oci.storage_client import OCIStorageManager
+                        sm = OCIStorageManager(allow_local_fallback=True)
+                        motor_name = "python_canales" if "Python" in fuente_seleccionada else "n8n_canales"
+                        obj_subido = sm.upload_asset(datos_paquete, motor=motor_name)
+                        st.toast(f"¡Interacciones sincronizadas a Storage como '{obj_subido}'!", icon="🚀")
+                        time.sleep(1)
+                        st.rerun()
+
             meta = datos_paquete.get("metadata_paquete", {})
+            if "metricas" not in datos_paquete or not datos_paquete.get("metricas"):
+                activos_list = datos_paquete.get("activos", [])
+                datos_paquete["metricas"] = {
+                    "distribucion_sentimiento": {
+                        "positivo": sum(1 for a in activos_list if (a.get("activo") or {}).get("sentimiento") == "positivo"),
+                        "neutro": sum(1 for a in activos_list if (a.get("activo") or {}).get("sentimiento") == "neutro"),
+                        "negativo": sum(1 for a in activos_list if (a.get("activo") or {}).get("sentimiento") == "negativo"),
+                    },
+                    "total_posts_linkedin_generados": sum(1 for a in activos_list if (a.get("activo") or {}).get("post_linkedin")),
+                    "total_tips_faq_generados": sum(1 for a in activos_list if (a.get("activo") or {}).get("tip_tecnico_faq")),
+                }
             metricas = datos_paquete.get("metricas", {})
 
             # Métricas resumen en columnas
