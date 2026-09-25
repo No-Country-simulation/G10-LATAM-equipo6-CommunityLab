@@ -24,16 +24,26 @@ except ImportError:
 def extract_json_payload(raw_text: str) -> str:
     """Limpia la respuesta del LLM extrayendo el contenido JSON, removiendo delimitadores markdown si existen."""
     text = raw_text.strip()
-    # Buscar bloque de código markdown ```json ... ``` o ``` ... ```
-    match = re.search(r"```(?:json)?\s*([\s\S]*?)\s*```", text)
+
+    # Si ya empieza con '{' y termina con '}', devolverlo directamente
+    if text.startswith("{") and text.endswith("}"):
+        return text
+
+    # Buscar bloque de código etiquetado explícitamente como ```json ... ```
+    match = re.search(r"```json\s*(\{[\s\S]*?\})\s*```", text)
     if match:
         return match.group(1).strip()
-    
-    # Si no hay delimitadores, buscar el primer '{' y el último '}'
+
+    # Si no, buscar el primer '{' y el último '}' en todo el texto
     first_brace = text.find("{")
     last_brace = text.rfind("}")
     if first_brace != -1 and last_brace != -1 and last_brace > first_brace:
         return text[first_brace : last_brace + 1].strip()
+
+    # Fallback: bloque de código markdown genérico
+    generic_match = re.search(r"```(?:json)?\s*([\s\S]*?)\s*```", text)
+    if generic_match:
+        return generic_match.group(1).strip()
 
     return text
 

@@ -46,6 +46,10 @@ class CommunityLabAssetOutput(BaseModel):
         max_length=4,
         description="Entre 1 y 4 tecnologías o conceptos clave identificados"
     )
+    respuesta_chat: Optional[str] = Field(
+        None,
+        description="Respuesta directa, empática y conversacional para el usuario si proviene de un canal"
+    )
     post_linkedin: Optional[str] = Field(
         None,
         description="Copy redactado para LinkedIn (obligatorio para logros y showcase, null en otros casos)"

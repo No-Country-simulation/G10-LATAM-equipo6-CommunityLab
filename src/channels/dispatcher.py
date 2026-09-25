@@ -183,20 +183,21 @@ class ChannelMessageDispatcher:
         post_linkedin = raw_output.get("post_linkedin")
         tip_faq = raw_output.get("tip_tecnico_faq")
 
-        if not sentimiento_str and "embeds" in data_item and isinstance(data_item["embeds"], list):
+        # Si n8n devolvió el payload de Discord con 'embeds' y 'fields'
+        if "embeds" in data_item and isinstance(data_item["embeds"], list):
             embed = data_item["embeds"][0] if data_item["embeds"] else {}
             for field in embed.get("fields", []):
                 fname = field.get("name", "").lower()
                 fval = field.get("value", "")
-                if "sentimiento" in fname:
+                if ("sentimiento" in fname) and not sentimiento_str:
                     sentimiento_str = fval.lower().replace("🟢", "").replace("🔴", "").replace("⚪", "").strip()
-                elif "categoría" in fname or "categoria" in fname:
+                elif ("categoría" in fname or "categoria" in fname) and not tipo_str:
                     tipo_str = fval.lower().strip()
-                elif "temas" in fname:
+                elif ("temas" in fname) and not temas_list:
                     temas_list = [t.strip() for t in fval.split(",") if t.strip()]
-                elif "tip" in fname or "faq" in fname:
+                elif ("tip" in fname or "faq" in fname or "solución" in fname or "solucion" in fname) and not tip_faq:
                     tip_faq = fval
-                elif "linkedin" in fname:
+                elif "linkedin" in fname and not post_linkedin:
                     post_linkedin = fval
 
         # Extraer respuesta conversacional directa de n8n si existe (Discord o Slack)
@@ -216,12 +217,12 @@ class ChannelMessageDispatcher:
                     temas_match = re.search(r'\*Temas:\*\s*([^\n|]+)', b_text)
                     if temas_match and not temas_list:
                         temas_list = [t.strip() for t in temas_match.group(1).split(",") if t.strip() and t.strip() != "N/A"]
-                    if "Positivo" in b_text:
-                        sentimiento_str = sentimiento_str or "positivo"
-                    elif "Negativo" in b_text:
-                        sentimiento_str = sentimiento_str or "negativo"
-                    elif "Neutro" in b_text:
-                        sentimiento_str = sentimiento_str or "neutro"
+                    if "Positivo" in b_text and not sentimiento_str:
+                        sentimiento_str = "positivo"
+                    elif "Negativo" in b_text and not sentimiento_str:
+                        sentimiento_str = "negativo"
+                    elif "Neutro" in b_text and not sentimiento_str:
+                        sentimiento_str = "neutro"
                 # Bloque de tip técnico / solución
                 elif "*💡 Tip Técnico" in b_text:
                     partes = b_text.split("*💡 Tip Técnico / Solución:*\n", 1)
@@ -318,7 +319,7 @@ class ChannelMessageDispatcher:
         tipo_val = activo.tipo_contenido.value if hasattr(activo.tipo_contenido, "value") else str(activo.tipo_contenido)
         temas_str = ", ".join(activo.temas_clave) if activo.temas_clave else "General"
 
-        resp_directa = (metadata or {}).get("respuesta_directa")
+        resp_directa = (metadata or {}).get("respuesta_directa") or activo.respuesta_chat
 
         # 1. Formato Markdown para Telegram
         texto_tg = (
@@ -357,12 +358,25 @@ class ChannelMessageDispatcher:
             ],
             "footer": {"text": f"ID: {interaccion.id} • CommunityLab Hackathon Oracle ONE"},
         }
-        if activo.tip_tecnico_faq and not resp_directa:
-            embed_discord["fields"].append({
-                "name": "💡 Pasos / Solución Técnica",
-                "value": activo.tip_tecnico_faq[:1024],
-                "inline": False,
-            })
+        if activo.tip_tecnico_faq:
+            tip_texto = activo.tip_tecnico_faq.strip()
+            # Si el tip técnico supera el límite de 1024 chars por field de Discord, partirlo en partes
+            if len(tip_texto) <= 1024:
+                embed_discord["fields"].append({
+                    "name": "💡 Guía / Solución Técnica",
+                    "value": tip_texto,
+                    "inline": False,
+                })
+            else:
+                partes_tip = [tip_texto[i:i+1000] for i in range(0, len(tip_texto), 1000)]
+                for idx, parte in enumerate(partes_tip[:3], 1):
+                    nombre_campo = "💡 Guía / Solución Técnica" if idx == 1 else f"💡 Solución Técnica (Cont. {idx})"
+                    embed_discord["fields"].append({
+                        "name": nombre_campo,
+                        "value": parte,
+                        "inline": False,
+                    })
+
         if activo.post_linkedin:
             embed_discord["fields"].append({
                 "name": "💼 Propuesta LinkedIn",
@@ -383,10 +397,11 @@ class ChannelMessageDispatcher:
                 "type": "section",
                 "text": {"type": "mrkdwn", "text": f"💬 *Respuesta a tu consulta:*\n{resp_directa}"},
             })
-        elif activo.tip_tecnico_faq:
+
+        if activo.tip_tecnico_faq and activo.tip_tecnico_faq != resp_directa:
             bloques_slack.append({
                 "type": "section",
-                "text": {"type": "mrkdwn", "text": f"*💡 Solución / Pasos a seguir:*\n>{activo.tip_tecnico_faq}"},
+                "text": {"type": "mrkdwn", "text": f"*💡 Solución / Guía Técnica:*\n{activo.tip_tecnico_faq}"},
             })
 
         bloques_slack.append({
@@ -482,7 +497,7 @@ class ChannelMessageDispatcher:
             act = item.activo
             tipo_val = act.tipo_contenido.value if hasattr(act.tipo_contenido, "value") else str(act.tipo_contenido)
             sent_val = act.sentimiento.value if hasattr(act.sentimiento, "value") else str(act.sentimiento)
-            resp_directa = (metadata or {}).get("respuesta_directa")
+            resp_directa = (metadata or {}).get("respuesta_directa") or act.respuesta_chat
 
             # Estructurar elemento plano
             item_plano: Dict[str, Any] = {
