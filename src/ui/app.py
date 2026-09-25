@@ -68,11 +68,16 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
+# Definición de Vistas Oficiales
+VISTA_CURADURIA = "💼 Curaduría de Activos"
+VISTA_PIPELINE = "⚡ Ejecutar Pipeline"
+VISTA_HISTORICO = "☁️ Histórico OCI Object Storage"
+
 # Sidebar de navegación
 st.sidebar.title("Navegación")
 modo = st.sidebar.radio(
     "Selecciona una vista:",
-    ["📊 Curaduría de Activos", "🚀 Ejecutar Pipeline", "☁️ Histórico OCI Object Storage"],
+    [VISTA_CURADURIA, VISTA_PIPELINE, VISTA_HISTORICO],
 )
 
 st.sidebar.markdown("---")
@@ -144,7 +149,7 @@ def detectar_canal_digital(item: dict) -> tuple[str, str]:
         return "Dataset Batch", "📊 Dataset Batch"
 
 
-if modo == "💼 Curaduría de Activos":
+if "Curaduría" in modo or modo == VISTA_CURADURIA:
     st.subheader("📋 Revisión y Aprobación de Copys para Publicación")
 
     opciones_fuente = []
@@ -461,7 +466,7 @@ if modo == "💼 Curaduría de Activos":
 # -----------------------------------------------------------------------------
 # VISTA 2: EJECUTAR PIPELINE
 # -----------------------------------------------------------------------------
-elif modo == "⚡ Ejecutar Pipeline":
+elif "Ejecutar Pipeline" in modo or modo == VISTA_PIPELINE:
     st.subheader("⚡ Disparador de Ejecución del Pipeline E2E")
     st.write("Ejecuta el procesamiento sobre el lote oficial de interacciones o sube un archivo personalizado.")
 
@@ -675,7 +680,7 @@ elif modo == "⚡ Ejecutar Pipeline":
 # -----------------------------------------------------------------------------
 # VISTA 3: HISTÓRICO OCI
 # -----------------------------------------------------------------------------
-elif modo == "☁️ Histórico OCI Object Storage":
+elif "Histórico" in modo or modo == VISTA_HISTORICO:
     c_head1, c_head2 = st.columns([3, 1])
     with c_head1:
         st.subheader("☁️ Objetos Persistidos en OCI Object Storage Always Free")
