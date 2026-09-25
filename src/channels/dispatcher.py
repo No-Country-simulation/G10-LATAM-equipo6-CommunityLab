@@ -272,7 +272,29 @@ class ChannelMessageDispatcher:
 
         # Si n8n envió bloques directos para Slack ya listos, preservarlos
         if "blocks" in data_item and isinstance(data_item["blocks"], list):
-            respuestas["slack_blocks"] = data_item["blocks"]
+            # Detectar y evitar redundancia: si el bloque de texto principal y el bloque de Tip Técnico
+            # contienen ambos el mismo tutorial paso a paso o ambos superan 250 caracteres repitiendo la guía:
+            bloques_filtrados = []
+            tiene_tip_block = any("*💡 Tip Técnico" in (b.get("text") or {}).get("text", "") for b in data_item["blocks"])
+            for b in data_item["blocks"]:
+                b_txt = (b.get("text") or {}).get("text", "")
+                if tiene_tip_block and b.get("type") == "section" and ("1." in b_txt or "Paso 1" in b_txt) and not b_txt.startswith("*💡 Tip Técnico") and not b_txt.startswith("*🚀 Post"):
+                    # Extraer saludo/introducción previa a los pasos para no repetir dos veces la guía
+                    lineas = b_txt.split('\n')
+                    saludo = []
+                    for l in lineas:
+                        if re.match(r'^\s*(\d+\.|\-|\*)\s+', l):
+                            break
+                        saludo.append(l)
+                    intro = '\n'.join(saludo).strip()
+                    if intro:
+                        bloques_filtrados.append({
+                            "type": "section",
+                            "text": {"type": "mrkdwn", "text": intro}
+                        })
+                    continue
+                bloques_filtrados.append(b)
+            respuestas["slack_blocks"] = bloques_filtrados
 
         logger.info("[Dispatcher <- n8n] Mensaje [%s] procesado exitosamente por n8n.", interaccion.id)
         return activo_procesado, respuestas
