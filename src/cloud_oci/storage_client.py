@@ -366,7 +366,7 @@ class OCIStorageManager:
             iso_time = item.time_created.isoformat() if getattr(item, "time_created", None) else None
             results.append({
                 "name": item.name,
-                "size": getattr(item, "size", None),
+                "size": getattr(item, "size", 0) or 0,
                 "md5": getattr(item, "md5", None),
                 "time_created": iso_time,
                 "created_at": iso_time,

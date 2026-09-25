@@ -899,7 +899,7 @@ elif "Histórico" in modo or modo == VISTA_HISTORICO:
 
     # 1. Panel Superior de Estadísticas del Almacenamiento
     total_objs = len(paquetes)
-    total_bytes = sum(p.get("size", 0) for p in paquetes)
+    total_bytes = sum(int(p.get("size") or 0) for p in paquetes)
     total_kb = total_bytes / 1024.0
 
     st.markdown(
@@ -929,7 +929,8 @@ elif "Histórico" in modo or modo == VISTA_HISTORICO:
 
         for idx_p, p in enumerate(paquetes):
             nom = p["name"]
-            size_kb = p.get("size", 0) / 1024.0
+            raw_size = p.get("size")
+            size_kb = (int(raw_size) if raw_size is not None else 0) / 1024.0
             fecha_str = p.get("created_at", "N/A")[:19].replace("T", " ") if p.get("created_at") else "Local Almacenado"
 
             # Detectar tipo de activo para badge visual
