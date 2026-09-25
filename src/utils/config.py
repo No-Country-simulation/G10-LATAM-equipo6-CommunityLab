@@ -96,13 +96,21 @@ def get_n8n_webhook_url() -> str:
 
 
 def get_n8n_webhook_base() -> str:
-    """Retorna la URL base de Webhooks de n8n para Docker/tunel segun el entorno."""
+    """Retorna el origin base (ej: http://147.15.9.116:5678 o http://localhost:5678) de n8n."""
+    from urllib.parse import urlparse
+
     if is_production():
-        return os.getenv("N8N_WEBHOOK_URL", "http://147.15.9.116:5678/").strip()
-    return (
-        os.getenv("N8N_LOCAL_WEBHOOK_BASE", "").strip()
-        or os.getenv("N8N_LOCAL_WEBHOOK_URL", "http://localhost:5678/").strip()
-    )
+        raw = os.getenv("N8N_WEBHOOK_URL", "http://147.15.9.116:5678/").strip()
+    else:
+        raw = (
+            os.getenv("N8N_LOCAL_WEBHOOK_BASE", "").strip()
+            or os.getenv("N8N_LOCAL_WEBHOOK_URL", "http://localhost:5678/").strip()
+        )
+
+    parsed = urlparse(raw)
+    if parsed.scheme and parsed.netloc:
+        return f"{parsed.scheme}://{parsed.netloc}"
+    return raw.rstrip("/")
 
 
 def get_n8n_host() -> str:
@@ -128,15 +136,33 @@ def get_channel_processing_engine() -> str:
 def get_n8n_channel_webhook_url(canal: str) -> str:
     """Retorna la URL del Webhook de n8n para un canal específico ('telegram', 'discord', 'slack').
 
+    Mapea de forma inteligente cualquier identificador de canal (ej: '#dudas-discord', '#telegram-comunidad',
+    '#all-g10-latam-06', 'general') hacia el endpoint correcto de n8n:
+    - Discord  -> /webhook/communitylab-discord
+    - Telegram -> /webhook/communitylab-telegram
+    - Slack    -> /webhook/communitylab-slack
+    - Otros    -> /webhook/communitylab-ingesta (fallback al webhook por lotes / ingesta general)
+
     Args:
-        canal: Nombre del canal ('telegram', 'discord' o 'slack').
+        canal: Nombre o identificador del canal de origen.
 
     Returns:
-        URL completa del Webhook en n8n (ej: http://localhost:5678/webhook/communitylab-discord).
+        URL completa y sanitizada del Webhook en n8n.
     """
     base = get_n8n_webhook_base().rstrip("/")
-    canal_clean = canal.lower().replace("#", "").split("-")[0]
-    return f"{base}/webhook/communitylab-{canal_clean}"
+    c_lower = canal.lower().replace("#", "").strip()
+
+    if "discord" in c_lower:
+        endpoint = "communitylab-discord"
+    elif "telegram" in c_lower or "tg" in c_lower:
+        endpoint = "communitylab-telegram"
+    elif "slack" in c_lower or "latam" in c_lower or "all-" in c_lower:
+        endpoint = "communitylab-slack"
+    else:
+        # Si no especifica plataforma, usar el webhook universal de ingesta
+        endpoint = "communitylab-discord" if "dudas" in c_lower else "communitylab-ingesta"
+
+    return f"{base}/webhook/{endpoint}"
 
 
 def get_active_config_summary() -> Dict[str, Any]:

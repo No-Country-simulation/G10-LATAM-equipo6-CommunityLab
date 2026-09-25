@@ -96,7 +96,7 @@ class CommunityLabDiscordBot(commands.Bot):
 
                 try:
                     _, respuestas = self.dispatcher.process_incoming_message(
-                        canal_origen=f"#{canal_nombre}",
+                        canal_origen=f"#discord-{canal_nombre}",
                         autor=autor_nombre,
                         texto=texto_crudo,
                         mensaje_id_externo=msg_id,

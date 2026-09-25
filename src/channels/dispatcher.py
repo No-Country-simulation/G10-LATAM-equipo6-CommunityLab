@@ -169,14 +169,37 @@ class ChannelMessageDispatcher:
         # Extraer datos procesados desde la respuesta del webhook de n8n
         # Puede venir como dict directo, dentro de 'json', o en lista
         data_item = n8n_res[0] if isinstance(n8n_res, list) and n8n_res else n8n_res
-        if "json" in data_item:
+        if isinstance(data_item, dict) and "json" in data_item:
             data_item = data_item["json"]
 
         raw_output = data_item.get("raw_output") or data_item.get("activo") or data_item
 
-        sentimiento_str = raw_output.get("sentimiento", "neutro")
-        tipo_str = raw_output.get("tipo_contenido", "feedback_general")
-        temas_list = raw_output.get("temas_clave", ["Comunidad"])
+        # Si viene formateado como payload de webhook de Discord (con embeds/fields)
+        sentimiento_str = raw_output.get("sentimiento")
+        tipo_str = raw_output.get("tipo_contenido")
+        temas_list = raw_output.get("temas_clave")
+        post_linkedin = raw_output.get("post_linkedin")
+        tip_faq = raw_output.get("tip_tecnico_faq")
+
+        if not sentimiento_str and "embeds" in data_item and isinstance(data_item["embeds"], list):
+            embed = data_item["embeds"][0] if data_item["embeds"] else {}
+            for field in embed.get("fields", []):
+                fname = field.get("name", "").lower()
+                fval = field.get("value", "")
+                if "sentimiento" in fname:
+                    sentimiento_str = fval.lower().replace("🟢", "").replace("🔴", "").replace("⚪", "").strip()
+                elif "categoría" in fname or "categoria" in fname:
+                    tipo_str = fval.lower().strip()
+                elif "temas" in fname:
+                    temas_list = [t.strip() for t in fval.split(",") if t.strip()]
+                elif "tip" in fname or "faq" in fname:
+                    tip_faq = fval
+                elif "linkedin" in fname:
+                    post_linkedin = fval
+
+        sentimiento_str = sentimiento_str or "neutro"
+        tipo_str = tipo_str or "feedback_general"
+        temas_list = temas_list or ["Comunidad"]
         if not isinstance(temas_list, list):
             temas_list = [str(temas_list)]
 
@@ -184,8 +207,8 @@ class ChannelMessageDispatcher:
             sentimiento=sentimiento_str,
             tipo_contenido=tipo_str,
             temas_clave=temas_list,
-            post_linkedin=raw_output.get("post_linkedin"),
-            tip_tecnico_faq=raw_output.get("tip_tecnico_faq"),
+            post_linkedin=post_linkedin or raw_output.get("post_linkedin"),
+            tip_tecnico_faq=tip_faq or raw_output.get("tip_tecnico_faq"),
         )
 
         activo_procesado = ProcessedCommunityAsset(

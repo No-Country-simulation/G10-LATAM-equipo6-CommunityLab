@@ -45,7 +45,7 @@ def test_config_local_environment(monkeypatch):
     assert get_slack_app_token() == "xapp-local"
     assert get_slack2_bot_token() == "xoxb-local"
     assert get_n8n_webhook_url() == "https://ngrok.app/webhook/local"
-    assert get_n8n_webhook_base() == "https://ngrok.app/"
+    assert get_n8n_webhook_base() == "https://ngrok.app"
     assert get_n8n_host() == "http://localhost"
     assert get_n8n_port() == 5678
 
@@ -80,7 +80,7 @@ def test_config_produccion_environment(monkeypatch):
     assert get_slack_bot_token() == "xoxb-prod"
     assert get_slack_app_token() == "xapp-prod"
     assert get_n8n_webhook_url() == "http://147.15.9.116:5678/"
-    assert get_n8n_webhook_base() == "http://147.15.9.116:5678/"
+    assert get_n8n_webhook_base() == "http://147.15.9.116:5678"
     assert get_n8n_host() == "0.0.0.0"
     assert get_n8n_port() == 5678
 
@@ -102,3 +102,23 @@ def test_config_dual_slack_apps(monkeypatch):
     assert get_slack_bot_token() == "xoxb-app1-bot"
     assert get_slack_app_token() == "xapp-app1-socket"
     assert get_slack2_bot_token() == "xoxb-app2-n8n"
+
+
+def test_get_n8n_channel_webhook_url(monkeypatch):
+    """Verifica que los webhooks de Discord, Telegram y Slack apunten a los endpoints esperados por el workflow."""
+    from src.utils.config import get_n8n_channel_webhook_url
+
+    # En PRODUCCION
+    monkeypatch.setenv("ENTORNO_DEPLOY", "PRODUCCION")
+    monkeypatch.setenv("N8N_WEBHOOK_URL", "http://147.15.9.116:5678/webhook/communitylab-ingesta")
+
+    assert get_n8n_channel_webhook_url("discord") == "http://147.15.9.116:5678/webhook/communitylab-discord"
+    assert get_n8n_channel_webhook_url("#discord-general") == "http://147.15.9.116:5678/webhook/communitylab-discord"
+    assert get_n8n_channel_webhook_url("#telegram-comunidad") == "http://147.15.9.116:5678/webhook/communitylab-telegram"
+    assert get_n8n_channel_webhook_url("#all-g10-latam-06") == "http://147.15.9.116:5678/webhook/communitylab-slack"
+    assert get_n8n_channel_webhook_url("slack") == "http://147.15.9.116:5678/webhook/communitylab-slack"
+
+    # En LOCAL
+    monkeypatch.setenv("ENTORNO_DEPLOY", "LOCAL")
+    monkeypatch.setenv("N8N_LOCAL_WEBHOOK_URL", "http://localhost:5678/webhook/communitylab-ingesta")
+    assert get_n8n_channel_webhook_url("discord") == "http://localhost:5678/webhook/communitylab-discord"
