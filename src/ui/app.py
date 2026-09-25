@@ -254,6 +254,7 @@ if "Curaduría" in modo or modo == VISTA_CURADURIA:
                     for act in raw_datos["activos"]:
                         tipo_c = act.get("tipo_contenido") or raw_datos.get("metadata", {}).get("categoria", "feedback_general")
                         sent_c = act.get("sentimiento", "positivo" if "logro" in tipo_c or "showcase" in tipo_c else "neutro")
+                        solucion_o_resp = act.get("tip_tecnico_faq") or act.get("respuesta_asistente")
                         norm_activos.append({
                             "interaccion": {
                                 "id": act.get("id", "N/A"),
@@ -266,7 +267,8 @@ if "Curaduría" in modo or modo == VISTA_CURADURIA:
                                 "sentimiento": sent_c,
                                 "temas_clave": act.get("temas_clave", []),
                                 "post_linkedin": act.get("post_linkedin"),
-                                "tip_tecnico_faq": act.get("tip_tecnico_faq"),
+                                "tip_tecnico_faq": solucion_o_resp,
+                                "respuesta_asistente": act.get("respuesta_asistente"),
                             },
                             "motor_orquestacion": "n8n_oci_storage",
                         })
@@ -509,6 +511,14 @@ if "Curaduría" in modo or modo == VISTA_CURADURIA:
                             value=copy_inicial,
                             height=180,
                             key=f"editor_faq_{inter_act['id']}",
+                        )
+                    elif act_act.get("respuesta_asistente"):
+                        copy_inicial = cur_info_act.get("copy_aprobado") if cur_info_act else act_act["respuesta_asistente"]
+                        copy_editado = st.text_area(
+                            "Respuesta entregada al Usuario / Solución:",
+                            value=copy_inicial,
+                            height=180,
+                            key=f"editor_resp_{inter_act['id']}",
                         )
                     else:
                         copy_editado = inter_act["texto"]

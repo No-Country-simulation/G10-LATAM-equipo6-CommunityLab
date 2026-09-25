@@ -299,3 +299,29 @@ def test_slack_bot_event_handler_dispatches_correctly(mock_ai_service):
     assert "blocks" in kwargs
     assert kwargs.get("thread_ts") == "1620000000.000100"
     assert len(kwargs["blocks"]) >= 3
+
+
+def test_slack_bot_resolves_user_display_name():
+    """Verifica que el bot de Slack resuelva el nombre real a través del WebClient."""
+    bot = CommunityLabSlackBot(bot_token="xoxb-dummy", app_token="xapp-dummy")
+    mock_client = MagicMock()
+    mock_client.users_info.return_value = {
+        "ok": True,
+        "user": {
+            "name": "cesarcely",
+            "real_name": "César Augusto Cely Pulido",
+            "profile": {
+                "display_name": "César Cely",
+                "real_name": "César Augusto Cely Pulido",
+            },
+        },
+    }
+
+    nombre = bot.get_user_display_name(mock_client, "U0C4B8B3K43")
+    assert nombre == "César Cely"
+
+    # Verificar caché (segunda llamada no invoca users_info)
+    mock_client.users_info.reset_mock()
+    nombre_cache = bot.get_user_display_name(mock_client, "U0C4B8B3K43")
+    assert nombre_cache == "César Cely"
+    mock_client.users_info.assert_not_called()

@@ -105,7 +105,7 @@ class ChannelMessageDispatcher:
                 if self.persist_locally:
                     self._save_interaction_locally(activo_procesado, canal_origen, metadata)
                 if self.persist_oci:
-                    self._save_interaction_to_oci(activo_procesado, canal_origen)
+                    self._save_interaction_to_oci(activo_procesado, canal_origen, metadata)
                 return activo_procesado, respuestas
             except Exception as e_n8n:
                 logger.warning(
@@ -128,7 +128,7 @@ class ChannelMessageDispatcher:
 
         # Persistir directamente en OCI Object Storage en los 4 archivos temáticos
         if self.persist_oci:
-            self._save_interaction_to_oci(activo_procesado, canal_origen)
+            self._save_interaction_to_oci(activo_procesado, canal_origen, metadata)
 
         return activo_procesado, respuestas
 
@@ -199,26 +199,61 @@ class ChannelMessageDispatcher:
                 elif "linkedin" in fname:
                     post_linkedin = fval
 
+        # Extraer respuesta conversacional directa de n8n si existe (Discord o Slack)
+        respuesta_chat = raw_output.get("respuesta_chat") or data_item.get("content") or data_item.get("text")
+        metadata_completa = dict(metadata or {})
+
+        # Si n8n devolvió los 'blocks' de Slack armados, inspeccionar campos adicionales
+        if "blocks" in data_item and isinstance(data_item["blocks"], list):
+            for block in data_item["blocks"]:
+                b_text = (block.get("text") or {}).get("text", "")
+                # Bloque de contexto con sentimiento, categoría y temas:
+                # *Sentimiento:* ... | *Categoría:* `duda_tecnica` | *Temas:* ...
+                if "Sentimiento" in b_text and "Categoría" in b_text:
+                    cat_match = re.search(r'\*Categoría:\*\s*`([^`]+)`', b_text)
+                    if cat_match and not tipo_str:
+                        tipo_str = cat_match.group(1).strip()
+                    temas_match = re.search(r'\*Temas:\*\s*([^\n|]+)', b_text)
+                    if temas_match and not temas_list:
+                        temas_list = [t.strip() for t in temas_match.group(1).split(",") if t.strip() and t.strip() != "N/A"]
+                    if "Positivo" in b_text:
+                        sentimiento_str = sentimiento_str or "positivo"
+                    elif "Negativo" in b_text:
+                        sentimiento_str = sentimiento_str or "negativo"
+                    elif "Neutro" in b_text:
+                        sentimiento_str = sentimiento_str or "neutro"
+                # Bloque de tip técnico / solución
+                elif "*💡 Tip Técnico" in b_text:
+                    partes = b_text.split("*💡 Tip Técnico / Solución:*\n", 1)
+                    if len(partes) > 1 and not tip_faq:
+                        tip_faq = partes[1].strip()
+                # Bloque de LinkedIn
+                elif "*🚀 Post de LinkedIn" in b_text:
+                    partes = b_text.split("*🚀 Post de LinkedIn Sugerido:*\n>", 1)
+                    if len(partes) > 1 and not post_linkedin:
+                        post_linkedin = partes[1].strip()
+                # Bloque de texto principal (respuesta al usuario)
+                elif b_text and not b_text.startswith("🤖") and "Sentimiento" not in b_text:
+                    if not respuesta_chat:
+                        respuesta_chat = b_text
+
         sentimiento_str = sentimiento_str or "neutro"
         tipo_str = tipo_str or "feedback_general"
         temas_list = temas_list or ["Comunidad"]
         if not isinstance(temas_list, list):
             temas_list = [str(temas_list)]
 
-        # Extraer respuesta conversacional directa de n8n si existe (Discord o Slack)
-        respuesta_chat = raw_output.get("respuesta_chat") or data_item.get("content") or data_item.get("text")
-        metadata_completa = dict(metadata or {})
-
-        # Si n8n ya devolvió los 'blocks' de Slack armados
-        if "blocks" in data_item and isinstance(data_item["blocks"], list):
-            for block in data_item["blocks"]:
-                b_text = (block.get("text") or {}).get("text", "")
-                if b_text and not b_text.startswith("🤖") and "Sentimiento" not in b_text:
-                    if not respuesta_chat:
-                        respuesta_chat = b_text
-
         if respuesta_chat:
             metadata_completa["respuesta_directa"] = respuesta_chat
+
+        # Si tip_faq está vacío pero tenemos la respuesta directa del asistente (pasos para el usuario),
+        # usarla como tip técnico / solución si es una duda técnica
+        if tipo_str == "duda_tecnica" and not tip_faq and respuesta_chat:
+            tip_faq = respuesta_chat
+        elif not tip_faq and respuesta_chat and ("cómo" in interaccion.texto.lower() or "como" in interaccion.texto.lower() or "ayuda" in interaccion.texto.lower()):
+            # Detectar si fue consulta técnica clasificada como general
+            tipo_str = "duda_tecnica"
+            tip_faq = respuesta_chat
 
         asset_output = CommunityLabAssetOutput(
             sentimiento=sentimiento_str,
@@ -402,6 +437,7 @@ class ChannelMessageDispatcher:
         self,
         item: ProcessedCommunityAsset,
         canal_origen: str,
+        metadata: Optional[Dict[str, Any]] = None,
     ) -> None:
         """Persiste la interacción procesada en los 4 archivos temáticos especializados de OCI Object Storage.
 
@@ -424,6 +460,7 @@ class ChannelMessageDispatcher:
             act = item.activo
             tipo_val = act.tipo_contenido.value if hasattr(act.tipo_contenido, "value") else str(act.tipo_contenido)
             sent_val = act.sentimiento.value if hasattr(act.sentimiento, "value") else str(act.sentimiento)
+            resp_directa = (metadata or {}).get("respuesta_directa")
 
             # Estructurar elemento plano
             item_plano: Dict[str, Any] = {
@@ -442,20 +479,28 @@ class ChannelMessageDispatcher:
                 categoria = "logros_contratacion"
                 item_plano["comentario"] = inter.texto
                 item_plano["post_linkedin"] = act.post_linkedin
+                if resp_directa:
+                    item_plano["respuesta_asistente"] = resp_directa
             elif tipo_val == "showcase":
                 nombre_archivo = "marketing_showcase.json"
                 categoria = "proyectos_showcase"
                 item_plano["descripcion_proyecto"] = inter.texto
                 item_plano["post_linkedin"] = act.post_linkedin
+                if resp_directa:
+                    item_plano["respuesta_asistente"] = resp_directa
             elif tipo_val == "duda_tecnica":
                 nombre_archivo = "faqs_soporte_tecnico.json"
                 categoria = "dudas_tecnicas_faqs"
                 item_plano["pregunta_original"] = inter.texto
-                item_plano["tip_tecnico_faq"] = act.tip_tecnico_faq
+                item_plano["tip_tecnico_faq"] = act.tip_tecnico_faq or resp_directa
+                if resp_directa:
+                    item_plano["respuesta_asistente"] = resp_directa
             else:
                 nombre_archivo = "metricas_feedback_comunidad.json"
                 categoria = "feedback_metricas"
                 item_plano["comentario"] = inter.texto
+                if resp_directa or act.tip_tecnico_faq:
+                    item_plano["respuesta_asistente"] = resp_directa or act.tip_tecnico_faq
 
             remote_path = f"activos/{date_folder}/{nombre_archivo}"
 

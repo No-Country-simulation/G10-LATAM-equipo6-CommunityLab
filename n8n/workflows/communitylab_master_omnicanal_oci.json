@@ -18,10 +18,10 @@
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "typeVersion": 1.9,
       "position": [
-        -48,
-        288
+        -64,
+        304
       ],
-      "id": "cb6b065d-4ef5-4592-9ea0-a91a7b3d8d44",
+      "id": "377c73d7-ed20-4ff3-aca6-c15a044974f7",
       "name": "Basic LLM Chain1",
       "retryOnFail": true,
       "waitBetweenTries": 5000
@@ -33,10 +33,10 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        -272,
-        288
+        -288,
+        304
       ],
-      "id": "23230abd-dcf7-47db-a17d-e1dc4dc05f78",
+      "id": "c8924a9f-6c8b-46fe-8c2f-7a6f65be5489",
       "name": "Loop Over Items1"
     },
     {
@@ -46,10 +46,10 @@
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
       "position": [
-        528,
-        400
+        512,
+        416
       ],
-      "id": "e42850e1-626b-46e0-b089-2c1a1c8e2b68",
+      "id": "2cc9b10e-5be3-4ae4-a8b5-5e827e62fff4",
       "name": "Wait1",
       "webhookId": "475c843d-c122-434f-aeaa-380743824fb8"
     },
@@ -61,10 +61,10 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
       "typeVersion": 1,
       "position": [
-        -40,
-        504
+        -56,
+        520
       ],
-      "id": "fdf63526-de61-4008-a323-3a6ec82cc570",
+      "id": "8e4c7717-f0a0-4173-a4bc-8fd1341163f1",
       "name": "Groq Chat Model1",
       "credentials": {
         "groqApi": {
@@ -81,10 +81,10 @@
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.3,
       "position": [
-        88,
-        504
+        72,
+        520
       ],
-      "id": "20d03de1-4b4d-4c33-b907-c739e283d50d",
+      "id": "a76dc0e9-bce1-4d48-a754-5f8a4db195c4",
       "name": "Structured Output Parser"
     },
     {
@@ -152,10 +152,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.5,
       "position": [
-        304,
-        288
+        288,
+        304
       ],
-      "id": "864b769d-3911-4609-a324-4de32df2de9e",
+      "id": "62999a34-aeb6-47f9-bfc7-632b1a124ab5",
       "name": "Edit Fields1"
     },
     {
@@ -165,10 +165,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        16,
-        -16
+        0,
+        0
       ],
-      "id": "11dd928f-e631-4864-9da4-3d526df9aca4",
+      "id": "2bd56d6e-e4e6-4c7b-b449-77aa308aca6d",
       "name": "Consolidar Paquete OCI1"
     },
     {
@@ -181,10 +181,10 @@
       "type": "n8n-nodes-base.s3",
       "typeVersion": 1,
       "position": [
-        528,
-        -16
+        512,
+        0
       ],
-      "id": "f5fc8f94-bbe5-4572-b260-45fc27cc3153",
+      "id": "632e3227-2161-4aea-982e-90fbb7db9622",
       "name": "Upload a file1",
       "credentials": {
         "s3": {
@@ -205,10 +205,10 @@
       "type": "n8n-nodes-base.convertToFile",
       "typeVersion": 1.1,
       "position": [
-        304,
-        -16
+        288,
+        0
       ],
-      "id": "0dd770d4-716f-4b35-98ab-de165ba7e881",
+      "id": "a2bb2334-c957-40a9-bf3d-da1c7854a9c0",
       "name": "Convert to File1"
     },
     {
@@ -221,10 +221,10 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2.1,
       "position": [
-        -720,
-        288
+        -736,
+        304
       ],
-      "id": "08ebf188-0c79-45d6-9aee-38d1ad796f85",
+      "id": "31b38a8b-038f-4a11-aea8-345b4cd3fb55",
       "name": "Webhook",
       "webhookId": "6741e965-46ea-47b6-a308-273c27fa7b1a"
     },
@@ -235,10 +235,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -496,
-        288
+        -512,
+        304
       ],
-      "id": "45e0caed-c5a4-4e4b-a95a-b25764a10350",
+      "id": "bbac7327-0b72-4c25-9962-34151317d0c3",
       "name": "Extract Interactions"
     },
     {
@@ -249,10 +249,10 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.5,
       "position": [
-        976,
-        -16
+        960,
+        0
       ],
-      "id": "0080fbf6-92d5-4802-ac1b-a34f856c3575",
+      "id": "9ff4fe95-3186-490f-b4a4-645932a1076e",
       "name": "Respond to Webhook"
     },
     {
@@ -262,10 +262,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        752,
-        -16
+        736,
+        0
       ],
-      "id": "05111315-9566-4280-900e-480e6dddcbd0",
+      "id": "837db05e-6d6c-498d-be77-c3a1b6efab22",
       "name": "Preparar Respuesta"
     },
     {
@@ -278,11 +278,13 @@
       "type": "n8n-nodes-base.telegramTrigger",
       "typeVersion": 1.2,
       "position": [
-        -200,
-        500
+        -736,
+        1184
       ],
-      "id": "tg-trigger-001",
-      "name": "Telegram Trigger"
+      "id": "605a64c5-c057-4380-b1b0-cb49275196f8",
+      "name": "Telegram Trigger",
+      "webhookId": "91f43e29-60c6-489d-9cae-918ec93610ab",
+      "disabled": true
     },
     {
       "parameters": {
@@ -295,15 +297,16 @@
               "message": "=Eres el asistente de IA de CommunityLab (Oracle Next Education & Alura). Tu labor es responder a los miembros de la comunidad con empatia tecnica, clasificar la consulta y estructurar activos de conocimiento."
             }
           ]
-        }
+        },
+        "batching": {}
       },
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "typeVersion": 1.7,
       "position": [
-        100,
-        500
+        -512,
+        1072
       ],
-      "id": "tg-chain-001",
+      "id": "5bc00d94-b051-441f-a4ae-c8e210463c2f",
       "name": "Procesador IA CommunityLab"
     },
     {
@@ -314,14 +317,14 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
       "typeVersion": 1,
       "position": [
-        20,
-        720
+        -504,
+        1304
       ],
-      "id": "tg-model-001",
+      "id": "022e418f-d594-4fa3-b994-3bc3733c47ec",
       "name": "Groq Model (Telegram)",
       "credentials": {
         "groqApi": {
-          "id": "dAfNMioPwJHVr5V2",
+          "id": "dYH7OO8GOD58Q2lm",
           "name": "Groq account"
         }
       }
@@ -334,10 +337,10 @@
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.3,
       "position": [
-        200,
-        720
+        -376,
+        1304
       ],
-      "id": "tg-parser-001",
+      "id": "1823baf6-7c15-4fd4-a911-6760144b3685",
       "name": "Parser (Telegram)"
     },
     {
@@ -347,10 +350,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        400,
-        500
+        -160,
+        1184
       ],
-      "id": "tg-format-001",
+      "id": "2d685251-ef22-4e49-90b7-36b9cb9ffdce",
       "name": "Formatear Respuesta Markdown"
     },
     {
@@ -364,11 +367,13 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        640,
-        500
+        64,
+        1184
       ],
-      "id": "tg-send-001",
-      "name": "Enviar Respuesta Telegram"
+      "id": "47627bd4-d4bc-4392-a5c9-3d18a70168a5",
+      "name": "Enviar Respuesta Telegram",
+      "webhookId": "9b6e0a2f-1249-4e37-ae87-b9765070f0cb",
+      "disabled": true
     },
     {
       "parameters": {
@@ -380,10 +385,10 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
       "position": [
-        -220,
-        800
+        -736,
+        752
       ],
-      "id": "dc-webhook-001",
+      "id": "9835cc4c-7c86-4c6b-941c-8150f44fe5cc",
       "name": "Discord Webhook Trigger",
       "webhookId": "dc-communitylab-hook"
     },
@@ -398,15 +403,16 @@
               "message": "=Eres el asistente oficial de IA de CommunityLab (Oracle Next Education & Alura). Tu rol es responder consultas tecnicas, detectar logros y enriquecer la comunidad con respuestas utiles y estructuradas."
             }
           ]
-        }
+        },
+        "batching": {}
       },
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "typeVersion": 1.7,
       "position": [
-        80,
-        800
+        -512,
+        640
       ],
-      "id": "dc-chain-001",
+      "id": "f5df3ada-e045-465a-94cd-788d65d97d5b",
       "name": "Procesador IA Discord"
     },
     {
@@ -417,14 +423,14 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
       "typeVersion": 1,
       "position": [
-        0,
-        1020
+        -504,
+        872
       ],
-      "id": "dc-model-001",
+      "id": "23d1873d-37ea-447f-87ac-6db789f86d21",
       "name": "Groq Model (Discord)",
       "credentials": {
         "groqApi": {
-          "id": "dAfNMioPwJHVr5V2",
+          "id": "dYH7OO8GOD58Q2lm",
           "name": "Groq account"
         }
       }
@@ -437,10 +443,10 @@
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.3,
       "position": [
-        180,
-        1020
+        -376,
+        872
       ],
-      "id": "dc-parser-001",
+      "id": "9d1f0ccd-3bce-4188-866b-389e1b6fae61",
       "name": "Parser (Discord)"
     },
     {
@@ -450,10 +456,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        380,
-        800
+        -160,
+        752
       ],
-      "id": "dc-format-001",
+      "id": "25c9ceb8-e794-40a3-85e0-d4d2f3350c1b",
       "name": "Formatear Discord Embed"
     },
     {
@@ -475,29 +481,11 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
       "position": [
-        620,
-        800
+        64,
+        752
       ],
-      "id": "dc-respond-001",
+      "id": "0ba86708-fc3e-4c54-ae7b-2aaf0321a54b",
       "name": "Responder a Webhook Discord"
-    },
-    {
-      "parameters": {
-        "method": "POST",
-        "url": "={{ $env.DISCORD_WEBHOOK_URL }}",
-        "sendBody": true,
-        "specifyBody": "json",
-        "jsonBody": "={{ JSON.stringify($json) }}",
-        "options": {}
-      },
-      "id": "dc-send-webhook-001",
-      "name": "Enviar a Canal Discord",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        920,
-        840
-      ]
     },
     {
       "parameters": {
@@ -509,10 +497,10 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
       "position": [
-        -240,
-        1000
+        -736,
+        1600
       ],
-      "id": "sk-webhook-001",
+      "id": "72d91968-97fa-4c85-aa9f-247418845754",
       "name": "Slack Events Webhook",
       "webhookId": "sk-communitylab-hook"
     },
@@ -530,10 +518,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        0,
-        1000
+        -512,
+        1600
       ],
-      "id": "sk-if-challenge",
+      "id": "e01c3ce4-5cf0-4edc-86f5-dd57ffdb0147",
       "name": "¿Es Verificación de Slack?"
     },
     {
@@ -547,10 +535,10 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
       "position": [
-        260,
-        860
+        -288,
+        1504
       ],
-      "id": "sk-respond-challenge",
+      "id": "c67ace5e-d340-4385-9a4c-bbcdb52b646c",
       "name": "Responder Challenge Slack"
     },
     {
@@ -564,15 +552,16 @@
               "message": "=Eres el asistente oficial de CommunityLab en Slack (Oracle Next Education & Alura). Ayudas a resolver dudas, celebrar logros y consolidar activos tecnicos."
             }
           ]
-        }
+        },
+        "batching": {}
       },
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "typeVersion": 1.7,
       "position": [
-        620,
-        1140
+        -64,
+        1696
       ],
-      "id": "sk-chain-001",
+      "id": "759922a3-7dad-4d66-9d4e-293a685b0ca2",
       "name": "Procesador IA Slack"
     },
     {
@@ -583,14 +572,14 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
       "typeVersion": 1,
       "position": [
-        520,
-        1320
+        -56,
+        1928
       ],
-      "id": "sk-model-001",
+      "id": "fc69f860-098b-423f-9071-2be122362fb1",
       "name": "Groq Model (Slack)",
       "credentials": {
         "groqApi": {
-          "id": "dAfNMioPwJHVr5V2",
+          "id": "dYH7OO8GOD58Q2lm",
           "name": "Groq account"
         }
       }
@@ -603,10 +592,10 @@
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.3,
       "position": [
-        720,
-        1320
+        72,
+        1928
       ],
-      "id": "sk-parser-001",
+      "id": "e7778e1e-2154-4b75-97a4-295a9a4b83d8",
       "name": "Parser (Slack)"
     },
     {
@@ -616,16 +605,16 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        880,
-        1140
+        288,
+        1696
       ],
-      "id": "sk-format-001",
+      "id": "38e32eaf-be31-4bec-8b10-885c234ce5a6",
       "name": "Formatear Slack Blocks"
     },
     {
       "parameters": {
         "respondWith": "json",
-        "responseBody": "={{ { \"status\": \"ok\", \"message\": \"Evento recibido y en procesamiento\" } }}",
+        "responseBody": "={{ JSON.stringify($json) }}",
         "options": {
           "responseCode": 200
         }
@@ -633,42 +622,11 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
       "position": [
-        400,
-        1140
+        512,
+        1696
       ],
-      "id": "sk-respond-event",
+      "id": "3968f240-9093-4c3e-82a3-26df1dfa0ab1",
       "name": "Responder a Slack Event"
-    },
-    {
-      "parameters": {
-        "method": "POST",
-        "url": "https://slack.com/api/chat.postMessage",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {
-              "name": "Authorization",
-              "value": "=Bearer {{ $env.SLACK2_LOCAL_BOT_TOKEN || $env.SLACK_BOT_TOKEN }}"
-            },
-            {
-              "name": "Content-Type",
-              "value": "application/json; charset=utf-8"
-            }
-          ]
-        },
-        "sendBody": true,
-        "specifyBody": "json",
-        "jsonBody": "={{ JSON.stringify($json) }}",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        1120,
-        1140
-      ],
-      "id": "sk-send-slack-001",
-      "name": "Enviar Mensaje a Slack"
     },
     {
       "parameters": {
@@ -677,13 +635,14 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        200,
-        1140
+        -288,
+        1696
       ],
-      "id": "sk-filter-retries",
+      "id": "eee22055-8664-40d2-8996-8b062960ed14",
       "name": "Filtrar Reintentos Slack"
     }
   ],
+  "pinData": {},
   "connections": {
     "Basic LLM Chain1": {
       "main": [
@@ -927,11 +886,6 @@
       "main": [
         [
           {
-            "node": "Enviar a Canal Discord",
-            "type": "main",
-            "index": 0
-          },
-          {
             "node": "Responder a Webhook Discord",
             "type": "main",
             "index": 0
@@ -1005,7 +959,7 @@
       "main": [
         [
           {
-            "node": "Enviar Mensaje a Slack",
+            "node": "Responder a Slack Event",
             "type": "main",
             "index": 0
           }
@@ -1016,7 +970,7 @@
       "main": [
         [
           {
-            "node": "Responder a Slack Event",
+            "node": "Procesador IA Slack",
             "type": "main",
             "index": 0
           }
@@ -1025,25 +979,21 @@
     },
     "Responder a Slack Event": {
       "main": [
-        [
-          {
-            "node": "Procesador IA Slack",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        []
       ]
     }
   },
+  "active": true,
   "settings": {
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "tags": [
-    "CommunityLab",
-    "OracleONE",
-    "OCI",
-    "Omnicanal",
-    "Groq"
-  ]
+  "versionId": "7732b45c-6cec-4ea7-8d63-8c0c0e1905df",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "cb0b9a3b8b392f0b0fbc26be213326cbdfd285ed78e8eb9be9b7984b7130dd64"
+  },
+  "nodeGroups": [],
+  "id": "is13JQSeKCSPaCx1",
+  "tags": []
 }
