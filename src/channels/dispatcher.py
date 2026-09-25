@@ -104,6 +104,8 @@ class ChannelMessageDispatcher:
                 )
                 if self.persist_locally:
                     self._save_interaction_locally(activo_procesado, canal_origen, metadata)
+                if self.persist_oci:
+                    self._save_interaction_to_oci(activo_procesado, canal_origen)
                 return activo_procesado, respuestas
             except Exception as e_n8n:
                 logger.warning(
