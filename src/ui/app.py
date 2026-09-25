@@ -33,6 +33,8 @@ from src.ui.services import (
     obtener_ids_procesados_sesion,
 )
 from src.utils.logger import obtener_ultimas_lineas_log, limpiar_archivo_log
+from src.utils.config import get_n8n_webhook_url
+from src.channels.bot_manager import get_bot_manager
 
 # Configuración de la página
 st.set_page_config(
@@ -66,12 +68,53 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
+# Definición de Vistas Oficiales
+VISTA_CURADURIA = "💼 Curaduría de Activos"
+VISTA_PIPELINE = "⚡ Ejecutar Pipeline"
+VISTA_HISTORICO = "☁️ Histórico OCI Object Storage"
+
 # Sidebar de navegación
 st.sidebar.title("Navegación")
 modo = st.sidebar.radio(
     "Selecciona una vista:",
-    ["💼 Curaduría de Activos", "⚡ Ejecutar Pipeline", "☁️ Histórico OCI Object Storage"],
+    [VISTA_CURADURIA, VISTA_PIPELINE, VISTA_HISTORICO],
 )
+
+st.sidebar.markdown("---")
+st.sidebar.subheader("🤖 Canales en Vivo")
+
+bot_manager = get_bot_manager()
+status_bots = bot_manager.get_status()
+any_running = bot_manager.is_running()
+
+col_b1, col_b2 = st.sidebar.columns(2)
+with col_b1:
+    if st.button("▶️ Iniciar", use_container_width=True, disabled=any_running, help="Inicia la escucha en segundo plano de Telegram, Discord y Slack"):
+        bot_manager.start_all()
+        st.toast("Bots iniciados en segundo plano.", icon="🚀")
+        time.sleep(1)
+        st.rerun()
+
+with col_b2:
+    if st.button("⏹️ Detener", use_container_width=True, disabled=not any_running, help="Detiene los 3 bots"):
+        bot_manager.stop_all()
+        st.toast("Bots detenidos.", icon="🛑")
+        time.sleep(1)
+        st.rerun()
+
+# Estado detallado de cada bot
+for k, data in status_bots.items():
+    is_on = data["running"]
+    color_icon = "🟢" if is_on else "🔴"
+    estado_txt = "**En línea**" if is_on else "*Inactivo*"
+    st.sidebar.markdown(f"{color_icon} **{data['label']}**: {estado_txt}")
+    if data.get("error"):
+        st.sidebar.caption(f"⚠️ {data['error']}")
+    else:
+        st.sidebar.caption(f"ℹ️ {data['info']}")
+
+if any_running:
+    st.sidebar.success("📡 Escuchando mensajes en vivo...")
 
 st.sidebar.markdown("---")
 st.sidebar.info(
@@ -82,37 +125,92 @@ st.sidebar.info(
 # -----------------------------------------------------------------------------
 # VISTA 1: CURADURÍA DE ACTIVOS
 # -----------------------------------------------------------------------------
-if modo == "💼 Curaduría de Activos":
+def detectar_canal_digital(item: dict) -> tuple[str, str]:
+    """Detecta el canal digital de procedencia del activo (Telegram, Discord, Slack o Dataset Batch).
+
+    Retorna una tupla: (nombre_clave, badge_formateado_con_emoji)
+    """
+    bot_chan = (item.get("canal_origen_bot") or "").lower()
+    inter_chan = (item.get("interaccion", {}).get("canal") or "").lower()
+    inter_id = str(item.get("interaccion", {}).get("id") or "").lower()
+    tipo_inter = (item.get("interaccion", {}).get("tipo") or "").lower()
+    meta_ext = item.get("metadata_externa") or {}
+    meta_str = str(meta_ext).lower()
+
+    canal_comb = f"{bot_chan} {inter_chan} {inter_id} {tipo_inter} {meta_str}"
+
+    if "telegram" in canal_comb or inter_id.startswith("tg_") or "chat_id" in meta_str:
+        return "Telegram", "✈️ Telegram"
+    elif "discord" in canal_comb or inter_id.startswith("dc_") or inter_id.startswith("disc_"):
+        return "Discord", "🎮 Discord"
+    elif "slack" in canal_comb or inter_id.startswith("slk_") or inter_id.startswith("slack_") or "c0c" in canal_comb:
+        return "Slack", "💬 Slack"
+    else:
+        return "Dataset Batch", "📊 Dataset Batch"
+
+
+if "Curaduría" in modo or modo == VISTA_CURADURIA:
     st.subheader("📋 Revisión y Aprobación de Copys para Publicación")
 
-    # Cargar paquetes directamente de OCI Object Storage (Fuente de Verdad en la Nube)
-    paquetes_disponibles = obtener_ultimos_paquetes(limite=30)
     opciones_fuente = []
 
-    # Exclusivamente paquetes en OCI Storage
+    # 1. Canales Dinamicos Interactivos (Telegram, Discord, Slack)
+    f_canales_py = Path("data/paquete_procesado_canales_python.json")
+    if f_canales_py.exists():
+        try:
+            with open(f_canales_py, "r", encoding="utf-8") as f:
+                c_py = json.load(f)
+                n_act = len(c_py.get("activos", []))
+                opciones_fuente.append(f"Canales (Python): {f_canales_py.as_posix()} ({n_act} activos)")
+        except Exception:
+            opciones_fuente.append(f"Canales (Python): {f_canales_py.as_posix()}")
+
+    f_canales_n8n = Path("data/paquete_procesado_canales_n8n.json")
+    if f_canales_n8n.exists():
+        try:
+            with open(f_canales_n8n, "r", encoding="utf-8") as f:
+                c_n8n = json.load(f)
+                n_act = len(c_n8n.get("activos", []))
+                opciones_fuente.append(f"Canales (n8n): {f_canales_n8n.as_posix()} ({n_act} activos)")
+        except Exception:
+            opciones_fuente.append(f"Canales (n8n): {f_canales_n8n.as_posix()}")
+
+    # 2. Lotes en OCI Object Storage (Pipeline Batch E2E)
+    paquetes_disponibles = obtener_ultimos_paquetes(limite=30)
     for p in paquetes_disponibles:
         opciones_fuente.append(f"Storage: {p['name']}")
 
-    # Fallback local únicamente si OCI está vacío o en modo offline
-    if not opciones_fuente:
-        for local_f in [Path("data/paquete_procesado_python.json"), Path("data/paquete_procesado.json")]:
-            if local_f.exists():
-                opciones_fuente.append(f"Local: {local_f.as_posix()}")
+    # 3. Lotes Locales Batch
+    for local_f in [Path("data/paquete_procesado_python.json"), Path("data/paquete_procesado_n8n.json"), Path("data/paquete_procesado.json")]:
+        if local_f.exists():
+            entry = f"Local: {local_f.as_posix()}"
+            if entry not in opciones_fuente:
+                opciones_fuente.append(entry)
 
     if not opciones_fuente:
         st.warning(
-            "⚠️ Aún no se han generado paquetes en OCI Object Storage. "
-            "Ejecuta el flujo en n8n o ve a la pestaña **'⚡ Ejecutar Pipeline'** para procesar interacciones."
+            "⚠️ Aun no se han generado paquetes de activos. "
+            "Ejecuta interacciones en Telegram/Discord/Slack o ve a la pestaña **'🚀 Ejecutar Pipeline'** para procesar interacciones."
         )
     else:
-        fuente_seleccionada = st.selectbox("Selecciona el lote de OCI a inspeccionar:", opciones_fuente)
+        c_sel1, c_sel2, c_sel3 = st.columns([2.5, 0.8, 1.2])
+        with c_sel1:
+            fuente_seleccionada = st.selectbox("Selecciona la fuente o lote de activos a inspeccionar:", opciones_fuente)
+        with c_sel2:
+            st.write("")
+            st.write("")
+            if st.button("🔄 Refrescar", use_container_width=True, help="Recarga las interacciones más recientes"):
+                st.rerun()
 
         # Cargar datos del paquete
         datos_paquete = None
-        if fuente_seleccionada.startswith("Local:"):
-            local_p = Path(fuente_seleccionada.replace("Local: ", ""))
-            with open(local_p, "r", encoding="utf-8") as f:
-                datos_paquete = json.load(f)
+        if fuente_seleccionada.startswith("Local:") or fuente_seleccionada.startswith("Canales ("):
+            partes = fuente_seleccionada.split(":")
+            ruta_str = partes[1].strip().split(" ")[0]
+            local_p = Path(ruta_str)
+            if local_p.exists():
+                with open(local_p, "r", encoding="utf-8") as f:
+                    datos_paquete = json.load(f)
         else:
             nombre_obj = fuente_seleccionada.replace("Storage: ", "")
             raw_datos = cargar_paquete(nombre_obj)
@@ -159,7 +257,31 @@ if modo == "💼 Curaduría de Activos":
                     datos_paquete = raw_datos
 
         if datos_paquete and "activos" in datos_paquete:
+            if fuente_seleccionada.startswith("Canales ("):
+                with c_sel3:
+                    st.write("")
+                    st.write("")
+                    if st.button("☁️ Subir a Storage", use_container_width=True, help="Sube una copia histórica de estas interacciones a OCI Object Storage"):
+                        from src.cloud_oci.storage_client import OCIStorageManager
+                        sm = OCIStorageManager(allow_local_fallback=True)
+                        motor_name = "python_canales" if "Python" in fuente_seleccionada else "n8n_canales"
+                        obj_subido = sm.upload_asset(datos_paquete, motor=motor_name)
+                        st.toast(f"¡Interacciones sincronizadas a Storage como '{obj_subido}'!", icon="🚀")
+                        time.sleep(1)
+                        st.rerun()
+
             meta = datos_paquete.get("metadata_paquete", {})
+            if "metricas" not in datos_paquete or not datos_paquete.get("metricas"):
+                activos_list = datos_paquete.get("activos", [])
+                datos_paquete["metricas"] = {
+                    "distribucion_sentimiento": {
+                        "positivo": sum(1 for a in activos_list if (a.get("activo") or {}).get("sentimiento") == "positivo"),
+                        "neutro": sum(1 for a in activos_list if (a.get("activo") or {}).get("sentimiento") == "neutro"),
+                        "negativo": sum(1 for a in activos_list if (a.get("activo") or {}).get("sentimiento") == "negativo"),
+                    },
+                    "total_posts_linkedin_generados": sum(1 for a in activos_list if (a.get("activo") or {}).get("post_linkedin")),
+                    "total_tips_faq_generados": sum(1 for a in activos_list if (a.get("activo") or {}).get("tip_tecnico_faq")),
+                }
             metricas = datos_paquete.get("metricas", {})
 
             # Métricas resumen en columnas
@@ -177,10 +299,11 @@ if modo == "💼 Curaduría de Activos":
             st.markdown("---")
 
             # Filtros interactivos
-            filtro_col1, filtro_col2, filtro_col3 = st.columns(3)
+            # Filtros interactivos (Tipo, Sentimiento, Motor y Canal Digital)
+            filtro_col1, filtro_col2, filtro_col3, filtro_col4 = st.columns(4)
             with filtro_col1:
                 tipo_filtro = st.selectbox(
-                    "Filtrar por tipo de contenido:",
+                    "Filtrar por tipo:",
                     ["Todos", "logro_contratacion", "duda_tecnica", "showcase", "feedback_general"],
                 )
             with filtro_col2:
@@ -190,8 +313,13 @@ if modo == "💼 Curaduría de Activos":
                 )
             with filtro_col3:
                 motor_filtro = st.selectbox(
-                    "Filtrar por motor ejecutor:",
-                    ["Todos", "🐍 Python Nativo", "🔄 n8n Local"],
+                    "Filtrar por motor:",
+                    ["Todos", "🐍 Python Nativo", "⚡ n8n Local"],
+                )
+            with filtro_col4:
+                canal_digital_filtro = st.selectbox(
+                    "Filtrar por canal de origen:",
+                    ["Todos", "✈️ Telegram", "🎮 Discord", "💬 Slack", "📊 Dataset Batch"],
                 )
 
             activos = datos_paquete.get("activos", [])
@@ -203,8 +331,11 @@ if modo == "💼 Curaduría de Activos":
                 activos = [a for a in activos if a["activo"]["sentimiento"] == sentimiento_filtro]
             if motor_filtro == "🐍 Python Nativo":
                 activos = [a for a in activos if "python" in (a.get("motor_orquestacion") or meta.get("motor_orquestacion", "")).lower()]
-            elif motor_filtro == "🔄 n8n Local":
+            elif motor_filtro == "⚡ n8n Local":
                 activos = [a for a in activos if "n8n" in (a.get("motor_orquestacion") or meta.get("motor_orquestacion", "")).lower()]
+            if canal_digital_filtro != "Todos":
+                nombre_clave = canal_digital_filtro.split(" ", 1)[1]
+                activos = [a for a in activos if detectar_canal_digital(a)[0] == nombre_clave]
 
             c_info1, c_info2 = st.columns([3, 2])
             with c_info1:
@@ -223,13 +354,14 @@ if modo == "💼 Curaduría de Activos":
             for idx, item in enumerate(activos_a_mostrar, start=1):
                 interaccion = item["interaccion"]
                 activo = item["activo"]
+                canal_nombre, badge_canal = detectar_canal_digital(item)
                 motor_val = (item.get("motor_orquestacion") or meta.get("motor_orquestacion", "")).lower()
                 if "python" in motor_val:
                     badge_motor = "🐍 PYTHON"
                 elif "n8n" in motor_val:
-                    badge_motor = "🔄 N8N"
+                    badge_motor = "⚡ N8N"
                 else:
-                    badge_motor = "⚙️ MOTOR"
+                    badge_motor = "🤖 MOTOR"
 
                 proc_time = item.get("procesado_en", "")
                 hora_str = proc_time[11:19] if len(proc_time) >= 19 else "Sesión"
@@ -241,29 +373,28 @@ if modo == "💼 Curaduría de Activos":
                 estado_cur = cur_info.get("estado") if cur_info else "pendiente"
 
                 if estado_cur == "aprobado":
-                    badge_estado = "🟢 APROBADO"
+                    badge_estado = "✅ APROBADO"
                 elif estado_cur == "rechazado":
-                    badge_estado = "🔴 DESCARTADO"
+                    badge_estado = "🚫 DESCARTADO"
                 elif estado_cur == "leido":
-                    badge_estado = "🔵 LEÍDO"
+                    badge_estado = "👁️ LEÍDO"
                 else:
                     badge_estado = "⏳ PENDIENTE"
 
                 with st.expander(
-                    f"#{idx} | {badge_estado} | [{badge_motor}] {badge_lote}[{activo['tipo_contenido'].upper()}] {interaccion['autor']} ({interaccion['canal']}) — ⏱️ {hora_str}",
+                    f"#{idx} | {badge_estado} | [{badge_canal}] [{badge_motor}] {badge_lote}[{activo['tipo_contenido'].upper()}] {interaccion['autor']} ({interaccion['canal']}) 👉 🕒 {hora_str}",
                     expanded=(idx == 1),
                 ):
                     c_left, c_right = st.columns([1, 1])
 
                     with c_left:
-                        st.markdown("#### 💬 Interacción Original")
-                        st.info(f"\"{interaccion['texto']}\"")
+                        st.markdown(f"#### 📥 Interacción Original &nbsp; `{badge_canal}`")
+                        st.info(f'"{interaccion["texto"]}"')
                         st.caption(
-                            f"Motor: **{badge_motor}** | ID: `{interaccion['id']}` | "
-                            f"Lote: `{lote_tag or 'previo'}` | ⏱️ Hora: **{hora_str}** | "
+                            f"Canal: **{badge_canal}** | Motor: **{badge_motor}** | ID: `{interaccion['id']}` | "
+                            f"Lote: `{lote_tag or 'previo'}` | 🕒 Hora: **{hora_str}** | "
                             f"Sentimiento: **{activo['sentimiento']}** | Estado: **{badge_estado}**"
                         )
-
                         # Etiquetas / Temas clave
                         tags_html = "".join([f'<span class="tag-chip">#{t}</span>' for t in activo.get("temas_clave", [])])
                         st.markdown(f"**Temas Clave:** {tags_html}", unsafe_allow_html=True)
@@ -335,7 +466,7 @@ if modo == "💼 Curaduría de Activos":
 # -----------------------------------------------------------------------------
 # VISTA 2: EJECUTAR PIPELINE
 # -----------------------------------------------------------------------------
-elif modo == "⚡ Ejecutar Pipeline":
+elif "Ejecutar Pipeline" in modo or modo == VISTA_PIPELINE:
     st.subheader("⚡ Disparador de Ejecución del Pipeline E2E")
     st.write("Ejecuta el procesamiento sobre el lote oficial de interacciones o sube un archivo personalizado.")
 
@@ -424,10 +555,7 @@ elif modo == "⚡ Ejecutar Pipeline":
             unsafe_allow_html=True,
         )
         st.write("")
-        webhook_default = os.getenv(
-            "N8N_WEBHOOK_URL",
-            os.getenv("N8N_LOCAL_WEBHOOK_URL", "http://147.15.9.116:5678/webhook/communitylab-ingesta"),
-        )
+        webhook_default = get_n8n_webhook_url()
         with st.expander("⚙️ Configuración Endpoint Webhook n8n", expanded=False):
             webhook_url = st.text_input("URL Webhook:", value=webhook_default)
 
@@ -552,7 +680,7 @@ elif modo == "⚡ Ejecutar Pipeline":
 # -----------------------------------------------------------------------------
 # VISTA 3: HISTÓRICO OCI
 # -----------------------------------------------------------------------------
-elif modo == "☁️ Histórico OCI Object Storage":
+elif "Histórico" in modo or modo == VISTA_HISTORICO:
     c_head1, c_head2 = st.columns([3, 1])
     with c_head1:
         st.subheader("☁️ Objetos Persistidos en OCI Object Storage Always Free")

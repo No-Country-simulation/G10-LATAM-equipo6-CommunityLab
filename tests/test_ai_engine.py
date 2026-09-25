@@ -82,6 +82,7 @@ def test_invalid_consistency_logro_without_post():
     }
     asset, error = validate_asset_output(data)
     assert asset is None
+    assert error is not None
     assert "post_linkedin" in error
 
 
@@ -96,6 +97,7 @@ def test_invalid_consistency_duda_without_faq():
     }
     asset, error = validate_asset_output(data)
     assert asset is None
+    assert error is not None
     assert "tip_tecnico_faq" in error
 
 

@@ -1,0 +1,292 @@
+{
+  "name": "CommunityLab_Slack_Dinamico",
+  "id": "SK001CommunityLb",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "communitylab-slack",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -240,
+        200
+      ],
+      "id": "sk-webhook-001",
+      "name": "Slack Events Webhook",
+      "webhookId": "sk-communitylab-hook"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.body.type }}",
+              "value2": "url_verification"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        0,
+        200
+      ],
+      "id": "sk-if-challenge",
+      "name": "¿Es Verificación de Slack?"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"challenge\": $json.body.challenge } }}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        260,
+        60
+      ],
+      "id": "sk-respond-challenge",
+      "name": "Responder Challenge Slack"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Analiza la siguiente interaccion recibida en Slack de la comunidad:\n\nUsuario: {{ $json.body?.event?.user || $json.author || $json.body?.author || 'Usuario Slack' }}\nCanal: {{ $json.body?.event?.channel || $json.channel || $json.body?.channel || 'all-g10-latam-06' }}\nTexto: \"{{ $json.body?.event?.text || $json.content || $json.body?.content || $json.text || $json.body?.text }}\"\n\nInstrucciones:\n1. Clasifica el sentimiento (positivo, neutro, negativo).\n2. Determina el tipo_contenido (logro_contratacion, duda_tecnica, showcase, feedback_general).\n3. Extrae temas_clave tecnologicos.\n4. Si es logro_contratacion o showcase, redacta un post_linkedin inspirador.\n5. Si es duda_tecnica, redacta un tip_tecnico_faq estructurado.\n6. Redacta una respuesta_chat clara, amable y ejecutiva para responder en Slack.",
+        "hasOutputParser": true,
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=Eres el asistente oficial de CommunityLab en Slack (Oracle Next Education & Alura). Ayudas a resolver dudas, celebrar logros y consolidar activos tecnicos."
+            }
+          ]
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        620,
+        340
+      ],
+      "id": "sk-chain-001",
+      "name": "Procesador IA Slack"
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-20b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        520,
+        520
+      ],
+      "id": "sk-model-001",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "dAfNMioPwJHVr5V2",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"$schema\": \"http://json-schema.org/draft-07/schema#\",\n  \"title\": \"CommunityLabSlackOutput\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"sentimiento\": {\n      \"type\": \"string\",\n      \"enum\": [\n        \"positivo\",\n        \"neutro\",\n        \"negativo\"\n      ]\n    },\n    \"tipo_contenido\": {\n      \"type\": \"string\",\n      \"enum\": [\n        \"logro_contratacion\",\n        \"duda_tecnica\",\n        \"feedback_general\",\n        \"showcase\"\n      ]\n    },\n    \"temas_clave\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"string\"\n      }\n    },\n    \"respuesta_chat\": {\n      \"type\": \"string\"\n    },\n    \"post_linkedin\": {\n      \"type\": [\n        \"string\",\n        \"null\"\n      ]\n    },\n    \"tip_tecnico_faq\": {\n      \"type\": [\n        \"string\",\n        \"null\"\n      ]\n    }\n  },\n  \"required\": [\n    \"sentimiento\",\n    \"tipo_contenido\",\n    \"temas_clave\",\n    \"respuesta_chat\"\n  ]\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        720,
+        520
+      ],
+      "id": "sk-parser-001",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Construir Slack Blocks para respuesta estructurada en canal/hilo\nconst output = $json.output || $json;\nconst rawItem = $('Slack Events Webhook').item.json;\nconst slackEvent = rawItem.body?.event || {};\n\n// Canal de destino: evento de Slack o fallback al canal oficial #all-g10-latam-06\nconst targetChannel = slackEvent.channel || rawItem.body?.channel || rawItem.channel || 'C0C3C2BPBSB';\nconst targetThreadTs = slackEvent.ts || rawItem.body?.thread_ts || rawItem.thread_ts || undefined;\n\nconst sent = (output.sentimiento || 'neutro').toLowerCase();\nconst sentimientoBadge = sent === 'positivo' ? ':large_green_circle: Positivo' : (sent === 'negativo' ? ':red_circle: Negativo' : ':large_yellow_circle: Neutro');\n\nconst blocks = [\n  {\n    \"type\": \"header\",\n    \"text\": {\n      \"type\": \"plain_text\",\n      \"text\": \"🤖 CommunityLab Assistant\",\n      \"emoji\": true\n    }\n  },\n  {\n    \"type\": \"section\",\n    \"text\": {\n      \"type\": \"mrkdwn\",\n      \"text\": output.respuesta_chat || \"¡Mensaje procesado correctamente!\"\n    }\n  },\n  {\n    \"type\": \"context\",\n    \"elements\": [\n      {\n        \"type\": \"mrkdwn\",\n        \"text\": `*Sentimiento:* ${sentimientoBadge} | *Categoría:* \\`${output.tipo_contenido || 'General'}\\` | *Temas:* ${(output.temas_clave && Array.isArray(output.temas_clave)) ? output.temas_clave.join(', ') : (output.temas_clave || 'N/A')}`\n      }\n    ]\n  }\n];\n\nif (output.tip_tecnico_faq) {\n  blocks.push({\n    \"type\": \"section\",\n    \"text\": {\n      \"type\": \"mrkdwn\",\n      \"text\": `*💡 Tip Técnico / Solución:*\\n${output.tip_tecnico_faq}`\n    }\n  });\n}\n\nif (output.post_linkedin) {\n  blocks.push({\n    \"type\": \"section\",\n    \"text\": {\n      \"type\": \"mrkdwn\",\n      \"text\": `*🚀 Post de LinkedIn Sugerido:*\\n>${output.post_linkedin}`\n    }\n  });\n}\n\n// Persistencia en paquete_procesado_canales_n8n.json\ntry {\n  const fs = require('fs');\n  const filePath = '/home/node/data/paquete_procesado_canales_n8n.json';\n  let dataStore = {\n    metadata_paquete: {\n      generado_el: new Date().toISOString(),\n      motor_orquestacion: \"n8n_native_workflows\",\n      total_activos: 0,\n      ultima_actualizacion: new Date().toISOString()\n    },\n    activos: []\n  };\n\n  if (fs.existsSync(filePath)) {\n    try {\n      const content = fs.readFileSync(filePath, 'utf8');\n      if (content.trim()) {\n        dataStore = JSON.parse(content);\n      }\n    } catch (e) {}\n  }\n\n  const rawText = slackEvent.text || rawItem.content || rawItem.body?.content || rawItem.text || rawItem.body?.text || '';\n  const cleanText = rawText.replace(/<@[A-Z0-9]+>/g, '').trim();\n  const autorUser = slackEvent.user || rawItem.author || rawItem.body?.author || 'Usuario Slack';\n  const eventTs = slackEvent.ts || Date.now().toString();\n\n  const nuevoActivo = {\n    interaccion: {\n      id: `slack_${eventTs.replace('.', '_')}`,\n      autor: autorUser,\n      canal: \"#all-g10-latam-06\",\n      tipo: \"consulta_dinamica\",\n      texto: cleanText || rawText\n    },\n    activo: {\n      sentimiento: output.sentimiento || \"neutro\",\n      tipo_contenido: output.tipo_contenido || \"feedback_general\",\n      temas_clave: Array.isArray(output.temas_clave) ? output.temas_clave : (output.temas_clave ? [output.temas_clave] : []),\n      post_linkedin: output.post_linkedin || null,\n      tip_tecnico_faq: output.tip_tecnico_faq || null\n    },\n    canal_origen_bot: \"#slack-comunidad\",\n    motor_orquestacion: \"n8n_dynamic_channels\",\n    metadata_externa: {\n      channel_id: targetChannel,\n      user_id: autorUser,\n      ts: eventTs\n    }\n  };\n\n  if (!dataStore.activos) dataStore.activos = [];\n  dataStore.activos.unshift(nuevoActivo);\n  dataStore.metadata_paquete = dataStore.metadata_paquete || {};\n  dataStore.metadata_paquete.total_activos = dataStore.activos.length;\n  dataStore.metadata_paquete.ultima_actualizacion = new Date().toISOString();\n\n  fs.writeFileSync(filePath, JSON.stringify(dataStore, null, 2), 'utf8');\n} catch (err) {}\n\nconst payload = {\n  channel: targetChannel,\n  blocks: blocks,\n  text: output.respuesta_chat || \"CommunityLab Insight\"\n};\nif (targetThreadTs) {\n  payload.thread_ts = targetThreadTs;\n}\n\nreturn [{ json: payload }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        880,
+        340
+      ],
+      "id": "sk-format-001",
+      "name": "Formatear Slack Blocks"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"status\": \"ok\", \"message\": \"Evento recibido y en procesamiento\" } }}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        400,
+        340
+      ],
+      "id": "sk-respond-event",
+      "name": "Responder a Slack Event"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://slack.com/api/chat.postMessage",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $env.SLACK2_LOCAL_BOT_TOKEN || $env.SLACK_BOT_TOKEN }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json) }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1120,
+        340
+      ],
+      "id": "sk-send-slack-001",
+      "name": "Enviar Mensaje a Slack"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Filtrar reintentos automaticos de Slack (evitar respuestas duplicadas)\nconst headers = $json.headers || {};\nif (headers['x-slack-retry-num']) {\n  // Descartar reintento para evitar duplicidad\n  return [];\n}\nreturn [{ json: $json }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        200,
+        340
+      ],
+      "id": "sk-filter-retries",
+      "name": "Filtrar Reintentos Slack"
+    }
+  ],
+  "connections": {
+    "Slack Events Webhook": {
+      "main": [
+        [
+          {
+            "node": "¿Es Verificación de Slack?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Es Verificación de Slack?": {
+      "main": [
+        [
+          {
+            "node": "Responder Challenge Slack",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Filtrar Reintentos Slack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Procesador IA Slack",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Procesador IA Slack",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Procesador IA Slack": {
+      "main": [
+        [
+          {
+            "node": "Formatear Slack Blocks",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Formatear Slack Blocks": {
+      "main": [
+        [
+          {
+            "node": "Enviar Mensaje a Slack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtrar Reintentos Slack": {
+      "main": [
+        [
+          {
+            "node": "Responder a Slack Event",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Responder a Slack Event": {
+      "main": [
+        [
+          {
+            "node": "Procesador IA Slack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "tags": [],
+  "active": true
+}

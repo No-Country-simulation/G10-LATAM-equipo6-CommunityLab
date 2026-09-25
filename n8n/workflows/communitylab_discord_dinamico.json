@@ -1,0 +1,201 @@
+{
+  "name": "CommunityLab_Discord_Dinamico",
+  "id": "DC001CommunityLb",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "communitylab-discord",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -220,
+        200
+      ],
+      "id": "dc-webhook-001",
+      "name": "Discord Webhook Trigger",
+      "webhookId": "dc-communitylab-hook"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Analiza la siguiente consulta recibida de un miembro de la comunidad en Discord:\n\nAutor: {{ $json.body.author || $json.body.username || 'Usuario Discord' }}\nCanal: {{ $json.body.channel || 'general' }}\nTexto: \"{{ $json.body.content || $json.body.text || $json.body.message }}\"\n\nInstrucciones:\n1. Clasifica el sentimiento (positivo, neutro, negativo).\n2. Determina el tipo_contenido (logro_contratacion, duda_tecnica, showcase, feedback_general).\n3. Extrae temas_clave tecnologicos.\n4. Si es logro_contratacion o showcase, redacta un post_linkedin inspirador.\n5. Si es duda_tecnica, redacta un tip_tecnico_faq estructurado.\n6. Redacta una respuesta_chat clara, amable y concisa para responderle al usuario en Discord.",
+        "hasOutputParser": true,
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=Eres el asistente oficial de IA de CommunityLab (Oracle Next Education & Alura). Tu rol es responder consultas tecnicas, detectar logros y enriquecer la comunidad con respuestas utiles y estructuradas."
+            }
+          ]
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        80,
+        200
+      ],
+      "id": "dc-chain-001",
+      "name": "Procesador IA Discord"
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-20b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        0,
+        420
+      ],
+      "id": "dc-model-001",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "dAfNMioPwJHVr5V2",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"$schema\": \"http://json-schema.org/draft-07/schema#\",\n  \"title\": \"CommunityLabDiscordOutput\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"sentimiento\": {\n      \"type\": \"string\",\n      \"enum\": [\n        \"positivo\",\n        \"neutro\",\n        \"negativo\"\n      ]\n    },\n    \"tipo_contenido\": {\n      \"type\": \"string\",\n      \"enum\": [\n        \"logro_contratacion\",\n        \"duda_tecnica\",\n        \"feedback_general\",\n        \"showcase\"\n      ]\n    },\n    \"temas_clave\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"string\"\n      }\n    },\n    \"respuesta_chat\": {\n      \"type\": \"string\"\n    },\n    \"post_linkedin\": {\n      \"type\": [\n        \"string\",\n        \"null\"\n      ]\n    },\n    \"tip_tecnico_faq\": {\n      \"type\": [\n        \"string\",\n        \"null\"\n      ]\n    }\n  },\n  \"required\": [\n    \"sentimiento\",\n    \"tipo_contenido\",\n    \"temas_clave\",\n    \"respuesta_chat\"\n  ]\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        180,
+        420
+      ],
+      "id": "dc-parser-001",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Construir Discord Embed compatible con Webhooks de Discord\nconst output = $json.output || $json;\n\nlet color = 3447003; // Azul por defecto\nif (output.sentimiento === 'positivo') color = 3066993; // Verde\nif (output.sentimiento === 'negativo') color = 15158332; // Rojo\nif (output.sentimiento === 'neutro') color = 15844367; // Amarillo\n\nconst fields = [\n  { name: \"📊 Sentimiento\", value: (output.sentimiento || 'neutro').toUpperCase(), inline: true },\n  { name: \"🏷️ Categoría\", value: output.tipo_contenido || 'General', inline: true },\n  { name: \"💡 Temas Clave\", value: (output.temas_clave && output.temas_clave.length > 0) ? output.temas_clave.join(', ') : 'General', inline: false }\n];\n\nif (output.tip_tecnico_faq) {\n  fields.push({ name: \"🛠️ Tip Técnico / FAQ\", value: output.tip_tecnico_faq.substring(0, 1024), inline: false });\n}\n\nif (output.post_linkedin) {\n  fields.push({ name: \"🚀 Post LinkedIn Generado\", value: output.post_linkedin.substring(0, 1024), inline: false });\n}\n\nconst discordPayload = {\n  username: \"CommunityLab Bot\",\n  avatar_url: \"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/potion.png\",\n  content: output.respuesta_chat || \"¡Consulta procesada exitosamente!\",\n  embeds: [{\n    title: \"CommunityLab AI Insight\",\n    color: color,\n    fields: fields,\n    footer: { text: \"CommunityLab Hackathon Oracle & Alura • n8n Native Flow\" },\n    timestamp: new Date().toISOString()\n  }]\n};\n\n// Persistir en /home/node/data/paquete_procesado_canales_n8n.json\ntry {\n  const fs = require('fs');\n  const filePath = '/home/node/data/paquete_procesado_canales_n8n.json';\n  let dataStore = {\n    metadata_paquete: {\n      generado_el: new Date().toISOString(),\n      motor_orquestacion: \"n8n_native_workflows\",\n      total_activos: 0,\n      ultima_actualizacion: new Date().toISOString()\n    },\n    activos: []\n  };\n\n  if (fs.existsSync(filePath)) {\n    try {\n      const content = fs.readFileSync(filePath, 'utf8');\n      if (content.trim()) {\n        dataStore = JSON.parse(content);\n      }\n    } catch (e) {}\n  }\n\n  const rawItem = $('Discord Webhook Trigger').item.json;\n  const rawText = rawItem.content || rawItem.body?.content || rawItem.text || rawItem.body?.text || '';\n  const autorUser = rawItem.author || rawItem.body?.author || 'Usuario Discord';\n  const eventTs = Date.now().toString();\n\n  const nuevoActivo = {\n    interaccion: {\n      id: `discord_${eventTs}`,\n      autor: autorUser,\n      canal: \"#discord-comunidad\",\n      tipo: \"consulta_dinamica\",\n      texto: rawText\n    },\n    activo: {\n      sentimiento: output.sentimiento || \"neutro\",\n      tipo_contenido: output.tipo_contenido || \"feedback_general\",\n      temas_clave: Array.isArray(output.temas_clave) ? output.temas_clave : (output.temas_clave ? [output.temas_clave] : []),\n      post_linkedin: output.post_linkedin || null,\n      tip_tecnico_faq: output.tip_tecnico_faq || null\n    },\n    canal_origen_bot: \"#discord-comunidad\",\n    motor_orquestacion: \"n8n_dynamic_channels\",\n    metadata_externa: {\n      user_id: autorUser,\n      ts: eventTs\n    }\n  };\n\n  if (!dataStore.activos) dataStore.activos = [];\n  dataStore.activos.unshift(nuevoActivo);\n  dataStore.metadata_paquete = dataStore.metadata_paquete || {};\n  dataStore.metadata_paquete.total_activos = dataStore.activos.length;\n  dataStore.metadata_paquete.ultima_actualizacion = new Date().toISOString();\n\n  fs.writeFileSync(filePath, JSON.stringify(dataStore, null, 2), 'utf8');\n} catch (err) {}\n\nreturn [{ json: discordPayload }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        380,
+        200
+      ],
+      "id": "dc-format-001",
+      "name": "Formatear Discord Embed"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify($json) }}",
+        "options": {
+          "responseCode": 200,
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        620,
+        200
+      ],
+      "id": "dc-respond-001",
+      "name": "Responder a Webhook Discord"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.DISCORD_WEBHOOK_URL }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json) }}",
+        "options": {}
+      },
+      "id": "dc-send-webhook-001",
+      "name": "Enviar a Canal Discord",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        920,
+        240
+      ]
+    }
+  ],
+  "connections": {
+    "Discord Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "Procesador IA Discord",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Procesador IA Discord",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Procesador IA Discord",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Procesador IA Discord": {
+      "main": [
+        [
+          {
+            "node": "Formatear Discord Embed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Formatear Discord Embed": {
+      "main": [
+        [
+          {
+            "node": "Enviar a Canal Discord",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Responder a Webhook Discord",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "tags": []
+}

@@ -5,11 +5,30 @@ services:
     restart: always
     ports:
       - "5678:5678"
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        if [ "$$ENTORNO_DEPLOY" = "PRODUCCION" ]; then
+          TARGET_URL="$$N8N_PROD_WEBHOOK_URL"
+        else
+          TARGET_URL="$${N8N_LOCAL_WEBHOOK_BASE:-$$N8N_LOCAL_WEBHOOK_URL}"
+        fi
+        export WEBHOOK_URL="$$TARGET_URL"
+        export N8N_WEBHOOK_URL="$$TARGET_URL"
+        echo "=================================================="
+        echo "[CommunityLab Docker] ENTORNO_DEPLOY=$$ENTORNO_DEPLOY"
+        echo "[CommunityLab Docker] N8N_WEBHOOK_URL=$$TARGET_URL"
+        echo "=================================================="
+        exec /docker-entrypoint.sh
     environment:
+      - ENTORNO_DEPLOY=${ENTORNO_DEPLOY:-LOCAL}
+      - N8N_PROD_WEBHOOK_URL=${N8N_WEBHOOK_URL:-http://147.15.9.116:5678/}
+      - N8N_LOCAL_WEBHOOK_BASE=${N8N_LOCAL_WEBHOOK_BASE:-http://localhost:5678/}
+      - N8N_LOCAL_WEBHOOK_URL=${N8N_LOCAL_WEBHOOK_URL:-http://localhost:5678/webhook/communitylab-ingesta}
       - N8N_HOST=0.0.0.0
       - N8N_PORT=5678
       - N8N_PROTOCOL=http
-      - WEBHOOK_URL=${N8N_WEBHOOK_URL:-http://localhost:5678/}
       - NODE_ENV=production
       - EXECUTIONS_DATA_PRUNE=true
       - EXECUTIONS_DATA_MAX_AGE=24
@@ -19,14 +38,24 @@ services:
       - N8N_DEFAULT_BINARY_DATA_MODE=filesystem
       - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=false
       - N8N_ALLOWED_FILE_PATHS=/home/node/data/
+      - NODE_FUNCTION_ALLOW_BUILTIN=*
+      - NODE_FUNCTION_ALLOW_EXTERNAL=*
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN:-}
+      - TELEGRAM_LOCAL_BOT_TOKEN=${TELEGRAM_LOCAL_BOT_TOKEN:-}
+      - DISCORD_BOT_TOKEN=${DISCORD_BOT_TOKEN:-}
+      - DISCORD_LOCAL_BOT_TOKEN=${DISCORD_LOCAL_BOT_TOKEN:-}
+      - DISCORD_WEBHOOK_URL=${DISCORD_WEBHOOK_URL:-}
+      - SLACK_BOT_TOKEN=${SLACK_BOT_TOKEN:-}
+      - SLACK_LOCAL_BOT_TOKEN=${SLACK_LOCAL_BOT_TOKEN:-}
+      - SLACK_APP_TOKEN=${SLACK_APP_TOKEN:-}
+      - SLACK_LOCAL_APP_TOKEN=${SLACK_LOCAL_APP_TOKEN:-}
+      - SLACK2_BOT_TOKEN=${SLACK2_BOT_TOKEN:-}
+      - SLACK2_LOCAL_BOT_TOKEN=${SLACK2_LOCAL_BOT_TOKEN:-}
     volumes:
       - n8n_data:/home/node/.n8n
-      - ./data:/home/node/data:ro
-
+      - ./data:/home/node/data
 
 volumes:
   n8n_data:
     external: true
     name: n8n-hackathon_n8n_data
-
-
