@@ -1,4 +1,4 @@
-﻿services:
+services:
   n8n:
     image: docker.n8n.io/n8nio/n8n:latest
     container_name: communitylab-n8n
@@ -38,6 +38,8 @@
       - N8N_DEFAULT_BINARY_DATA_MODE=filesystem
       - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=false
       - N8N_ALLOWED_FILE_PATHS=/home/node/data/
+      - NODE_FUNCTION_ALLOW_BUILTIN=*
+      - NODE_FUNCTION_ALLOW_EXTERNAL=*
       - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN:-}
       - TELEGRAM_LOCAL_BOT_TOKEN=${TELEGRAM_LOCAL_BOT_TOKEN:-}
       - DISCORD_BOT_TOKEN=${DISCORD_BOT_TOKEN:-}
@@ -50,7 +52,7 @@
       - SLACK2_LOCAL_BOT_TOKEN=${SLACK2_LOCAL_BOT_TOKEN:-}
     volumes:
       - n8n_data:/home/node/.n8n
-      - ./data:/home/node/data:ro
+      - ./data:/home/node/data
 
 volumes:
   n8n_data:
