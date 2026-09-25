@@ -78,12 +78,12 @@ def test_dispatcher_process_incoming_message_success(mock_ai_service, tmp_path: 
     # Verificaciones de formatos generados
     assert "telegram_markdown" in respuestas
     assert "CommunityLab IA Assistant" in respuestas["telegram_markdown"]
-    assert "💡 *Tip / Solución Técnica:*" in respuestas["telegram_markdown"]
+    assert any(term in respuestas["telegram_markdown"] for term in ["💡 *Solución", "💡 *Tip"])
 
     assert "discord_embed" in respuestas
     embed = respuestas["discord_embed"]
-    assert embed["title"] == "🔍 Análisis de Interacción - CommunityLab"
-    assert any(f["name"] == "💡 Tip / FAQ Técnico" for f in embed["fields"])
+    assert embed["title"] == "🤖 CommunityLab Assistant"
+    assert any("Solución" in f["name"] or "Tip" in f["name"] for f in embed["fields"])
 
     assert "slack_blocks" in respuestas
     assert len(respuestas["slack_blocks"]) >= 3
@@ -247,7 +247,7 @@ async def test_discord_bot_processes_mention_with_embed(mock_ai_service):
     _, kwargs = mock_msg.reply.call_args
     assert "embed" in kwargs
     embed = kwargs["embed"]
-    assert embed.title == "🔍 Análisis de Interacción - CommunityLab"
+    assert embed.title == "🤖 CommunityLab Assistant"
 
 
 # =============================================================================

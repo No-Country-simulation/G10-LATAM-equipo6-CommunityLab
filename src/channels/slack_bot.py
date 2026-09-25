@@ -2,6 +2,7 @@
 
 import logging
 import os
+import re
 from typing import Any, Callable, Dict, Optional
 
 from slack_bolt import App
@@ -55,11 +56,16 @@ class CommunityLabSlackBot:
             logger.info("Slack mención recibida de '%s' en canal '%s': %s", user_id, channel_id, text_crudo[:80])
             print(f"[Slack Bot] Mención recibida de '{user_id}' en #{channel_id}: {text_crudo[:60]}...", flush=True)
 
+            # Limpiar mención al bot del texto (<@U12345...>)
+            texto_limpio = re.sub(r'<@[A-Z0-9]+>', '', text_crudo).strip()
+            if not texto_limpio:
+                texto_limpio = "Hola"
+
             try:
                 _, respuestas = self.dispatcher.process_incoming_message(
                     canal_origen=f"#slack-{channel_id}",
                     autor=f"User_{user_id}",
-                    texto=text_crudo,
+                    texto=texto_limpio,
                     mensaje_id_externo=f"slk_{event.get('ts')}",
                     metadata={"user_id": user_id, "channel": channel_id},
                 )

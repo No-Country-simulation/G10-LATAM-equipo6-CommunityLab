@@ -205,6 +205,12 @@ class ChannelMessageDispatcher:
         if not isinstance(temas_list, list):
             temas_list = [str(temas_list)]
 
+        # Extraer respuesta conversacional directa de n8n si existe
+        respuesta_chat = raw_output.get("respuesta_chat") or data_item.get("content")
+        metadata_completa = dict(metadata or {})
+        if respuesta_chat:
+            metadata_completa["respuesta_directa"] = respuesta_chat
+
         asset_output = CommunityLabAssetOutput(
             sentimiento=sentimiento_str,
             tipo_contenido=tipo_str,
@@ -218,7 +224,7 @@ class ChannelMessageDispatcher:
             activo=asset_output,
         )
 
-        respuestas = self._build_formatted_responses(activo_procesado, metadata)
+        respuestas = self._build_formatted_responses(activo_procesado, metadata_completa)
         logger.info("[Dispatcher <- n8n] Mensaje [%s] procesado exitosamente por n8n.", interaccion.id)
         return activo_procesado, respuestas
 
@@ -241,46 +247,55 @@ class ChannelMessageDispatcher:
         tipo_val = activo.tipo_contenido.value if hasattr(activo.tipo_contenido, "value") else str(activo.tipo_contenido)
         temas_str = ", ".join(activo.temas_clave) if activo.temas_clave else "General"
 
+        resp_directa = (metadata or {}).get("respuesta_directa")
+
         # 1. Formato Markdown para Telegram
         texto_tg = (
             f"🤖 *CommunityLab IA Assistant*\n\n"
-            f"📊 *Sentimiento:* {sentimiento_emoji}\n"
-            f"🏷️ *Temas:* `{temas_str}`\n"
-            f"📌 *Tipo:* `{tipo_val}`\n\n"
+        )
+        if resp_directa:
+            texto_tg += f"💬 *Respuesta:* {resp_directa}\n\n"
+        elif activo.tip_tecnico_faq:
+            tip_limpio = activo.tip_tecnico_faq.replace("_", "\\_")
+            texto_tg += f"💡 *Solución / Pasos a seguir:*\n{tip_limpio}\n\n"
+
+        texto_tg += (
+            f"📊 *Sentimiento:* {sentimiento_emoji} | 🏷️ *Temas:* `{temas_str}` | 📌 *Tipo:* `{tipo_val}`\n"
         )
         if activo.post_linkedin:
             post_limpio = activo.post_linkedin.replace("_", "\\_")
-            texto_tg += f"💼 *Propuesta de Publicación (LinkedIn):*\n{post_limpio}\n\n"
-        if activo.tip_tecnico_faq:
-            tip_limpio = activo.tip_tecnico_faq.replace("_", "\\_")
-            texto_tg += f"💡 *Tip / Solución Técnica:*\n{tip_limpio}\n"
+            texto_tg += f"\n💼 *Propuesta de Publicación (LinkedIn):*\n{post_limpio}\n"
 
         # 2. Formato Embed para Discord
         color_hex = 0x10B981 if sentimiento_val == "positivo" else 0x6B7280
         if sentimiento_val == "negativo":
             color_hex = 0xEF4444
 
+        desc_discord = f"**Autor:** {interaccion.autor} | **Canal:** `{interaccion.canal}`"
+        if resp_directa:
+            desc_discord += f"\n\n💬 **Respuesta:**\n{resp_directa}"
+
         embed_discord = {
-            "title": "🔍 Análisis de Interacción - CommunityLab",
-            "description": f"**Autor:** {interaccion.autor}\n**Canal:** `{interaccion.canal}`",
+            "title": "🤖 CommunityLab Assistant",
+            "description": desc_discord,
             "color": color_hex,
             "fields": [
                 {"name": "Sentimiento", "value": sentimiento_emoji, "inline": True},
                 {"name": "Tipo Contenido", "value": tipo_val, "inline": True},
                 {"name": "Temas Identificados", "value": temas_str, "inline": False},
             ],
-            "footer": {"text": f"ID: {interaccion.id} | Procesado con Gemini 2.5 Flash"},
+            "footer": {"text": f"ID: {interaccion.id} • CommunityLab Hackathon Oracle ONE"},
         }
+        if activo.tip_tecnico_faq and not resp_directa:
+            embed_discord["fields"].append({
+                "name": "💡 Pasos / Solución Técnica",
+                "value": activo.tip_tecnico_faq[:1024],
+                "inline": False,
+            })
         if activo.post_linkedin:
             embed_discord["fields"].append({
                 "name": "💼 Propuesta LinkedIn",
                 "value": activo.post_linkedin[:1024],
-                "inline": False,
-            })
-        if activo.tip_tecnico_faq:
-            embed_discord["fields"].append({
-                "name": "💡 Tip / FAQ Técnico",
-                "value": activo.tip_tecnico_faq[:1024],
                 "inline": False,
             })
 
@@ -288,27 +303,35 @@ class ChannelMessageDispatcher:
         bloques_slack = [
             {
                 "type": "header",
-                "text": {"type": "plain_text", "text": "🤖 CommunityLab - Análisis de Interacción", "emoji": True},
-            },
-            {
-                "type": "section",
-                "fields": [
-                    {"type": "mrkdwn", "text": f"*Autor:* {interaccion.autor}"},
-                    {"type": "mrkdwn", "text": f"*Sentimiento:* {sentimiento_emoji}"},
-                    {"type": "mrkdwn", "text": f"*Tipo:* `{tipo_val}`"},
-                    {"type": "mrkdwn", "text": f"*Temas:* `{temas_str}`"},
-                ],
+                "text": {"type": "plain_text", "text": "🤖 CommunityLab Assistant", "emoji": True},
             },
         ]
+
+        if resp_directa:
+            bloques_slack.append({
+                "type": "section",
+                "text": {"type": "mrkdwn", "text": f"💬 *Respuesta a tu consulta:*\n{resp_directa}"},
+            })
+        elif activo.tip_tecnico_faq:
+            bloques_slack.append({
+                "type": "section",
+                "text": {"type": "mrkdwn", "text": f"*💡 Solución / Pasos a seguir:*\n>{activo.tip_tecnico_faq}"},
+            })
+
+        bloques_slack.append({
+            "type": "context",
+            "elements": [
+                {
+                    "type": "mrkdwn",
+                    "text": f"*Autor:* {interaccion.autor} | *Sentimiento:* {sentimiento_emoji} | *Categoría:* `{tipo_val}` | *Temas:* {temas_str}",
+                }
+            ],
+        })
+
         if activo.post_linkedin:
             bloques_slack.append({
                 "type": "section",
                 "text": {"type": "mrkdwn", "text": f"*💼 Propuesta para LinkedIn:*\n>{activo.post_linkedin}"},
-            })
-        if activo.tip_tecnico_faq:
-            bloques_slack.append({
-                "type": "section",
-                "text": {"type": "mrkdwn", "text": f"*💡 Tip FAQ:*\n>{activo.tip_tecnico_faq}"},
             })
 
         return {
