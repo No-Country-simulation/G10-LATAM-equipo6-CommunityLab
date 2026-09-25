@@ -35,9 +35,9 @@ def main():
     )
     parser.add_argument(
         "--channel",
-        choices=["telegram", "discord", "slack"],
+        choices=["telegram", "discord", "slack", "all"],
         required=True,
-        help="Canal interactivo a iniciar (telegram, discord, slack)."
+        help="Canal interactivo a iniciar (telegram, discord, slack o all para los 3 simultáneamente)."
     )
     args = parser.parse_args()
 
@@ -60,6 +60,23 @@ def main():
         print("[START] Iniciando bot de Slack (Socket Mode)...")
         bot = CommunityLabSlackBot(dispatcher=dispatcher)
         bot.start_socket_mode()
+    elif args.channel == "all":
+        import time
+        from src.channels.bot_manager import OmnichannelBotManager
+        print("[START] Iniciando los 3 bots (Telegram, Discord, Slack) concurrentemente...")
+        manager = OmnichannelBotManager(dispatcher=dispatcher)
+        results = manager.start_all()
+        for ch, (ok, msg) in results.items():
+            icon = "✅" if ok else "❌"
+            print(f"  {icon} {ch.capitalize()}: {msg}")
+        print("\n[OK] Escuchando mensajes en vivo. Presiona Ctrl + C para finalizar...")
+        try:
+            while True:
+                time.sleep(1)
+        except KeyboardInterrupt:
+            print("\n[STOP] Deteniendo todos los bots...")
+            manager.stop_all()
+            print("[STOP] Finalizado limpiamente.")
 
 if __name__ == "__main__":
     main()

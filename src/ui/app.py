@@ -34,6 +34,7 @@ from src.ui.services import (
 )
 from src.utils.logger import obtener_ultimas_lineas_log, limpiar_archivo_log
 from src.utils.config import get_n8n_webhook_url
+from src.channels.bot_manager import get_bot_manager
 
 # Configuración de la página
 st.set_page_config(
@@ -71,8 +72,44 @@ st.markdown(
 st.sidebar.title("Navegación")
 modo = st.sidebar.radio(
     "Selecciona una vista:",
-    ["💼 Curaduría de Activos", "⚡ Ejecutar Pipeline", "☁️ Histórico OCI Object Storage"],
+    ["📊 Curaduría de Activos", "🚀 Ejecutar Pipeline", "☁️ Histórico OCI Object Storage"],
 )
+
+st.sidebar.markdown("---")
+st.sidebar.subheader("🤖 Canales en Vivo")
+
+bot_manager = get_bot_manager()
+status_bots = bot_manager.get_status()
+any_running = bot_manager.is_running()
+
+col_b1, col_b2 = st.sidebar.columns(2)
+with col_b1:
+    if st.button("▶️ Iniciar", use_container_width=True, disabled=any_running, help="Inicia la escucha en segundo plano de Telegram, Discord y Slack"):
+        bot_manager.start_all()
+        st.toast("Bots iniciados en segundo plano.", icon="🚀")
+        time.sleep(1)
+        st.rerun()
+
+with col_b2:
+    if st.button("⏹️ Detener", use_container_width=True, disabled=not any_running, help="Detiene los 3 bots"):
+        bot_manager.stop_all()
+        st.toast("Bots detenidos.", icon="🛑")
+        time.sleep(1)
+        st.rerun()
+
+# Estado detallado de cada bot
+for k, data in status_bots.items():
+    is_on = data["running"]
+    color_icon = "🟢" if is_on else "🔴"
+    estado_txt = "**En línea**" if is_on else "*Inactivo*"
+    st.sidebar.markdown(f"{color_icon} **{data['label']}**: {estado_txt}")
+    if data.get("error"):
+        st.sidebar.caption(f"⚠️ {data['error']}")
+    else:
+        st.sidebar.caption(f"ℹ️ {data['info']}")
+
+if any_running:
+    st.sidebar.success("📡 Escuchando mensajes en vivo...")
 
 st.sidebar.markdown("---")
 st.sidebar.info(
@@ -151,9 +188,14 @@ if modo == "💼 Curaduría de Activos":
             "Ejecuta interacciones en Telegram/Discord/Slack o ve a la pestaña **'🚀 Ejecutar Pipeline'** para procesar interacciones."
         )
     else:
-        c_sel1, c_sel2 = st.columns([3, 1])
+        c_sel1, c_sel2, c_sel3 = st.columns([2.5, 0.8, 1.2])
         with c_sel1:
             fuente_seleccionada = st.selectbox("Selecciona la fuente o lote de activos a inspeccionar:", opciones_fuente)
+        with c_sel2:
+            st.write("")
+            st.write("")
+            if st.button("🔄 Refrescar", use_container_width=True, help="Recarga las interacciones más recientes"):
+                st.rerun()
 
         # Cargar datos del paquete
         datos_paquete = None
@@ -211,7 +253,7 @@ if modo == "💼 Curaduría de Activos":
 
         if datos_paquete and "activos" in datos_paquete:
             if fuente_seleccionada.startswith("Canales ("):
-                with c_sel2:
+                with c_sel3:
                     st.write("")
                     st.write("")
                     if st.button("☁️ Subir a Storage", use_container_width=True, help="Sube una copia histórica de estas interacciones a OCI Object Storage"):
