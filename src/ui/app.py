@@ -35,49 +35,65 @@ from src.ui.services import (
 from src.utils.logger import obtener_ultimas_lineas_log, limpiar_archivo_log
 from src.utils.config import get_n8n_webhook_url
 from src.channels.bot_manager import get_bot_manager
+from src.ui.styles import get_novaedu_css
 
 # Configuración de la página
 st.set_page_config(
-    page_title="CommunityLab — Panel de Curaduría",
-    page_icon="🚀",
+    page_title="CommunityLab — Posts con IA",
+    page_icon="🎓",
     layout="wide",
     initial_sidebar_state="expanded",
 )
 
-# Estilos personalizados sutiles
-st.markdown(
+# Inyectar estilos CSS oficiales de NovaEdu
+st.markdown(get_novaedu_css(), unsafe_allow_html=True)
+
+# Definición de Vistas Oficiales con nombres NovaEdu
+VISTA_CURADURIA = "✨ Posts con IA"
+VISTA_PIPELINE = "⚡ Orquestador Dual"
+VISTA_HISTORICO = "☁️ Histórico OCI"
+
+# Sidebar con identidad visual de NovaEdu
+st.sidebar.markdown(
     """
-    <style>
-    .main-header { font-size: 2.2rem; font-weight: 700; color: #1E3A8A; margin-bottom: 0.2rem; }
-    .sub-header { font-size: 1.1rem; color: #4B5563; margin-bottom: 1.5rem; }
-    .metric-card { background-color: #F3F4F6; border-radius: 8px; padding: 15px; border-left: 4px solid #3B82F6; }
-    .card-title { font-size: 0.9rem; color: #6B7280; font-weight: 600; text-transform: uppercase; }
-    .card-value { font-size: 1.8rem; font-weight: 700; color: #111827; }
-    .tag-chip { display: inline-block; background-color: #E0E7FF; color: #3730A3; border-radius: 12px; padding: 2px 10px; font-size: 0.8rem; font-weight: 600; margin-right: 5px; }
-    /* Evitar truncamiento con puntos suspensivos en checkboxes */
-    div[data-testid="stCheckbox"] label p { white-space: nowrap !important; }
-    </style>
+    <div class="sidebar-brand-header">
+        <div class="sidebar-brand-icon">🎓</div>
+        <div>
+            <div class="sidebar-brand-title">CommunityLab</div>
+            <div class="sidebar-brand-subtitle">Oracle ONE & Alura LATAM</div>
+        </div>
+    </div>
     """,
     unsafe_allow_html=True,
 )
 
-# Encabezado principal
-st.markdown('<div class="main-header">🚀 CommunityLab — Motor de Curaduría</div>', unsafe_allow_html=True)
-st.markdown(
-    '<div class="sub-header">Transformación de actividad orgánica de comunidades técnicas en activos de alto valor para Oracle ONE & Alura.</div>',
-    unsafe_allow_html=True,
+modo = st.sidebar.radio(
+    "Menú Principal",
+    [VISTA_CURADURIA, VISTA_PIPELINE, VISTA_HISTORICO],
+    label_visibility="collapsed",
 )
 
-# Definición de Vistas Oficiales
-VISTA_CURADURIA = "💼 Curaduría de Activos"
-VISTA_PIPELINE = "⚡ Ejecutar Pipeline"
-VISTA_HISTORICO = "☁️ Histórico OCI Object Storage"
-
-# Sidebar de navegación
-st.sidebar.title("Navegación")
-modo = st.sidebar.radio(
-    "Selecciona una vista:",
-    [VISTA_CURADURIA, VISTA_PIPELINE, VISTA_HISTORICO],
+# TopBar estilo NovaEdu (Header global de la app)
+st.markdown(
+    """
+    <div class="topbar-container">
+        <div class="topbar-left">
+            <span style="font-size: 20px; font-weight: 800; color: #1A1F36;">CommunityLab</span>
+            <span style="color: #94A3B8;">|</span>
+            <span style="font-size: 13px; color: #4F566B; font-weight: 600;">Hackathon Oracle Next Education</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 14px;">
+            <div class="topbar-badge-oci">
+                <span class="topbar-pulse"></span>
+                <span>OCI Storage Online</span>
+            </div>
+            <div style="font-size: 13px; font-weight: 700; color: #1A1F36;">
+                César Cely &nbsp;<span style="color: #635BFF; font-size: 11px;">(PM & Cloud Lead)</span>
+            </div>
+        </div>
+    </div>
+    """,
+    unsafe_allow_html=True,
 )
 
 st.sidebar.markdown("---")
@@ -298,7 +314,34 @@ if "Curaduría" in modo or modo == VISTA_CURADURIA:
 
             st.markdown("---")
 
-            # Filtros interactivos
+            # Stepper superior estilo NovaEdu
+            st.markdown(
+                """
+                <div class="stepper-container">
+                    <div class="stepper-step">
+                        <div class="step-number completed">✓</div>
+                        <div class="step-label">1. Ingesta Multicanal</div>
+                    </div>
+                    <div style="flex: 1; height: 2px; background: #E2E8F0; margin: 0 12px;"></div>
+                    <div class="stepper-step">
+                        <div class="step-number completed">✓</div>
+                        <div class="step-label">2. Clasificación LLM</div>
+                    </div>
+                    <div style="flex: 1; height: 2px; background: #635BFF; margin: 0 12px;"></div>
+                    <div class="stepper-step">
+                        <div class="step-number active">3</div>
+                        <div class="step-label active">3. Curaduría y Aprobación</div>
+                    </div>
+                    <div style="flex: 1; height: 2px; background: #E2E8F0; margin: 0 12px;"></div>
+                    <div class="stepper-step">
+                        <div class="step-number inactive">4</div>
+                        <div class="step-label">4. Persistencia en OCI</div>
+                    </div>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+
             # Filtros interactivos (Tipo, Sentimiento, Motor y Canal Digital)
             filtro_col1, filtro_col2, filtro_col3, filtro_col4 = st.columns(4)
             with filtro_col1:
@@ -337,131 +380,209 @@ if "Curaduría" in modo or modo == VISTA_CURADURIA:
                 nombre_clave = canal_digital_filtro.split(" ", 1)[1]
                 activos = [a for a in activos if detectar_canal_digital(a)[0] == nombre_clave]
 
-            c_info1, c_info2 = st.columns([3, 2])
-            with c_info1:
-                st.write(f"Mostrando **{len(activos)}** activos filtrados:")
-            with c_info2:
-                orden_recientes = st.toggle("⏱️ Mostrar más recientes primero", value=True)
-
-            if orden_recientes:
-                activos_a_mostrar = list(reversed(activos))
+            if not activos:
+                st.info("No hay activos que coincidan con los filtros seleccionados.")
             else:
-                activos_a_mostrar = list(activos)
+                mapa_curaduria = obtener_mapa_curaduria()
 
-            mapa_curaduria = obtener_mapa_curaduria()
+                # LAYOUT EN 3 COLUMNAS ESTILO NOVAEDU
+                col_lista, col_editor, col_preview = st.columns([1.1, 1.3, 1.2], gap="medium")
 
-            # Renderizado de tarjetas de activos
-            for idx, item in enumerate(activos_a_mostrar, start=1):
-                interaccion = item["interaccion"]
-                activo = item["activo"]
-                canal_nombre, badge_canal = detectar_canal_digital(item)
-                motor_val = (item.get("motor_orquestacion") or meta.get("motor_orquestacion", "")).lower()
-                if "python" in motor_val:
-                    badge_motor = "🐍 PYTHON"
-                elif "n8n" in motor_val:
-                    badge_motor = "⚡ N8N"
-                else:
-                    badge_motor = "🤖 MOTOR"
+                # Inicializar elemento seleccionado en sesión si no existe
+                if "item_curado_seleccionado" not in st.session_state:
+                    st.session_state.item_curado_seleccionado = 0
 
-                proc_time = item.get("procesado_en", "")
-                hora_str = proc_time[11:19] if len(proc_time) >= 19 else "Sesión"
-                lote_tag = item.get("lote_id", "")
-                badge_lote = f"[{lote_tag}] " if lote_tag else ""
+                # Asegurar que el índice seleccionado esté en rango
+                if st.session_state.item_curado_seleccionado >= len(activos):
+                    st.session_state.item_curado_seleccionado = 0
 
-                # Verificar si ya fue curado previamente en OCI
-                cur_info = mapa_curaduria.get(interaccion["id"]) or mapa_curaduria.get(f"{interaccion['id']} ({badge_motor})")
-                estado_cur = cur_info.get("estado") if cur_info else "pendiente"
+                # -------------------------------------------------------------
+                # COLUMNA 1: LISTA DE POSTS E INTERACCIONES
+                # -------------------------------------------------------------
+                with col_lista:
+                    st.markdown(
+                        f"""
+                        <div class="panel-card-title">
+                            <span>📋 Mensajes ({len(activos)})</span>
+                            <span style="font-size: 11px; color: #8792A2;">Lote Activo</span>
+                        </div>
+                        """,
+                        unsafe_allow_html=True,
+                    )
 
-                if estado_cur == "aprobado":
-                    badge_estado = "✅ APROBADO"
-                elif estado_cur == "rechazado":
-                    badge_estado = "🚫 DESCARTADO"
-                elif estado_cur == "leido":
-                    badge_estado = "👁️ LEÍDO"
-                else:
-                    badge_estado = "⏳ PENDIENTE"
+                    for idx_item, item in enumerate(activos):
+                        inter = item["interaccion"]
+                        act = item["activo"]
+                        canal_nom, canal_badge = detectar_canal_digital(item)
+                        cur_info_item = mapa_curaduria.get(inter["id"])
+                        estado_item = cur_info_item.get("estado") if cur_info_item else "pendiente"
 
-                with st.expander(
-                    f"#{idx} | {badge_estado} | [{badge_canal}] [{badge_motor}] {badge_lote}[{activo['tipo_contenido'].upper()}] {interaccion['autor']} ({interaccion['canal']}) 👉 🕒 {hora_str}",
-                    expanded=(idx == 1),
-                ):
-                    c_left, c_right = st.columns([1, 1])
+                        badge_cls = "pendiente"
+                        if estado_item == "aprobado":
+                            badge_cls = "aprobado"
+                        elif estado_item == "rechazado":
+                            badge_cls = "descartado"
+                        elif estado_item == "leido":
+                            badge_cls = "leido"
 
-                    with c_left:
-                        st.markdown(f"#### 📥 Interacción Original &nbsp; `{badge_canal}`")
-                        st.info(f'"{interaccion["texto"]}"')
-                        st.caption(
-                            f"Canal: **{badge_canal}** | Motor: **{badge_motor}** | ID: `{interaccion['id']}` | "
-                            f"Lote: `{lote_tag or 'previo'}` | 🕒 Hora: **{hora_str}** | "
-                            f"Sentimiento: **{activo['sentimiento']}** | Estado: **{badge_estado}**"
+                        # Botón selector para activar el item en el editor central
+                        is_current = (idx_item == st.session_state.item_curado_seleccionado)
+                        btn_label = f"{'👉 ' if is_current else ''}#{idx_item + 1} | {inter['autor']} ({canal_badge})"
+                        if st.button(
+                            btn_label,
+                            key=f"sel_item_{inter['id']}_{idx_item}",
+                            use_container_width=True,
+                            type="primary" if is_current else "secondary",
+                        ):
+                            st.session_state.item_curado_seleccionado = idx_item
+                            st.rerun()
+
+                        # Resumen visual del mensaje en la lista
+                        st.caption(f"**{act['tipo_contenido'].upper()}** — {inter['texto'][:75]}...")
+                        st.markdown(
+                            f"""
+                            <div style="display: flex; gap: 6px; margin-bottom: 8px;">
+                                <span class="badge-status-pill {badge_cls}">{estado_item.upper()}</span>
+                                <span style="font-size: 10px; color: #8792A2;">ID: {inter['id']}</span>
+                            </div>
+                            """,
+                            unsafe_allow_html=True,
                         )
-                        # Etiquetas / Temas clave
-                        tags_html = "".join([f'<span class="tag-chip">#{t}</span>' for t in activo.get("temas_clave", [])])
-                        st.markdown(f"**Temas Clave:** {tags_html}", unsafe_allow_html=True)
+                        st.markdown("<hr style='margin: 4px 0 12px 0; border-color: #F1F5F9;'>", unsafe_allow_html=True)
 
-                    with c_right:
-                        st.markdown("#### ✍️ Activo Generado")
+                # Objeto activo actual para el editor y la vista previa
+                activo_actual = activos[st.session_state.item_curado_seleccionado]
+                inter_act = activo_actual["interaccion"]
+                act_act = activo_actual["activo"]
+                canal_nombre_act, canal_badge_act = detectar_canal_digital(activo_actual)
+                cur_info_act = mapa_curaduria.get(inter_act["id"])
+                estado_cur_act = cur_info_act.get("estado") if cur_info_act else "pendiente"
 
-                        if estado_cur == "aprobado":
-                            st.success(f"✅ **Aprobado en OCI:** {cur_info.get('fecha_curaduria', '')[:19]}")
-                        elif estado_cur == "rechazado":
-                            st.warning(f"❌ **Descartado en OCI:** {cur_info.get('fecha_curaduria', '')[:19]}")
-                        elif estado_cur == "leido":
-                            st.info(f"👁️ **Marcado como leído en OCI:** {cur_info.get('fecha_curaduria', '')[:19]}")
+                # -------------------------------------------------------------
+                # COLUMNA 2: EDITOR DE CONTENIDO CON IA
+                # -------------------------------------------------------------
+                with col_editor:
+                    st.markdown(
+                        f"""
+                        <div class="panel-card-title">
+                            <span>✍️ Editor de Contenido</span>
+                            <span style="font-size: 11px; background: #EEF2FF; color: #4F46E5; padding: 2px 8px; border-radius: 6px;">{act_act['tipo_contenido']}</span>
+                        </div>
+                        """,
+                        unsafe_allow_html=True,
+                    )
 
-                        if activo.get("post_linkedin"):
-                            st.markdown("**Copy para LinkedIn:**")
-                            copy_valor_defecto = cur_info.get("copy_aprobado") if cur_info else activo["post_linkedin"]
-                            copy_editado = st.text_area(
-                                "Editar copy antes de aprobar:",
-                                value=copy_valor_defecto,
-                                height=150,
-                                key=f"copy_{interaccion['id']}_{motor_val}_{idx}",
+                    st.markdown("**📥 Mensaje Original de la Comunidad:**")
+                    st.info(f'"{inter_act["texto"]}"')
+                    st.caption(f"Autor: **{inter_act['autor']}** &nbsp;|&nbsp; Canal: `{inter_act['canal']}` ({canal_badge_act})")
+
+                    # Copy o Solución Técnica
+                    if act_act.get("post_linkedin"):
+                        copy_inicial = cur_info_act.get("copy_aprobado") if cur_info_act else act_act["post_linkedin"]
+                        copy_editado = st.text_area(
+                            "Copy generado para Redes:",
+                            value=copy_inicial,
+                            height=180,
+                            key=f"editor_copy_{inter_act['id']}",
+                        )
+                    elif act_act.get("tip_tecnico_faq"):
+                        copy_inicial = cur_info_act.get("copy_aprobado") if cur_info_act else act_act["tip_tecnico_faq"]
+                        copy_editado = st.text_area(
+                            "Solución Técnica / FAQ:",
+                            value=copy_inicial,
+                            height=180,
+                            key=f"editor_faq_{inter_act['id']}",
+                        )
+                    else:
+                        copy_editado = inter_act["texto"]
+                        st.info("Feedback clasificado para informe de Community Management.")
+
+                    # Tags y Temas Clave
+                    st.markdown("**🏷️ Temas Clave:**")
+                    tags_html = "".join([f'<span class="tag-chip-nova">#{t}</span>' for t in act_act.get("temas_clave", [])])
+                    st.markdown(tags_html, unsafe_allow_html=True)
+
+                    # Botones de Acción
+                    st.write("")
+                    col_act1, col_act2 = st.columns(2)
+                    with col_act1:
+                        if st.button("✅ Aprobar Contenido", type="primary", use_container_width=True, key=f"btn_ap_nov_{inter_act['id']}"):
+                            guardar_curaduria_humana(
+                                id_interaccion=inter_act["id"],
+                                copy_aprobado=copy_editado,
+                                estado_aprobacion="aprobado",
                             )
+                            st.toast("¡Activo aprobado y sincronizado en OCI!", icon="🚀")
+                            time.sleep(0.5)
+                            st.rerun()
 
-                            btn_col1, btn_col2 = st.columns(2)
-                            with btn_col1:
-                                if st.button("✅ Aprobar Copy", key=f"btn_ap_{interaccion['id']}_{motor_val}_{idx}"):
-                                    guardar_curaduria_humana(
-                                        id_interaccion=interaccion["id"],
-                                        copy_aprobado=copy_editado,
-                                        estado_aprobacion="aprobado",
-                                    )
-                                    st.success("¡Copy registrado y sincronizado en OCI como Aprobado!")
-                                    st.rerun()
-                            with btn_col2:
-                                if st.button("❌ Descartar", key=f"btn_desc_{interaccion['id']}_{motor_val}_{idx}"):
-                                    guardar_curaduria_humana(
-                                        id_interaccion=interaccion["id"],
-                                        copy_aprobado=copy_editado,
-                                        estado_aprobacion="rechazado",
-                                    )
-                                    st.warning("Copy descartado y sincronizado en OCI.")
-                                    st.rerun()
+                    with col_act2:
+                        if st.button("🚫 Descartar", use_container_width=True, key=f"btn_desc_nov_{inter_act['id']}"):
+                            guardar_curaduria_humana(
+                                id_interaccion=inter_act["id"],
+                                copy_aprobado=copy_editado,
+                                estado_aprobacion="rechazado",
+                            )
+                            st.toast("Activo descartado en OCI.", icon="⚠️")
+                            time.sleep(0.5)
+                            st.rerun()
 
-                        elif activo.get("tip_tecnico_faq"):
-                            st.markdown("**Tip Técnico / Respuesta FAQ:**")
-                            st.markdown(activo["tip_tecnico_faq"])
-                            if st.button("👁️ Marcar FAQ como Leído / Revisado", key=f"btn_faq_read_{interaccion['id']}_{motor_val}_{idx}"):
-                                guardar_curaduria_humana(
-                                    id_interaccion=interaccion["id"],
-                                    copy_aprobado=activo["tip_tecnico_faq"],
-                                    estado_aprobacion="leido",
-                                    notas="FAQ técnico revisado",
-                                )
-                                st.success("¡FAQ marcado como leído en OCI!")
-                                st.rerun()
-                        else:
-                            st.markdown("_Interacción clasificada como Feedback General de la comunidad._")
-                            if st.button("👁️ Marcar Feedback como Leído", key=f"btn_fb_read_{interaccion['id']}_{motor_val}_{idx}"):
-                                guardar_curaduria_humana(
-                                    id_interaccion=interaccion["id"],
-                                    copy_aprobado=interaccion["texto"],
-                                    estado_aprobacion="leido",
-                                    notas="Feedback de comunidad revisado",
-                                )
-                                st.success("¡Feedback marcado como leído en OCI!")
-                                st.rerun()
+                # -------------------------------------------------------------
+                # COLUMNA 3: MOCKUP REALISTA DE VISTA PREVIA (LINKEDIN)
+                # -------------------------------------------------------------
+                with col_preview:
+                    st.markdown(
+                        """
+                        <div class="panel-card-title">
+                            <span>📱 Vista Previa en Vivo</span>
+                            <span style="font-size: 11px; color: #0A66C2; font-weight: 700;">LinkedIn Preview</span>
+                        </div>
+                        """,
+                        unsafe_allow_html=True,
+                    )
+
+                    avatar_letter = inter_act["autor"][:1].upper() if inter_act.get("autor") else "U"
+                    display_text = copy_editado if copy_editado else inter_act["texto"]
+                    tags_preview = " ".join([f"#{t}" for t in act_act.get("temas_clave", [])])
+
+                    st.markdown(
+                        f"""
+                        <div class="linkedin-mockup-card">
+                            <div class="linkedin-author-box">
+                                <div class="linkedin-avatar">{avatar_letter}</div>
+                                <div class="linkedin-meta">
+                                    <h5>{inter_act['autor']}</h5>
+                                    <p>Estudiante Oracle Next Education (ONE G10) • Activo ahora</p>
+                                </div>
+                            </div>
+                            <div class="linkedin-content-text">{display_text}</div>
+                            <div class="linkedin-tags">{tags_preview} #OracleONE #AluraLATAM #TechTalent</div>
+                            <div class="linkedin-reactions-bar">
+                                <span>👍 ❤️ 👏 48 reacciones</span>
+                                <span>12 comentarios</span>
+                            </div>
+                            <div class="linkedin-actions-row">
+                                <span class="linkedin-action-btn">👍 Reaccionar</span>
+                                <span class="linkedin-action-btn">💬 Comentar</span>
+                                <span class="linkedin-action-btn">🔄 Compartir</span>
+                            </div>
+                        </div>
+                        """,
+                        unsafe_allow_html=True,
+                    )
+
+                    st.write("")
+                    st.markdown(
+                        f"""
+                        <div style="background: #F8FAFC; border: 1px dashed #CBD5E1; border-radius: 10px; padding: 12px; margin-top: 10px;">
+                            <div style="font-size: 11px; color: #64748B;">Estado en Oracle Cloud:</div>
+                            <div style="font-size: 13px; font-weight: 700; color: #1E293B;">
+                                {'🟢 Sincronizado en OCI' if estado_cur_act != 'pendiente' else '⏳ Pendiente de revisión'}
+                            </div>
+                        </div>
+                        """,
+                        unsafe_allow_html=True,
+                    )
 
 # -----------------------------------------------------------------------------
 # VISTA 2: EJECUTAR PIPELINE
