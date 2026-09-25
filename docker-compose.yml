@@ -46,6 +46,8 @@
       - SLACK_LOCAL_BOT_TOKEN=${SLACK_LOCAL_BOT_TOKEN:-}
       - SLACK_APP_TOKEN=${SLACK_APP_TOKEN:-}
       - SLACK_LOCAL_APP_TOKEN=${SLACK_LOCAL_APP_TOKEN:-}
+      - SLACK2_BOT_TOKEN=${SLACK2_BOT_TOKEN:-}
+      - SLACK2_LOCAL_BOT_TOKEN=${SLACK2_LOCAL_BOT_TOKEN:-}
     volumes:
       - n8n_data:/home/node/.n8n
       - ./data:/home/node/data:ro
