@@ -426,5 +426,125 @@ def get_novaedu_css() -> str:
         margin-right: 6px;
         margin-bottom: 6px;
     }
+
+    /* -------------------------------------------------------------------------
+       8. VISTA ORQUESTADOR DUAL (FASE 3)
+       ------------------------------------------------------------------------- */
+    .engine-card {
+        background: #FFFFFF;
+        border-radius: 16px;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+        padding: 24px;
+        margin-bottom: 20px;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .engine-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    }
+
+    .engine-card.n8n {
+        border-top: 4px solid #F59E0B;
+    }
+
+    .engine-card.python {
+        border-top: 4px solid #635BFF;
+    }
+
+    .engine-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 14px;
+    }
+
+    .engine-title {
+        font-size: 18px;
+        font-weight: 800;
+        color: var(--text-dark);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .engine-badge {
+        font-size: 11px;
+        font-weight: 700;
+        padding: 4px 10px;
+        border-radius: 20px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .engine-badge.n8n {
+        background: #FEF3C7;
+        color: #B45309;
+    }
+
+    .engine-badge.python {
+        background: #EEF2FF;
+        color: #4F46E5;
+    }
+
+    .engine-description {
+        font-size: 13px;
+        color: var(--text-muted);
+        line-height: 1.5;
+        margin-bottom: 16px;
+    }
+
+    .engine-features-list {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 16px 0;
+    }
+
+    .engine-features-list li {
+        font-size: 12.5px;
+        color: #334155;
+        padding: 6px 0;
+        border-bottom: 1px dashed #F1F5F9;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .engine-features-list li:last-child {
+        border-bottom: none;
+    }
+
+    .telemetry-card {
+        background: #F8FAFC;
+        border-radius: 12px;
+        border: 1px solid #E2E8F0;
+        padding: 16px;
+        margin-top: 14px;
+        display: flex;
+        justify-content: space-around;
+        text-align: center;
+    }
+
+    .telemetry-item {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .telemetry-label {
+        font-size: 11px;
+        color: #64748B;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .telemetry-value {
+        font-size: 16px;
+        font-weight: 800;
+        color: #0F172A;
+    }
     </style>
     """
