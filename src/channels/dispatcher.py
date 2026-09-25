@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Any, Dict, Optional, Tuple
 
 from src.ai_engine.gemini_service import GeminiService
+from src.cloud_oci.storage_client import OCIStorageManager
 from src.ai_engine.schemas import (
     CommunityInteraction,
     CommunityLabAssetOutput,
@@ -28,6 +29,8 @@ class ChannelMessageDispatcher:
         ai_service: Optional[GeminiService] = None,
         persist_locally: bool = True,
         storage_path: Optional[Path] = None,
+        storage_manager: Optional[OCIStorageManager] = None,
+        persist_oci: bool = True,
     ) -> None:
         """Inicializa el dispatcher con el servicio de IA y configuración de persistencia.
 
@@ -35,10 +38,14 @@ class ChannelMessageDispatcher:
             ai_service: Instancia de GeminiService. Si es None, inicializa uno nuevo.
             persist_locally: Si es True, acumula las interacciones en archivo local.
             storage_path: Ruta del archivo JSON acumulativo.
+            storage_manager: Instancia de OCIStorageManager para persistencia cloud directa.
+            persist_oci: Si es True, actualiza automáticamente los 4 archivos temáticos en OCI.
         """
         self.ai_service = ai_service or GeminiService()
         self.persist_locally = persist_locally
         self.storage_path = storage_path or Path("data/paquete_procesado_canales_python.json")
+        self.persist_oci = persist_oci
+        self._storage_manager = storage_manager
 
     def process_incoming_message(
         self,
@@ -90,6 +97,10 @@ class ChannelMessageDispatcher:
         # Persistir acumulativamente si está habilitado
         if self.persist_locally:
             self._save_interaction_locally(activo_procesado, canal_origen, metadata)
+
+        # Persistir directamente en OCI Object Storage en los 4 archivos temáticos
+        if self.persist_oci:
+            self._save_interaction_to_oci(activo_procesado, canal_origen)
 
         return activo_procesado, respuestas
 
@@ -231,3 +242,115 @@ class ChannelMessageDispatcher:
 
         except Exception as e:
             logger.error("Error persistiendo interacción de canal localmente: %s", e)
+
+    def _save_interaction_to_oci(
+        self,
+        item: ProcessedCommunityAsset,
+        canal_origen: str,
+    ) -> None:
+        """Persiste la interacción procesada en los 4 archivos temáticos especializados de OCI Object Storage.
+
+        Mapea el tipo de interacción a uno de los 4 archivos temáticos oficiales:
+        1. marketing_linkedin_logros.json (logro_contratacion)
+        2. marketing_showcase.json (showcase)
+        3. faqs_soporte_tecnico.json (duda_tecnica)
+        4. metricas_feedback_comunidad.json (feedback_general u otros)
+        """
+        try:
+            if not self._storage_manager:
+                self._storage_manager = OCIStorageManager(allow_local_fallback=True)
+
+            sm = self._storage_manager
+            now = datetime.now(timezone.utc)
+            date_folder = now.strftime("%Y-%m-%d")
+            iso_now = now.isoformat()
+
+            inter = item.interaccion
+            act = item.activo
+            tipo_val = act.tipo_contenido.value if hasattr(act.tipo_contenido, "value") else str(act.tipo_contenido)
+            sent_val = act.sentimiento.value if hasattr(act.sentimiento, "value") else str(act.sentimiento)
+
+            # Estructurar elemento plano
+            item_plano: Dict[str, Any] = {
+                "id": inter.id,
+                "autor": inter.autor,
+                "canal": inter.canal,
+                "canal_origen_bot": canal_origen,
+                "tipo_contenido": tipo_val,
+                "sentimiento": sent_val,
+                "temas_clave": act.temas_clave or [],
+                "procesado_el": iso_now,
+            }
+
+            if tipo_val == "logro_contratacion":
+                nombre_archivo = "marketing_linkedin_logros.json"
+                categoria = "logros_contratacion"
+                item_plano["comentario"] = inter.texto
+                item_plano["post_linkedin"] = act.post_linkedin
+            elif tipo_val == "showcase":
+                nombre_archivo = "marketing_showcase.json"
+                categoria = "proyectos_showcase"
+                item_plano["descripcion_proyecto"] = inter.texto
+                item_plano["post_linkedin"] = act.post_linkedin
+            elif tipo_val == "duda_tecnica":
+                nombre_archivo = "faqs_soporte_tecnico.json"
+                categoria = "dudas_tecnicas_faqs"
+                item_plano["pregunta_original"] = inter.texto
+                item_plano["tip_tecnico_faq"] = act.tip_tecnico_faq
+            else:
+                nombre_archivo = "metricas_feedback_comunidad.json"
+                categoria = "feedback_metricas"
+                item_plano["comentario"] = inter.texto
+
+            remote_path = f"activos/{date_folder}/{nombre_archivo}"
+
+            # Cargar objeto existente si ya existe en OCI o fallback local
+            doc_existente = None
+            try:
+                doc_existente = sm.get_asset(remote_path)
+            except Exception:
+                doc_existente = None
+
+            if not isinstance(doc_existente, dict) or "activos" not in doc_existente:
+                doc_existente = {
+                    "nombre_archivo": nombre_archivo,
+                    "metadata": {
+                        "version": "1.0.0",
+                        "plataforma": "CommunityLab",
+                        "motor_orquestacion": "python_dynamic_channels",
+                        "fecha_generacion": iso_now,
+                        "origen_comunidad": f"Bot {canal_origen}",
+                        "categoria": categoria,
+                        "total_interacciones": 0,
+                    },
+                    "activos": [],
+                }
+                if nombre_archivo == "metricas_feedback_comunidad.json":
+                    doc_existente["metricas_salud"] = {
+                        "sentimientos": {"positivo": 0, "neutro": 0, "negativo": 0},
+                        "total_feedback": 0,
+                    }
+
+            # Evitar duplicados por id_interaccion
+            activos_list = doc_existente.setdefault("activos", [])
+            activos_filtrados = [a for a in activos_list if a.get("id") != inter.id]
+            activos_filtrados.append(item_plano)
+            doc_existente["activos"] = activos_filtrados
+            doc_existente["metadata"]["total_interacciones"] = len(activos_filtrados)
+            doc_existente["metadata"]["ultima_actualizacion"] = iso_now
+
+            # Si es archivo de feedback, actualizar métricas acumuladas
+            if "metricas_salud" in doc_existente:
+                dist = {"positivo": 0, "neutro": 0, "negativo": 0}
+                for a in activos_filtrados:
+                    s = a.get("sentimiento", "neutro")
+                    dist[s] = dist.get(s, 0) + 1
+                doc_existente["metricas_salud"]["sentimientos"] = dist
+                doc_existente["metricas_salud"]["total_feedback"] = len(activos_filtrados)
+
+            # Subir a OCI Object Storage
+            res = sm.upload_json_asset(data=doc_existente, object_name=remote_path)
+            logger.info("☁️ [Dispatcher -> OCI] Interacción [%s] persistida en '%s' (Status: %s)", inter.id, remote_path, res.get("status"))
+
+        except Exception as e_oci:
+            logger.error("Error persistiendo interacción de canal en OCI Object Storage: %s", e_oci)
