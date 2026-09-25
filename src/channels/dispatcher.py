@@ -16,6 +16,8 @@ from src.ai_engine.schemas import (
     SentimientoEnum,
     TipoContenidoEnum,
 )
+from src.utils.config import get_channel_processing_engine, get_n8n_channel_webhook_url
+import requests
 
 from src.utils.logger import setup_logger
 logger = setup_logger("CommunityLab.Channels.Dispatcher")
@@ -80,14 +82,38 @@ class ChannelMessageDispatcher:
             texto=texto.strip(),
         )
 
+        engine = get_channel_processing_engine()
         logger.info(
-            "Dispatcher procesando mensaje [%s] de '%s' en '%s' (%d chars)",
+            "Dispatcher procesando mensaje [%s] de '%s' en '%s' (%d chars) | Motor: %s",
             id_final,
             autor,
             canal_formateado,
             len(texto),
+            engine,
         )
 
+        # ---------------------------------------------------------------------
+        # MODALIDAD A: MOTOR N8N (Webhook de flujo visual)
+        # ---------------------------------------------------------------------
+        if engine == "N8N":
+            try:
+                activo_procesado, respuestas = self._process_via_n8n(
+                    interaccion=interaccion,
+                    canal_origen=canal_origen,
+                    metadata=metadata,
+                )
+                if self.persist_locally:
+                    self._save_interaction_locally(activo_procesado, canal_origen, metadata)
+                return activo_procesado, respuestas
+            except Exception as e_n8n:
+                logger.warning(
+                    "[Dispatcher] Falló el procesamiento vía n8n (%s). Aplicando fallback automático a Python Gemini.",
+                    e_n8n,
+                )
+
+        # ---------------------------------------------------------------------
+        # MODALIDAD B: MOTOR PYTHON NATIVO (Gemini SDK Pydantic)
+        # ---------------------------------------------------------------------
         # Inferencia con IA (Structured Output Pydantic)
         activo_procesado = self.ai_service.process_interaction(interaccion)
 
@@ -102,6 +128,73 @@ class ChannelMessageDispatcher:
         if self.persist_oci:
             self._save_interaction_to_oci(activo_procesado, canal_origen)
 
+        return activo_procesado, respuestas
+
+    def _process_via_n8n(
+        self,
+        interaccion: CommunityInteraction,
+        canal_origen: str,
+        metadata: Optional[Dict[str, Any]] = None,
+    ) -> Tuple[ProcessedCommunityAsset, Dict[str, Any]]:
+        """Envía el mensaje entrante al Webhook de n8n para procesamiento visual y persistencia en OCI.
+
+        Args:
+            interaccion: Objeto CommunityInteraction estandarizado.
+            canal_origen: Canal del bot ('#telegram-general', '#dudas-discord', '#slack').
+            metadata: Diccionario opcional de metadatos del cliente.
+
+        Returns:
+            Tupla (ProcessedCommunityAsset, respuestas_formateadas).
+        """
+        webhook_url = get_n8n_channel_webhook_url(canal_origen)
+        logger.info("[Dispatcher -> n8n] Despachando mensaje [%s] a Webhook: %s", interaccion.id, webhook_url)
+
+        payload = {
+            "id": interaccion.id,
+            "autor": interaccion.autor,
+            "canal": interaccion.canal,
+            "tipo": interaccion.tipo,
+            "texto": interaccion.texto,
+            "metadata": metadata or {},
+            # Campos de compatibilidad con Discord Webhook Trigger de n8n
+            "author": interaccion.autor,
+            "content": interaccion.texto,
+            "channel": interaccion.canal,
+        }
+
+        resp = requests.post(webhook_url, json=payload, timeout=45.0)
+        resp.raise_for_status()
+        n8n_res = resp.json()
+
+        # Extraer datos procesados desde la respuesta del webhook de n8n
+        # Puede venir como dict directo, dentro de 'json', o en lista
+        data_item = n8n_res[0] if isinstance(n8n_res, list) and n8n_res else n8n_res
+        if "json" in data_item:
+            data_item = data_item["json"]
+
+        raw_output = data_item.get("raw_output") or data_item.get("activo") or data_item
+
+        sentimiento_str = raw_output.get("sentimiento", "neutro")
+        tipo_str = raw_output.get("tipo_contenido", "feedback_general")
+        temas_list = raw_output.get("temas_clave", ["Comunidad"])
+        if not isinstance(temas_list, list):
+            temas_list = [str(temas_list)]
+
+        asset_output = CommunityLabAssetOutput(
+            sentimiento=sentimiento_str,
+            tipo_contenido=tipo_str,
+            temas_clave=temas_list,
+            post_linkedin=raw_output.get("post_linkedin"),
+            tip_tecnico_faq=raw_output.get("tip_tecnico_faq"),
+        )
+
+        activo_procesado = ProcessedCommunityAsset(
+            interaccion=interaccion,
+            activo=asset_output,
+        )
+
+        respuestas = self._build_formatted_responses(activo_procesado, metadata)
+        logger.info("[Dispatcher <- n8n] Mensaje [%s] procesado exitosamente por n8n.", interaccion.id)
         return activo_procesado, respuestas
 
     def _build_formatted_responses(

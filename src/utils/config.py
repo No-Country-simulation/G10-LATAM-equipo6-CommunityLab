@@ -119,6 +119,26 @@ def get_n8n_port() -> int:
     return int(os.getenv("N8N_LOCAL_PORT", "5678"))
 
 
+def get_channel_processing_engine() -> str:
+    """Retorna el motor activo para procesar canales en vivo: 'PYTHON' o 'N8N'."""
+    val = os.getenv("CHANNEL_PROCESSING_ENGINE", "PYTHON").strip().upper()
+    return "N8N" if val == "N8N" else "PYTHON"
+
+
+def get_n8n_channel_webhook_url(canal: str) -> str:
+    """Retorna la URL del Webhook de n8n para un canal específico ('telegram', 'discord', 'slack').
+
+    Args:
+        canal: Nombre del canal ('telegram', 'discord' o 'slack').
+
+    Returns:
+        URL completa del Webhook en n8n (ej: http://localhost:5678/webhook/communitylab-discord).
+    """
+    base = get_n8n_webhook_base().rstrip("/")
+    canal_clean = canal.lower().replace("#", "").split("-")[0]
+    return f"{base}/webhook/communitylab-{canal_clean}"
+
+
 def get_active_config_summary() -> Dict[str, Any]:
     """Genera un resumen seguro de la configuracion activa (sin exponer tokens completos)."""
     entorno = get_entorno_deploy()

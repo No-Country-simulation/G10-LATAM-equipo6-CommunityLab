@@ -33,7 +33,7 @@ from src.ui.services import (
     obtener_ids_procesados_sesion,
 )
 from src.utils.logger import obtener_ultimas_lineas_log, limpiar_archivo_log
-from src.utils.config import get_n8n_webhook_url
+from src.utils.config import get_n8n_webhook_url, get_channel_processing_engine
 from src.channels.bot_manager import get_bot_manager
 from src.ui.styles import get_novaedu_css
 
@@ -98,6 +98,23 @@ st.markdown(
 
 st.sidebar.markdown("---")
 st.sidebar.subheader("🤖 Canales en Vivo")
+
+# Conmutador de Motor para Bots (Python vs n8n)
+engine_env = get_channel_processing_engine()
+engine_opciones = ["🐍 Python Nativo", "⚡ n8n Workflow"]
+default_idx = 1 if engine_env == "N8N" else 0
+
+engine_sel = st.sidebar.radio(
+    "Motor de Procesamiento:",
+    engine_opciones,
+    index=default_idx,
+    horizontal=True,
+    help="Elige si los bots de Discord/Telegram/Slack procesan mediante el SDK de Python local o reenvían el mensaje al Webhook de n8n para el flujo visual.",
+)
+
+nuevo_engine = "N8N" if "n8n" in engine_sel else "PYTHON"
+if os.environ.get("CHANNEL_PROCESSING_ENGINE") != nuevo_engine:
+    os.environ["CHANNEL_PROCESSING_ENGINE"] = nuevo_engine
 
 bot_manager = get_bot_manager()
 status_bots = bot_manager.get_status()
