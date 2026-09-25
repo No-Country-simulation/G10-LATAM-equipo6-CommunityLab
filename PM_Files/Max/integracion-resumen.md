@@ -1,4 +1,4 @@
-# ⚡ Guía Resumen: Integración de Canales Interactivos (Telegram, Discord, Slack)
+﻿# ⚡ Guía Resumen: Integración de Canales Interactivos (Telegram, Discord, Slack)
 
 > **Desarrollador:** Max Ferrer Cabanillas Salas (`mcabanillassalas`)  
 > **Proyecto:** CommunityLab - Hackathon ONE G10 (Oracle & Alura / No Country)  
@@ -91,6 +91,27 @@ Para que el equipo de frontend/curaduría pueda auditar exactamente qué generó
 * **Vía Python:** Guarda acumulativamente en `data/paquete_procesado_canales_python.json`.
 * **Vía n8n:** Guarda en `data/paquete_procesado_canales_n8n.json`.
 * **Trazabilidad:** Logs diarios rotativos generados en `logs/communitylab-YYYY-MM-DD.log`.
+
+---
+
+### 3.6 Curaduría Omnicanal, Detección de Canales y Sincronización en Streamlit (src/ui/app.py)
+Para que los Community Managers puedan auditar, curar y filtrar tanto los lotes generados por pipeline batch como los mensajes procesados en vivo desde bots interactivos:
+* **Soporte de Fuentes Múltiples:** El selector de la vista *"Curaduría de Activos"* permite elegir entre los lotes en OCI Storage, el archivo de canales en vivo de Python (data/paquete_procesado_canales_python.json) y el de n8n (data/paquete_procesado_canales_n8n.json).
+* **Detección Automática de Canal (detectar_canal_digital):** Algoritmo de resolución multi-criterio que identifica con precisión el canal de procedencia:
+  - Inspecciona prefijos de ID: tg_ (Telegram), dc_ (Discord), slk_ (Slack).
+  - Inspecciona metadatos nativos: canal_origen_bot, interaccion.canal y metadata_externa.
+* **Badges Visuales Distintivos:** Cada tarjeta y encabezado en el panel presenta un badge destacado con su ícono y canal:
+  - [✈️ Telegram]
+  - [🎮 Discord]
+  - [💬 Slack]
+  - [📊 Dataset Batch]
+* **Filtro Interactivo de 4 Columnas:** La barra superior de filtros ahora cuenta con 4 selectores simultáneos:
+  1. *Filtrar por canal de origen* (Todos, ✈️ Telegram, 🎮 Discord, 💬 Slack, 📊 Dataset Batch).
+  2. *Filtrar por tipo de activo* (Todos, LinkedIn, X / Twitter, FAQ / Tip).
+  3. *Filtrar por estado* (Todos, Pendiente, Aprobado, Descartado).
+  4. *Filtrar por sentimiento* (Todos, Positivo, Neutro, Negativo).
+* **Sincronización Cloud con un Clic:** Se agregó el botón interactivo [ ☁️ Subir a Storage ] para respaldar el archivo de canales locales directamente hacia Oracle Cloud Infrastructure (OCI Object Storage) como un nuevo lote oficial.
+* **Saneamiento y Estabilidad:** Corrección de la importación get_n8n_webhook_url en app.py y sanitización total de credenciales y webhooks en .env.example y flujos de n8n.
 
 ---
 
