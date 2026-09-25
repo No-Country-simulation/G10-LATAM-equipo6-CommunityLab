@@ -25,14 +25,25 @@ Este directorio almacena los flujos de n8n exportados para control de versiones 
   * `Convert to File`: Convierte cada uno de los 4 paquetes en binario en memoria (`mode: each`).
   * `Upload a file (S3)`: Sube los 4 objetos directamente al bucket `communitylab-activos-marketing` de OCI.
 
-### 3. `communitylab_ingesta_local_webhook.json` (Adaptación para Desarrollo Local y Streamlit)
+### 3. `communitylab_master_omnicanal_oci.json` (Lienzo Maestro Omnicanal E2E) ⭐
+* **Descripción:** Flujo maestro unificado que integra en un único lienzo todos los canales de entrada simultáneos convergiendo en la clasificación LLM y persistencia en OCI Object Storage.
+* **Disparadores Simultáneos:**
+  1. **Batch Webhook (`/webhook/communitylab-ingesta`):** Disparado desde Streamlit para procesamiento en lotes.
+  2. **Telegram Trigger:** Escucha mensajes directos y menciones en Telegram.
+  3. **Discord Webhook (`/webhook/communitylab-discord`):** Escucha eventos de la comunidad en Discord.
+  4. **Slack Events Webhook (`/webhook/communitylab-slack`):** Escucha eventos y canales en Slack.
+* **Salida Dual:**
+  * **Respuesta en Chat en Tiempo Real:** Envía respuestas formateadas adaptadas a cada cliente (Markdown para Telegram, Embed para Discord, Blocks para Slack).
+  * **Persistencia Directa en OCI:** Escribe los activos en los 4 archivos temáticos en el Bucket `communitylab-activos-marketing`.
+
+### 4. `communitylab_ingesta_local_webhook.json` (Adaptación para Desarrollo Local y Streamlit)
 * **Descripción:** Adaptación para recibir interacciones dinámicamente vía HTTP Webhook desde Streamlit o scripts locales y responder síncronamente.
 * **Diferencias con el flujo original:**
   * **Disparador:** Nodo `Webhook` (`POST /webhook/communitylab-ingesta`) en lugar de `manualTrigger`.
   * **Entrada dinámica:** Recibe las interacciones seleccionadas en Streamlit (`$json.body.interacciones`).
   * **Respuesta síncrona:** Nodo `Respond to Webhook` al completar el loop para devolver el paquete de activos estructurado a la UI.
 
-### 4. `jmedinag_WF_002.json`
+### 5. `jmedinag_WF_002.json`
 * **Descripción:** Flujo de trabajo de referencia desarrollado por José Medina.
 
 ---

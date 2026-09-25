@@ -1,0 +1,1049 @@
+{
+  "name": "CommunityLab_Master_Omnicanal_E2E_OCI",
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Analiza la siguiente interacción de la comunidad:\n\nID: {{ $json.id }}\nAutor: {{ $json.autor }}\nCanal: {{ $json.canal }}\nTipo Original: {{ $json.tipo }}\nTexto del mensaje:\n\"{{ $json.texto }}\"\n",
+        "hasOutputParser": true,
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=Eres el Motor Inteligente de Transformación de CommunityLab (Hackathon Oracle ONE & Alura). Tu tarea es analizar un mensaje orgánico de una comunidad técnica y devolver un único objeto JSON válido sin texto introductorio, explicaciones ni bloques de formato markdown.  ### Reglas de Extracción y Clasificación: 1. \"sentimiento\": Clasifica en exactamente uno de: [\"positivo\", \"neutro\", \"negativo\"]. 2. \"tipo_contenido\": Clasifica en exactamente uno de:    - \"logro_contratacion\": Testimonios de nuevo empleo, ascenso, contratación o éxito en entrevistas gracias a la formación.    - \"duda_tecnica\": Preguntas sobre código, librerías, cloud (OCI), bases de datos o errores técnicos.    - \"feedback_general\": Sugerencias, opiniones de cursos o comentarios de la comunidad.    - \"showcase\": Demostraciones de proyectos personales o bots creados por los estudiantes. 3. \"temas_clave\": Array de strings con entre 1 y 4 tecnologías o conceptos clave identificados (ej: [\"OCI\", \"Docker\", \"Python\", \"SQL\"]). 4. \"post_linkedin\":    - Si \"tipo_contenido\" es \"logro_contratacion\" o \"showcase\": Redacta un copy persuasivo para LinkedIn en estilo storytelling, con gancho (hook), lección aprendida, llamado a la acción y 3-4 hashtags relevantes (#OracleONE #AluraLATAM #TechTalent).    - En cualquier otro caso: Retorna null. 5. \"tip_tecnico_faq\":    - Si \"tipo_contenido\" es \"duda_tecnica\": Redacta una solución técnica precisa, clara y concisa (estilo FAQ o tip de documentación técnica) explicando cómo resolver el problema o buena práctica.    - En cualquier otro caso: Retorna null.  ### Esquema JSON de Salida Obligatorio: {   \"sentimiento\": \"positivo | neutro | negativo\",   \"tipo_contenido\": \"logro_contratacion | duda_tecnica | feedback_general | showcase\",   \"temas_clave\": [\"tag1\", \"tag2\"],   \"post_linkedin\": \"Texto del post o null\",   \"tip_tecnico_faq\": \"Texto de la respuesta técnica o null\" }"
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        -48,
+        288
+      ],
+      "id": "cb6b065d-4ef5-4592-9ea0-a91a7b3d8d44",
+      "name": "Basic LLM Chain1",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -272,
+        288
+      ],
+      "id": "23230abd-dcf7-47db-a17d-e1dc4dc05f78",
+      "name": "Loop Over Items1"
+    },
+    {
+      "parameters": {
+        "amount": 12
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        528,
+        400
+      ],
+      "id": "e42850e1-626b-46e0-b089-2c1a1c8e2b68",
+      "name": "Wait1",
+      "webhookId": "475c843d-c122-434f-aeaa-380743824fb8"
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-safeguard-20b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        -40,
+        504
+      ],
+      "id": "fdf63526-de61-4008-a323-3a6ec82cc570",
+      "name": "Groq Chat Model1",
+      "credentials": {
+        "groqApi": {
+          "id": "dYH7OO8GOD58Q2lm",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"$schema\": \"http://json-schema.org/draft-07/schema#\",\n  \"title\": \"CommunityLabAssetOutput\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"sentimiento\": {\n      \"type\": \"string\",\n      \"enum\": [\"positivo\", \"neutro\", \"negativo\"],\n      \"description\": \"Sentimiento del mensaje\"\n    },\n    \"tipo_contenido\": {\n      \"type\": \"string\",\n      \"enum\": [\"logro_contratacion\", \"duda_tecnica\", \"feedback_general\", \"showcase\"],\n      \"description\": \"Categoría de contenido identificada\"\n    },\n    \"temas_clave\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"string\"\n      },\n      \"description\": \"Lista de tecnologías o conceptos clave identificados\"\n    },\n    \"post_linkedin\": {\n      \"type\": [\"string\", \"null\"],\n      \"description\": \"Copy optimizado para LinkedIn si aplica, de lo contrario null\"\n    },\n    \"tip_tecnico_faq\": {\n      \"type\": [\"string\", \"null\"],\n      \"description\": \"Respuesta técnica estructurada o FAQ si aplica, de lo contrario null\"\n    }\n  },\n  \"required\": [\n    \"sentimiento\",\n    \"tipo_contenido\",\n    \"temas_clave\",\n    \"post_linkedin\",\n    \"tip_tecnico_faq\"\n  ]\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        88,
+        504
+      ],
+      "id": "20d03de1-4b4d-4c33-b907-c739e283d50d",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "0000f74e-abda-4723-9835-3d2b2c470b0b",
+              "name": "sentimiento",
+              "value": "={{ $json.output.sentimiento }}",
+              "type": "string"
+            },
+            {
+              "id": "80594c9e-2ee8-42d2-96d2-b886ef569739",
+              "name": "tipo_contenido",
+              "value": "={{ $json.output.tipo_contenido }}",
+              "type": "string"
+            },
+            {
+              "id": "386a9821-6d19-48f7-8cd1-7c3e7ef9216e",
+              "name": "temas_clave",
+              "value": "={{ $json.output.temas_clave }}",
+              "type": "array"
+            },
+            {
+              "id": "fdea6ed7-a46f-46b9-96b8-3f04e988dee4",
+              "name": "post_linkedin",
+              "value": "={{ $json.output.post_linkedin }}",
+              "type": "string"
+            },
+            {
+              "id": "6ccd090b-b9aa-4cb8-a57b-8a952b05a510",
+              "name": "tip_tecnico_faq",
+              "value": "={{ $json.output.tip_tecnico_faq }}",
+              "type": "string"
+            },
+            {
+              "id": "502b656e-0272-42d2-a1e8-f22e193be12a",
+              "name": "=id",
+              "value": "={{ $('Loop Over Items1').item.json.id }}",
+              "type": "string"
+            },
+            {
+              "id": "d223770f-aace-40d2-9f0f-185a6f3202ab",
+              "name": "autor",
+              "value": "={{ $('Loop Over Items1').item.json.autor }}",
+              "type": "string"
+            },
+            {
+              "id": "d12ffb05-bafd-4f4d-8bc2-c0a5c6c02f54",
+              "name": "canal",
+              "value": "={{ $('Loop Over Items1').item.json.canal }}",
+              "type": "string"
+            },
+            {
+              "id": "f50b402f-87fd-4287-9bcb-19416ba8a243",
+              "name": "texto_original",
+              "value": "={{ $('Loop Over Items1').item.json.texto }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        304,
+        288
+      ],
+      "id": "864b769d-3911-4609-a324-4de32df2de9e",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Nodo de consolidación: Recopila todos los items enrutados y genera los 4 paquetes especializados para OCI\nconst allItems = $input.all().map(item => item.json);\nconst total = allItems.length;\nconst hoy = new Date().toISOString();\n\n// Cálculo de métricas de sentimiento\nconst sentimientos = {\n  positivo: allItems.filter(i => i.sentimiento === 'positivo').length,\n  neutro: allItems.filter(i => i.sentimiento === 'neutro').length,\n  negativo: allItems.filter(i => i.sentimiento === 'negativo').length\n};\n\nconst distribucion_tipo = {\n  logro_contratacion: allItems.filter(i => i.tipo_contenido === 'logro_contratacion').length,\n  duda_tecnica: allItems.filter(i => i.tipo_contenido === 'duda_tecnica').length,\n  showcase: allItems.filter(i => i.tipo_contenido === 'showcase').length,\n  feedback_general: allItems.filter(i => i.tipo_contenido === 'feedback_general').length\n};\n\nconst baseMetadata = {\n  version: '1.0.0',\n  plataforma: 'CommunityLab',\n  fecha_generacion: hoy,\n  origen_comunidad: 'Discord_Oracle_Next_Education_G10',\n  total_interacciones: total\n};\n\n// 1. Rama A: Logros / Contrataciones\nconst paqueteLogros = {\n  metadata: { ...baseMetadata, categoria: 'logros_contratacion' },\n  activos: allItems\n    .filter(i => i.tipo_contenido === 'logro_contratacion' && i.post_linkedin)\n    .map(i => ({\n      id: i.id,\n      autor: i.autor,\n      canal: i.canal,\n      temas_clave: i.temas_clave,\n      post_linkedin: i.post_linkedin\n    }))\n};\n\n// 2. Rama B: Dudas Técnicas / FAQs\nconst paqueteFaqs = {\n  metadata: { ...baseMetadata, categoria: 'dudas_tecnicas_faqs' },\n  activos: allItems\n    .filter(i => i.tipo_contenido === 'duda_tecnica' && i.tip_tecnico_faq)\n    .map(i => ({\n      id: i.id,\n      autor: i.autor,\n      canal: i.canal,\n      temas_clave: i.temas_clave,\n      pregunta_original: i.texto_original,\n      tip_tecnico_faq: i.tip_tecnico_faq\n    }))\n};\n\n// 3. Rama C: Showcase de Proyectos\nconst paqueteShowcase = {\n  metadata: { ...baseMetadata, categoria: 'proyectos_showcase' },\n  activos: allItems\n    .filter(i => i.tipo_contenido === 'showcase' && i.post_linkedin)\n    .map(i => ({\n      id: i.id,\n      autor: i.autor,\n      canal: i.canal,\n      temas_clave: i.temas_clave,\n      post_linkedin: i.post_linkedin\n    }))\n};\n\n// 4. Rama D: Feedback y Métricas de Comunidad\nconst paqueteFeedback = {\n  metadata: { ...baseMetadata, categoria: 'feedback_metricas' },\n  metricas_salud: { sentimientos, distribucion_tipo },\n  activos: allItems\n    .filter(i => i.tipo_contenido === 'feedback_general')\n    .map(i => ({\n      id: i.id,\n      autor: i.autor,\n      canal: i.canal,\n      temas_clave: i.temas_clave,\n      comentario: i.texto_original,\n      sentimiento: i.sentimiento\n    }))\n};\n\n// Emitir 4 items separados, cada uno con su nombre de archivo OCI\nreturn [\n  { json: { nombre_archivo: 'marketing_linkedin_logros.json', ...paqueteLogros } },\n  { json: { nombre_archivo: 'faqs_soporte_tecnico.json', ...paqueteFaqs } },\n  { json: { nombre_archivo: 'marketing_showcase.json', ...paqueteShowcase } },\n  { json: { nombre_archivo: 'metricas_feedback_comunidad.json', ...paqueteFeedback } }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        16,
+        -16
+      ],
+      "id": "11dd928f-e631-4864-9da4-3d526df9aca4",
+      "name": "Consolidar Paquete OCI1"
+    },
+    {
+      "parameters": {
+        "operation": "upload",
+        "bucketName": "communitylab-activos-marketing",
+        "fileName": "={{ 'activos/' + $now.toFormat('yyyy-MM-dd') + '/' + $binary.data.fileName }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.s3",
+      "typeVersion": 1,
+      "position": [
+        528,
+        -16
+      ],
+      "id": "f5fc8f94-bbe5-4572-b260-45fc27cc3153",
+      "name": "Upload a file1",
+      "credentials": {
+        "s3": {
+          "id": "wBmNi7O2F3CGYxUW",
+          "name": "S3 account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "toJson",
+        "mode": "each",
+        "options": {
+          "format": true,
+          "fileName": "={{ 'activos/' + $now.toFormat('yyyy-MM-dd') + '/' + $json.nombre_archivo }}"
+        }
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        304,
+        -16
+      ],
+      "id": "0dd770d4-716f-4b35-98ab-de165ba7e881",
+      "name": "Convert to File1"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "communitylab-ingesta",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -720,
+        288
+      ],
+      "id": "08ebf188-0c79-45d6-9aee-38d1ad796f85",
+      "name": "Webhook",
+      "webhookId": "6741e965-46ea-47b6-a308-273c27fa7b1a"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extrae las interacciones recibidas desde la UI de Streamlit o petición HTTP\nconst body = $json.body || $json;\nconst items = body.interacciones || body.data || (Array.isArray(body) ? body : [body]);\n\nif (!items || items.length === 0) {\n  throw new Error('No se recibieron interacciones en el body de la petición');\n}\n\nreturn items.map(item => ({ json: item }));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -496,
+        288
+      ],
+      "id": "45e0caed-c5a4-4e4b-a95a-b25764a10350",
+      "name": "Extract Interactions"
+    },
+    {
+      "parameters": {
+        "respondWith": "allIncomingItems",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        976,
+        -16
+      ],
+      "id": "0080fbf6-92d5-4802-ac1b-a34f856c3575",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "jsCode": "const itemsProcesados = $('Loop Over Items1').all();\nconst archivosSubidos = $('Upload a file1').all();\n\nconst postsCount = itemsProcesados.filter(i => i.json?.post_linkedin).length;\nconst tipsCount = itemsProcesados.filter(i => i.json?.tip_tecnico_faq).length;\n\nconst sentimientoDist = {\n  positivo: itemsProcesados.filter(i => i.json?.sentimiento === 'positivo').length,\n  neutro: itemsProcesados.filter(i => i.json?.sentimiento === 'neutro').length,\n  negativo: itemsProcesados.filter(i => i.json?.sentimiento === 'negativo').length\n};\n\nconst activos = itemsProcesados.map(item => ({\n  interaccion: {\n    id: item.json?.id || \"N/A\",\n    autor: item.json?.autor || \"Comunidad\",\n    canal: item.json?.canal || \"#general\",\n    texto: item.json?.comentario || item.json?.pregunta_original || item.json?.post_linkedin || \"\"\n  },\n  activo: {\n    tipo_contenido: item.json?.tipo_contenido || \"feedback_general\",\n    sentimiento: item.json?.sentimiento || \"neutro\",\n    temas_clave: item.json?.temas_clave || [],\n    post_linkedin: item.json?.post_linkedin || null,\n    tip_tecnico_faq: item.json?.tip_tecnico_faq || null\n  },\n  motor_orquestacion: \"n8n_oci_cloud\"\n}));\n\nreturn [{\n  json: {\n    status: \"completado\",\n    metadata_paquete: {\n      motor_orquestacion: \"n8n_oci_cloud\",\n      total_procesados_exitosamente: itemsProcesados.length,\n      total_archivos_oci: archivosSubidos.length\n    },\n    metricas: {\n      total_posts_linkedin_generados: postsCount,\n      total_tips_faq_generados: tipsCount,\n      distribucion_sentimiento: sentimientoDist\n    },\n    activos: activos\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        752,
+        -16
+      ],
+      "id": "05111315-9566-4280-900e-480e6dddcbd0",
+      "name": "Preparar Respuesta"
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -200,
+        500
+      ],
+      "id": "tg-trigger-001",
+      "name": "Telegram Trigger"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Analiza el siguiente mensaje recibido en el bot de la comunidad:\n\nAutor: {{ $json.message.from.first_name || 'Usuario' }}\nTexto: \"{{ $json.message.text }}\"\n\nInstrucciones:\n1. Clasifica el sentimiento (positivo, neutro, negativo).\n2. Determina el tipo_contenido (logro_contratacion, duda_tecnica, showcase, feedback_general).\n3. Extrae temas_clave tecnologicos.\n4. Si es logro_contratacion o showcase, redacta un post_linkedin inspirador.\n5. Si es duda_tecnica, redacta un tip_tecnico_faq util.\n6. Redacta una respuesta_chat clara, amable y directa para responderle en Telegram.",
+        "hasOutputParser": true,
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=Eres el asistente de IA de CommunityLab (Oracle Next Education & Alura). Tu labor es responder a los miembros de la comunidad con empatia tecnica, clasificar la consulta y estructurar activos de conocimiento."
+            }
+          ]
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        100,
+        500
+      ],
+      "id": "tg-chain-001",
+      "name": "Procesador IA CommunityLab"
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-20b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        20,
+        720
+      ],
+      "id": "tg-model-001",
+      "name": "Groq Model (Telegram)",
+      "credentials": {
+        "groqApi": {
+          "id": "dAfNMioPwJHVr5V2",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"$schema\": \"http://json-schema.org/draft-07/schema#\",\n  \"title\": \"CommunityLabTelegramOutput\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"sentimiento\": {\n      \"type\": \"string\",\n      \"enum\": [\n        \"positivo\",\n        \"neutro\",\n        \"negativo\"\n      ],\n      \"description\": \"Sentimiento del mensaje\"\n    },\n    \"tipo_contenido\": {\n      \"type\": \"string\",\n      \"enum\": [\n        \"logro_contratacion\",\n        \"duda_tecnica\",\n        \"feedback_general\",\n        \"showcase\"\n      ],\n      \"description\": \"Categoria de contenido\"\n    },\n    \"temas_clave\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"string\"\n      },\n      \"description\": \"Temas o tecnologias identificadas\"\n    },\n    \"respuesta_chat\": {\n      \"type\": \"string\",\n      \"description\": \"Respuesta directa y conversacional para el usuario\"\n    },\n    \"post_linkedin\": {\n      \"type\": [\n        \"string\",\n        \"null\"\n      ],\n      \"description\": \"Post sugerido para LinkedIn si aplica\"\n    },\n    \"tip_tecnico_faq\": {\n      \"type\": [\n        \"string\",\n        \"null\"\n      ],\n      \"description\": \"Tip tecnico estructurado o solucion\"\n    }\n  },\n  \"required\": [\n    \"sentimiento\",\n    \"tipo_contenido\",\n    \"temas_clave\",\n    \"respuesta_chat\"\n  ]\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        200,
+        720
+      ],
+      "id": "tg-parser-001",
+      "name": "Parser (Telegram)"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Formatear mensaje Markdown para Telegram\nconst output = $json.output || $json;\nconst tgItem = $('Telegram Trigger').item.json.message;\nconst autor = (tgItem.from && tgItem.from.first_name) ? tgItem.from.first_name : 'Compañero';\n\nconst sentimientoEmoji = output.sentimiento === 'positivo' ? '🟢 Positivo' : (output.sentimiento === 'negativo' ? '🔴 Negativo' : '⚪ Neutro');\n\nlet msg = `🤖 *CommunityLab Assistant*\\n\\n`;\n\nif (output.respuesta_chat) {\n  msg += `${output.respuesta_chat}\\n\\n`;\n}\n\nif (output.tip_tecnico_faq) {\n  msg += `💡 *Tip Técnico / FAQ:*\\n${output.tip_tecnico_faq}\\n\\n`;\n}\n\nmsg += `📊 *Análisis de Comunidad:*\\n`;\nmsg += `• Sentimiento: ${sentimientoEmoji}\\n`;\nmsg += `• Categoría: \\`${output.tipo_contenido || 'general'}\\`\\n`;\n\nif (output.temas_clave && output.temas_clave.length > 0) {\n  msg += `• Temas: ${output.temas_clave.join(', ')}\\n`;\n}\n\nif (output.post_linkedin) {\n  msg += `\\n🚀 *Post LinkedIn Propuesto:*\\n${output.post_linkedin}\\n`;\n}\n\n// Persistir en /home/node/data/paquete_procesado_canales_n8n.json\ntry {\n  const fs = require('fs');\n  const filePath = '/home/node/data/paquete_procesado_canales_n8n.json';\n  let dataStore = {\n    metadata_paquete: {\n      generado_el: new Date().toISOString(),\n      motor_orquestacion: \"n8n_native_workflows\",\n      total_activos: 0,\n      ultima_actualizacion: new Date().toISOString()\n    },\n    activos: []\n  };\n\n  if (fs.existsSync(filePath)) {\n    try {\n      const content = fs.readFileSync(filePath, 'utf8');\n      if (content.trim()) {\n        dataStore = JSON.parse(content);\n      }\n    } catch (e) {}\n  }\n\n  const rawText = tgItem.text || '';\n  const autorUser = autor;\n  const eventTs = (tgItem.date || Date.now()).toString();\n\n  const nuevoActivo = {\n    interaccion: {\n      id: `telegram_${eventTs}`,\n      autor: autorUser,\n      canal: \"#telegram-comunidad\",\n      tipo: \"consulta_dinamica\",\n      texto: rawText\n    },\n    activo: {\n      sentimiento: output.sentimiento || \"neutro\",\n      tipo_contenido: output.tipo_contenido || \"feedback_general\",\n      temas_clave: Array.isArray(output.temas_clave) ? output.temas_clave : (output.temas_clave ? [output.temas_clave] : []),\n      post_linkedin: output.post_linkedin || null,\n      tip_tecnico_faq: output.tip_tecnico_faq || null\n    },\n    canal_origen_bot: \"#telegram-comunidad\",\n    motor_orquestacion: \"n8n_dynamic_channels\",\n    metadata_externa: {\n      chat_id: tgItem.chat?.id,\n      user_id: autorUser,\n      ts: eventTs\n    }\n  };\n\n  if (!dataStore.activos) dataStore.activos = [];\n  dataStore.activos.unshift(nuevoActivo);\n  dataStore.metadata_paquete = dataStore.metadata_paquete || {};\n  dataStore.metadata_paquete.total_activos = dataStore.activos.length;\n  dataStore.metadata_paquete.ultima_actualizacion = new Date().toISOString();\n\n  fs.writeFileSync(filePath, JSON.stringify(dataStore, null, 2), 'utf8');\n} catch (err) {}\n\nreturn [{\n  json: {\n    chat_id: tgItem.chat.id,\n    mensaje_telegram: msg,\n    raw_output: output\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        400,
+        500
+      ],
+      "id": "tg-format-001",
+      "name": "Formatear Respuesta Markdown"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chat_id }}",
+        "text": "={{ $json.mensaje_telegram }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        640,
+        500
+      ],
+      "id": "tg-send-001",
+      "name": "Enviar Respuesta Telegram"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "communitylab-discord",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -220,
+        800
+      ],
+      "id": "dc-webhook-001",
+      "name": "Discord Webhook Trigger",
+      "webhookId": "dc-communitylab-hook"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Analiza la siguiente consulta recibida de un miembro de la comunidad en Discord:\n\nAutor: {{ $json.body.author || $json.body.username || 'Usuario Discord' }}\nCanal: {{ $json.body.channel || 'general' }}\nTexto: \"{{ $json.body.content || $json.body.text || $json.body.message }}\"\n\nInstrucciones:\n1. Clasifica el sentimiento (positivo, neutro, negativo).\n2. Determina el tipo_contenido (logro_contratacion, duda_tecnica, showcase, feedback_general).\n3. Extrae temas_clave tecnologicos.\n4. Si es logro_contratacion o showcase, redacta un post_linkedin inspirador.\n5. Si es duda_tecnica, redacta un tip_tecnico_faq estructurado.\n6. Redacta una respuesta_chat clara, amable y concisa para responderle al usuario en Discord.",
+        "hasOutputParser": true,
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=Eres el asistente oficial de IA de CommunityLab (Oracle Next Education & Alura). Tu rol es responder consultas tecnicas, detectar logros y enriquecer la comunidad con respuestas utiles y estructuradas."
+            }
+          ]
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        80,
+        800
+      ],
+      "id": "dc-chain-001",
+      "name": "Procesador IA Discord"
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-20b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        0,
+        1020
+      ],
+      "id": "dc-model-001",
+      "name": "Groq Model (Discord)",
+      "credentials": {
+        "groqApi": {
+          "id": "dAfNMioPwJHVr5V2",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"$schema\": \"http://json-schema.org/draft-07/schema#\",\n  \"title\": \"CommunityLabDiscordOutput\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"sentimiento\": {\n      \"type\": \"string\",\n      \"enum\": [\n        \"positivo\",\n        \"neutro\",\n        \"negativo\"\n      ]\n    },\n    \"tipo_contenido\": {\n      \"type\": \"string\",\n      \"enum\": [\n        \"logro_contratacion\",\n        \"duda_tecnica\",\n        \"feedback_general\",\n        \"showcase\"\n      ]\n    },\n    \"temas_clave\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"string\"\n      }\n    },\n    \"respuesta_chat\": {\n      \"type\": \"string\"\n    },\n    \"post_linkedin\": {\n      \"type\": [\n        \"string\",\n        \"null\"\n      ]\n    },\n    \"tip_tecnico_faq\": {\n      \"type\": [\n        \"string\",\n        \"null\"\n      ]\n    }\n  },\n  \"required\": [\n    \"sentimiento\",\n    \"tipo_contenido\",\n    \"temas_clave\",\n    \"respuesta_chat\"\n  ]\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        180,
+        1020
+      ],
+      "id": "dc-parser-001",
+      "name": "Parser (Discord)"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Construir Discord Embed compatible con Webhooks de Discord\nconst output = $json.output || $json;\n\nlet color = 3447003; // Azul por defecto\nif (output.sentimiento === 'positivo') color = 3066993; // Verde\nif (output.sentimiento === 'negativo') color = 15158332; // Rojo\nif (output.sentimiento === 'neutro') color = 15844367; // Amarillo\n\nconst fields = [\n  { name: \"📊 Sentimiento\", value: (output.sentimiento || 'neutro').toUpperCase(), inline: true },\n  { name: \"🏷️ Categoría\", value: output.tipo_contenido || 'General', inline: true },\n  { name: \"💡 Temas Clave\", value: (output.temas_clave && output.temas_clave.length > 0) ? output.temas_clave.join(', ') : 'General', inline: false }\n];\n\nif (output.tip_tecnico_faq) {\n  fields.push({ name: \"🛠️ Tip Técnico / FAQ\", value: output.tip_tecnico_faq.substring(0, 1024), inline: false });\n}\n\nif (output.post_linkedin) {\n  fields.push({ name: \"🚀 Post LinkedIn Generado\", value: output.post_linkedin.substring(0, 1024), inline: false });\n}\n\nconst discordPayload = {\n  username: \"CommunityLab Bot\",\n  avatar_url: \"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/potion.png\",\n  content: output.respuesta_chat || \"¡Consulta procesada exitosamente!\",\n  embeds: [{\n    title: \"CommunityLab AI Insight\",\n    color: color,\n    fields: fields,\n    footer: { text: \"CommunityLab Hackathon Oracle & Alura • n8n Native Flow\" },\n    timestamp: new Date().toISOString()\n  }]\n};\n\n// Persistir en /home/node/data/paquete_procesado_canales_n8n.json\ntry {\n  const fs = require('fs');\n  const filePath = '/home/node/data/paquete_procesado_canales_n8n.json';\n  let dataStore = {\n    metadata_paquete: {\n      generado_el: new Date().toISOString(),\n      motor_orquestacion: \"n8n_native_workflows\",\n      total_activos: 0,\n      ultima_actualizacion: new Date().toISOString()\n    },\n    activos: []\n  };\n\n  if (fs.existsSync(filePath)) {\n    try {\n      const content = fs.readFileSync(filePath, 'utf8');\n      if (content.trim()) {\n        dataStore = JSON.parse(content);\n      }\n    } catch (e) {}\n  }\n\n  const rawItem = $('Discord Webhook Trigger').item.json;\n  const rawText = rawItem.content || rawItem.body?.content || rawItem.text || rawItem.body?.text || '';\n  const autorUser = rawItem.author || rawItem.body?.author || 'Usuario Discord';\n  const eventTs = Date.now().toString();\n\n  const nuevoActivo = {\n    interaccion: {\n      id: `discord_${eventTs}`,\n      autor: autorUser,\n      canal: \"#discord-comunidad\",\n      tipo: \"consulta_dinamica\",\n      texto: rawText\n    },\n    activo: {\n      sentimiento: output.sentimiento || \"neutro\",\n      tipo_contenido: output.tipo_contenido || \"feedback_general\",\n      temas_clave: Array.isArray(output.temas_clave) ? output.temas_clave : (output.temas_clave ? [output.temas_clave] : []),\n      post_linkedin: output.post_linkedin || null,\n      tip_tecnico_faq: output.tip_tecnico_faq || null\n    },\n    canal_origen_bot: \"#discord-comunidad\",\n    motor_orquestacion: \"n8n_dynamic_channels\",\n    metadata_externa: {\n      user_id: autorUser,\n      ts: eventTs\n    }\n  };\n\n  if (!dataStore.activos) dataStore.activos = [];\n  dataStore.activos.unshift(nuevoActivo);\n  dataStore.metadata_paquete = dataStore.metadata_paquete || {};\n  dataStore.metadata_paquete.total_activos = dataStore.activos.length;\n  dataStore.metadata_paquete.ultima_actualizacion = new Date().toISOString();\n\n  fs.writeFileSync(filePath, JSON.stringify(dataStore, null, 2), 'utf8');\n} catch (err) {}\n\nreturn [{ json: discordPayload }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        380,
+        800
+      ],
+      "id": "dc-format-001",
+      "name": "Formatear Discord Embed"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify($json) }}",
+        "options": {
+          "responseCode": 200,
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        620,
+        800
+      ],
+      "id": "dc-respond-001",
+      "name": "Responder a Webhook Discord"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.DISCORD_WEBHOOK_URL }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json) }}",
+        "options": {}
+      },
+      "id": "dc-send-webhook-001",
+      "name": "Enviar a Canal Discord",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        920,
+        840
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "communitylab-slack",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -240,
+        1000
+      ],
+      "id": "sk-webhook-001",
+      "name": "Slack Events Webhook",
+      "webhookId": "sk-communitylab-hook"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.body.type }}",
+              "value2": "url_verification"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        0,
+        1000
+      ],
+      "id": "sk-if-challenge",
+      "name": "¿Es Verificación de Slack?"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"challenge\": $json.body.challenge } }}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        260,
+        860
+      ],
+      "id": "sk-respond-challenge",
+      "name": "Responder Challenge Slack"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Analiza la siguiente interaccion recibida en Slack de la comunidad:\n\nUsuario: {{ $json.body?.event?.user || $json.author || $json.body?.author || 'Usuario Slack' }}\nCanal: {{ $json.body?.event?.channel || $json.channel || $json.body?.channel || 'all-g10-latam-06' }}\nTexto: \"{{ $json.body?.event?.text || $json.content || $json.body?.content || $json.text || $json.body?.text }}\"\n\nInstrucciones:\n1. Clasifica el sentimiento (positivo, neutro, negativo).\n2. Determina el tipo_contenido (logro_contratacion, duda_tecnica, showcase, feedback_general).\n3. Extrae temas_clave tecnologicos.\n4. Si es logro_contratacion o showcase, redacta un post_linkedin inspirador.\n5. Si es duda_tecnica, redacta un tip_tecnico_faq estructurado.\n6. Redacta una respuesta_chat clara, amable y ejecutiva para responder en Slack.",
+        "hasOutputParser": true,
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=Eres el asistente oficial de CommunityLab en Slack (Oracle Next Education & Alura). Ayudas a resolver dudas, celebrar logros y consolidar activos tecnicos."
+            }
+          ]
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        620,
+        1140
+      ],
+      "id": "sk-chain-001",
+      "name": "Procesador IA Slack"
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-20b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        520,
+        1320
+      ],
+      "id": "sk-model-001",
+      "name": "Groq Model (Slack)",
+      "credentials": {
+        "groqApi": {
+          "id": "dAfNMioPwJHVr5V2",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"$schema\": \"http://json-schema.org/draft-07/schema#\",\n  \"title\": \"CommunityLabSlackOutput\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"sentimiento\": {\n      \"type\": \"string\",\n      \"enum\": [\n        \"positivo\",\n        \"neutro\",\n        \"negativo\"\n      ]\n    },\n    \"tipo_contenido\": {\n      \"type\": \"string\",\n      \"enum\": [\n        \"logro_contratacion\",\n        \"duda_tecnica\",\n        \"feedback_general\",\n        \"showcase\"\n      ]\n    },\n    \"temas_clave\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"string\"\n      }\n    },\n    \"respuesta_chat\": {\n      \"type\": \"string\"\n    },\n    \"post_linkedin\": {\n      \"type\": [\n        \"string\",\n        \"null\"\n      ]\n    },\n    \"tip_tecnico_faq\": {\n      \"type\": [\n        \"string\",\n        \"null\"\n      ]\n    }\n  },\n  \"required\": [\n    \"sentimiento\",\n    \"tipo_contenido\",\n    \"temas_clave\",\n    \"respuesta_chat\"\n  ]\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        720,
+        1320
+      ],
+      "id": "sk-parser-001",
+      "name": "Parser (Slack)"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Construir Slack Blocks para respuesta estructurada en canal/hilo\nconst output = $json.output || $json;\nconst rawItem = $('Slack Events Webhook').item.json;\nconst slackEvent = rawItem.body?.event || {};\n\n// Canal de destino: evento de Slack o fallback al canal oficial #all-g10-latam-06\nconst targetChannel = slackEvent.channel || rawItem.body?.channel || rawItem.channel || 'C0C3C2BPBSB';\nconst targetThreadTs = slackEvent.ts || rawItem.body?.thread_ts || rawItem.thread_ts || undefined;\n\nconst sent = (output.sentimiento || 'neutro').toLowerCase();\nconst sentimientoBadge = sent === 'positivo' ? ':large_green_circle: Positivo' : (sent === 'negativo' ? ':red_circle: Negativo' : ':large_yellow_circle: Neutro');\n\nconst blocks = [\n  {\n    \"type\": \"header\",\n    \"text\": {\n      \"type\": \"plain_text\",\n      \"text\": \"🤖 CommunityLab Assistant\",\n      \"emoji\": true\n    }\n  },\n  {\n    \"type\": \"section\",\n    \"text\": {\n      \"type\": \"mrkdwn\",\n      \"text\": output.respuesta_chat || \"¡Mensaje procesado correctamente!\"\n    }\n  },\n  {\n    \"type\": \"context\",\n    \"elements\": [\n      {\n        \"type\": \"mrkdwn\",\n        \"text\": `*Sentimiento:* ${sentimientoBadge} | *Categoría:* \\`${output.tipo_contenido || 'General'}\\` | *Temas:* ${(output.temas_clave && Array.isArray(output.temas_clave)) ? output.temas_clave.join(', ') : (output.temas_clave || 'N/A')}`\n      }\n    ]\n  }\n];\n\nif (output.tip_tecnico_faq) {\n  blocks.push({\n    \"type\": \"section\",\n    \"text\": {\n      \"type\": \"mrkdwn\",\n      \"text\": `*💡 Tip Técnico / Solución:*\\n${output.tip_tecnico_faq}`\n    }\n  });\n}\n\nif (output.post_linkedin) {\n  blocks.push({\n    \"type\": \"section\",\n    \"text\": {\n      \"type\": \"mrkdwn\",\n      \"text\": `*🚀 Post de LinkedIn Sugerido:*\\n>${output.post_linkedin}`\n    }\n  });\n}\n\n// Persistencia en paquete_procesado_canales_n8n.json\ntry {\n  const fs = require('fs');\n  const filePath = '/home/node/data/paquete_procesado_canales_n8n.json';\n  let dataStore = {\n    metadata_paquete: {\n      generado_el: new Date().toISOString(),\n      motor_orquestacion: \"n8n_native_workflows\",\n      total_activos: 0,\n      ultima_actualizacion: new Date().toISOString()\n    },\n    activos: []\n  };\n\n  if (fs.existsSync(filePath)) {\n    try {\n      const content = fs.readFileSync(filePath, 'utf8');\n      if (content.trim()) {\n        dataStore = JSON.parse(content);\n      }\n    } catch (e) {}\n  }\n\n  const rawText = slackEvent.text || rawItem.content || rawItem.body?.content || rawItem.text || rawItem.body?.text || '';\n  const cleanText = rawText.replace(/<@[A-Z0-9]+>/g, '').trim();\n  const autorUser = slackEvent.user || rawItem.author || rawItem.body?.author || 'Usuario Slack';\n  const eventTs = slackEvent.ts || Date.now().toString();\n\n  const nuevoActivo = {\n    interaccion: {\n      id: `slack_${eventTs.replace('.', '_')}`,\n      autor: autorUser,\n      canal: \"#all-g10-latam-06\",\n      tipo: \"consulta_dinamica\",\n      texto: cleanText || rawText\n    },\n    activo: {\n      sentimiento: output.sentimiento || \"neutro\",\n      tipo_contenido: output.tipo_contenido || \"feedback_general\",\n      temas_clave: Array.isArray(output.temas_clave) ? output.temas_clave : (output.temas_clave ? [output.temas_clave] : []),\n      post_linkedin: output.post_linkedin || null,\n      tip_tecnico_faq: output.tip_tecnico_faq || null\n    },\n    canal_origen_bot: \"#slack-comunidad\",\n    motor_orquestacion: \"n8n_dynamic_channels\",\n    metadata_externa: {\n      channel_id: targetChannel,\n      user_id: autorUser,\n      ts: eventTs\n    }\n  };\n\n  if (!dataStore.activos) dataStore.activos = [];\n  dataStore.activos.unshift(nuevoActivo);\n  dataStore.metadata_paquete = dataStore.metadata_paquete || {};\n  dataStore.metadata_paquete.total_activos = dataStore.activos.length;\n  dataStore.metadata_paquete.ultima_actualizacion = new Date().toISOString();\n\n  fs.writeFileSync(filePath, JSON.stringify(dataStore, null, 2), 'utf8');\n} catch (err) {}\n\nconst payload = {\n  channel: targetChannel,\n  blocks: blocks,\n  text: output.respuesta_chat || \"CommunityLab Insight\"\n};\nif (targetThreadTs) {\n  payload.thread_ts = targetThreadTs;\n}\n\nreturn [{ json: payload }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        880,
+        1140
+      ],
+      "id": "sk-format-001",
+      "name": "Formatear Slack Blocks"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"status\": \"ok\", \"message\": \"Evento recibido y en procesamiento\" } }}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        400,
+        1140
+      ],
+      "id": "sk-respond-event",
+      "name": "Responder a Slack Event"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://slack.com/api/chat.postMessage",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $env.SLACK2_LOCAL_BOT_TOKEN || $env.SLACK_BOT_TOKEN }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json) }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1120,
+        1140
+      ],
+      "id": "sk-send-slack-001",
+      "name": "Enviar Mensaje a Slack"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Filtrar reintentos automaticos de Slack (evitar respuestas duplicadas)\nconst headers = $json.headers || {};\nif (headers['x-slack-retry-num']) {\n  // Descartar reintento para evitar duplicidad\n  return [];\n}\nreturn [{ json: $json }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        200,
+        1140
+      ],
+      "id": "sk-filter-retries",
+      "name": "Filtrar Reintentos Slack"
+    }
+  ],
+  "connections": {
+    "Basic LLM Chain1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items1": {
+      "main": [
+        [
+          {
+            "node": "Consolidar Paquete OCI1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Basic LLM Chain1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Basic LLM Chain1",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consolidar Paquete OCI1": {
+      "main": [
+        [
+          {
+            "node": "Convert to File1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File1": {
+      "main": [
+        [
+          {
+            "node": "Upload a file1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Extract Interactions",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Interactions": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload a file1": {
+      "main": [
+        [
+          {
+            "node": "Preparar Respuesta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar Respuesta": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Procesador IA CommunityLab",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Model (Telegram)": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Procesador IA CommunityLab",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parser (Telegram)": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Procesador IA CommunityLab",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Procesador IA CommunityLab": {
+      "main": [
+        [
+          {
+            "node": "Formatear Respuesta Markdown",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Formatear Respuesta Markdown": {
+      "main": [
+        [
+          {
+            "node": "Enviar Respuesta Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Discord Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "Procesador IA Discord",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Model (Discord)": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Procesador IA Discord",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parser (Discord)": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Procesador IA Discord",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Procesador IA Discord": {
+      "main": [
+        [
+          {
+            "node": "Formatear Discord Embed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Formatear Discord Embed": {
+      "main": [
+        [
+          {
+            "node": "Enviar a Canal Discord",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Responder a Webhook Discord",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Slack Events Webhook": {
+      "main": [
+        [
+          {
+            "node": "¿Es Verificación de Slack?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Es Verificación de Slack?": {
+      "main": [
+        [
+          {
+            "node": "Responder Challenge Slack",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Filtrar Reintentos Slack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Model (Slack)": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Procesador IA Slack",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parser (Slack)": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Procesador IA Slack",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Procesador IA Slack": {
+      "main": [
+        [
+          {
+            "node": "Formatear Slack Blocks",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Formatear Slack Blocks": {
+      "main": [
+        [
+          {
+            "node": "Enviar Mensaje a Slack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtrar Reintentos Slack": {
+      "main": [
+        [
+          {
+            "node": "Responder a Slack Event",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Responder a Slack Event": {
+      "main": [
+        [
+          {
+            "node": "Procesador IA Slack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "tags": [
+    "CommunityLab",
+    "OracleONE",
+    "OCI",
+    "Omnicanal",
+    "Groq"
+  ]
+}
