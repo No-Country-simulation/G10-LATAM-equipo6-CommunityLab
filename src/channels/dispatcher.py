@@ -205,9 +205,18 @@ class ChannelMessageDispatcher:
         if not isinstance(temas_list, list):
             temas_list = [str(temas_list)]
 
-        # Extraer respuesta conversacional directa de n8n si existe
-        respuesta_chat = raw_output.get("respuesta_chat") or data_item.get("content")
+        # Extraer respuesta conversacional directa de n8n si existe (Discord o Slack)
+        respuesta_chat = raw_output.get("respuesta_chat") or data_item.get("content") or data_item.get("text")
         metadata_completa = dict(metadata or {})
+
+        # Si n8n ya devolvió los 'blocks' de Slack armados
+        if "blocks" in data_item and isinstance(data_item["blocks"], list):
+            for block in data_item["blocks"]:
+                b_text = (block.get("text") or {}).get("text", "")
+                if b_text and not b_text.startswith("🤖") and "Sentimiento" not in b_text:
+                    if not respuesta_chat:
+                        respuesta_chat = b_text
+
         if respuesta_chat:
             metadata_completa["respuesta_directa"] = respuesta_chat
 
@@ -225,6 +234,11 @@ class ChannelMessageDispatcher:
         )
 
         respuestas = self._build_formatted_responses(activo_procesado, metadata_completa)
+
+        # Si n8n envió bloques directos para Slack ya listos, preservarlos
+        if "blocks" in data_item and isinstance(data_item["blocks"], list):
+            respuestas["slack_blocks"] = data_item["blocks"]
+
         logger.info("[Dispatcher <- n8n] Mensaje [%s] procesado exitosamente por n8n.", interaccion.id)
         return activo_procesado, respuestas
 
