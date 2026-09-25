@@ -546,5 +546,123 @@ def get_novaedu_css() -> str:
         font-weight: 800;
         color: #0F172A;
     }
+
+    /* -------------------------------------------------------------------------
+       9. VISTA HISTÓRICO OCI OBJECT STORAGE (FASE 4)
+       ------------------------------------------------------------------------- */
+    .storage-stat-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+
+    .storage-stat-card {
+        background: #FFFFFF;
+        border: 1px solid var(--border-color);
+        border-radius: 14px;
+        padding: 16px 20px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+    }
+
+    .storage-stat-title {
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        letter-spacing: 0.5px;
+        margin-bottom: 6px;
+    }
+
+    .storage-stat-val {
+        font-size: 22px;
+        font-weight: 800;
+        color: var(--text-dark);
+    }
+
+    .storage-asset-card {
+        background: #FFFFFF;
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: 16px 20px;
+        margin-bottom: 12px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        transition: all 0.2s ease;
+    }
+
+    .storage-asset-card:hover {
+        border-color: #CBD5E1;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    .storage-asset-info {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .storage-asset-name {
+        font-family: monospace;
+        font-size: 13.5px;
+        font-weight: 700;
+        color: #0F172A;
+    }
+
+    .storage-asset-meta {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 12px;
+        color: #64748B;
+    }
+
+    .storage-badge-type {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 11px;
+        font-weight: 700;
+        padding: 2px 8px;
+        border-radius: 6px;
+    }
+
+    .storage-badge-type.logros {
+        background: #DCFCE7;
+        color: #15803D;
+    }
+
+    .storage-badge-type.dudas {
+        background: #DBEAFE;
+        color: #1D4ED8;
+    }
+
+    .storage-badge-type.showcase {
+        background: #F3E8FF;
+        color: #7E22CE;
+    }
+
+    .storage-badge-type.feedback {
+        background: #FEF3C7;
+        color: #B45309;
+    }
+
+    .storage-badge-type.general {
+        background: #F1F5F9;
+        color: #475569;
+    }
+
+    .storage-par-box {
+        background: #F8FAFC;
+        border: 1px dashed #635BFF;
+        border-radius: 10px;
+        padding: 12px 16px;
+        margin-top: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
     </style>
     """

@@ -856,42 +856,118 @@ elif "Ejecutar Pipeline" in modo or modo == VISTA_PIPELINE:
 elif "Histórico" in modo or modo == VISTA_HISTORICO:
     c_head1, c_head2 = st.columns([3, 1])
     with c_head1:
-        st.subheader("☁️ Objetos Persistidos en OCI Object Storage Always Free")
+        st.subheader("☁️ Repositorio Histórico en Oracle Cloud Infrastructure")
+        st.caption("Objetos y paquetes de contenido persistidos en el Bucket Always Free de OCI Object Storage.")
     with c_head2:
-        with st.popover("🗑️ Vaciar Histórico", help="Elimina permanentemente los paquetes guardados en el histórico"):
+        with st.popover("🗑️ Vaciar Bucket", help="Elimina permanentemente los paquetes guardados en el histórico"):
             st.warning("⚠️ **¿Vaciar Histórico de OCI?**")
             st.caption("Esta acción eliminará de forma permanente todos los paquetes almacenados en el storage.")
             conf_oci_v3 = st.checkbox("Confirmo eliminar el histórico", key="chk_conf_v3")
-            if st.button("🚨 Sí, vaciar almacenamiento", type="primary", disabled=not conf_oci_v3, key="btn_vaciar_hist_v3"):
+            if st.button("🚨 Sí, vaciar almacenamiento", type="primary", disabled=not conf_oci_v3, key="btn_vaciar_hist_v3", use_container_width=True):
                 n_del = vaciar_historico_oci()
                 st.toast(f"Histórico de OCI vaciado exitosamente ({n_del} objetos eliminados).")
                 st.rerun()
 
     paquetes = obtener_ultimos_paquetes(limite=50)
 
+    # 1. Panel Superior de Estadísticas del Almacenamiento
+    total_objs = len(paquetes)
+    total_bytes = sum(p.get("size", 0) for p in paquetes)
+    total_kb = total_bytes / 1024.0
+
+    st.markdown(
+        f"""
+        <div class="storage-stat-container">
+            <div class="storage-stat-card">
+                <div class="storage-stat-title">📦 Total Objetos Persistidos</div>
+                <div class="storage-stat-val">{total_objs}</div>
+            </div>
+            <div class="storage-stat-card">
+                <div class="storage-stat-title">💾 Volumen Almacenado</div>
+                <div class="storage-stat-val">{total_kb:.1f} <span style="font-size: 13px; font-weight: 500; color: #64748B;">KB</span></div>
+            </div>
+            <div class="storage-stat-card">
+                <div class="storage-stat-title">☁️ Estado del Bucket</div>
+                <div class="storage-stat-val" style="color: #10B981; font-size: 18px;">OCI Always Free Active</div>
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
     if not paquetes:
-        st.info("No hay paquetes registrados aún en el almacenamiento.")
+        st.info("ℹ️ No hay paquetes registrados aún en el almacenamiento. Procesa un lote en **'⚡ Orquestador Dual'** para poblar el histórico.")
     else:
-        st.write(f"Se encontraron **{len(paquetes)}** paquetes almacenados:")
+        st.markdown("### 🗂️ Lotes y Archivos Especializados Disponibles")
 
-        for p in paquetes:
-            with st.container():
-                c1, c2, c3, c4 = st.columns([3, 1, 1, 1])
-                with c1:
-                    st.code(p["name"])
-                with c2:
-                    st.write(f"{p['size']} bytes")
-                with c3:
-                    st.caption(p.get("created_at", "N/A")[:19] if p.get("created_at") else "Local")
-                with c4:
-                    if st.button("🔗 Generar PAR", key=f"par_{p['name']}"):
-                        from src.cloud_oci.storage_client import OCIStorageManager
-                        sm = OCIStorageManager(allow_local_fallback=True)
-                        par = sm.create_preauthenticated_request(p["name"], expires_in_hours=24)
-                        st.session_state[f"url_{p['name']}"] = par["access_url"]
+        for idx_p, p in enumerate(paquetes):
+            nom = p["name"]
+            size_kb = p.get("size", 0) / 1024.0
+            fecha_str = p.get("created_at", "N/A")[:19].replace("T", " ") if p.get("created_at") else "Local Almacenado"
 
-                par_key = f"url_{p['name']}"
-                if par_key in st.session_state:
-                    par_url = st.session_state[par_key]
-                    st.success(f"URL de acceso temporal: [Abrir Activo]({par_url})")
-                    st.caption(par_url)
+            # Detectar tipo de activo para badge visual
+            badge_tipo_cls = "general"
+            badge_tipo_lbl = "Paquete Consolidado"
+            if "logros" in nom:
+                badge_tipo_cls = "logros"
+                badge_tipo_lbl = "Logros & Empleos"
+            elif "dudas" in nom or "faq" in nom:
+                badge_tipo_cls = "dudas"
+                badge_tipo_lbl = "Dudas Técnicas / FAQ"
+            elif "showcase" in nom or "proyectos" in nom:
+                badge_tipo_cls = "showcase"
+                badge_tipo_lbl = "Showcase & Proyectos"
+            elif "feedback" in nom:
+                badge_tipo_cls = "feedback"
+                badge_tipo_lbl = "Feedback Comunidad"
+            elif "curaduria" in nom:
+                badge_tipo_cls = "showcase"
+                badge_tipo_lbl = "Curaduría Humana"
+
+            c_info, c_action = st.columns([3.2, 0.8])
+            with c_info:
+                st.markdown(
+                    f"""
+                    <div class="storage-asset-card">
+                        <div class="storage-asset-info">
+                            <div class="storage-asset-name">📄 {nom}</div>
+                            <div class="storage-asset-meta">
+                                <span class="storage-badge-type {badge_tipo_cls}">{badge_tipo_lbl}</span>
+                                <span><b>{size_kb:.2f} KB</b></span>
+                                <span>🕒 {fecha_str}</span>
+                            </div>
+                        </div>
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
+                )
+            with c_action:
+                st.write("")
+                if st.button("🔗 Enlace PAR", key=f"par_btn_{nom}_{idx_p}", use_container_width=True, help="Genera una Pre-Authenticated Request de 24 horas en Oracle Cloud"):
+                    from src.cloud_oci.storage_client import OCIStorageManager
+                    sm = OCIStorageManager(allow_local_fallback=True)
+                    par = sm.create_preauthenticated_request(nom, expires_in_hours=24)
+                    st.session_state[f"url_{nom}"] = par["access_url"]
+
+            # Si se generó el PAR, mostrar caja con enlace y visualizador JSON
+            par_key = f"url_{nom}"
+            if par_key in st.session_state:
+                par_url = st.session_state[par_key]
+                st.markdown(
+                    f"""
+                    <div class="storage-par-box">
+                        <div>
+                            <span style="font-size: 12px; font-weight: 700; color: #4F46E5;">⚡ Pre-Authenticated Request (Válido 24h):</span><br>
+                            <a href="{par_url}" target="_blank" style="font-size: 12px; color: #0284C7; text-decoration: underline; word-break: break-all;">{par_url}</a>
+                        </div>
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
+                )
+                with st.expander(f"👁️ Inspeccionar contenido JSON de {nom}", expanded=False):
+                    from src.ui.services import cargar_paquete
+                    raw_content = cargar_paquete(nom)
+                    if raw_content:
+                        st.json(raw_content)
+                    else:
+                        st.caption("No fue posible previsualizar el contenido del objeto.")
