@@ -18,10 +18,10 @@
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "typeVersion": 1.9,
       "position": [
-        -64,
-        304
+        5088,
+        2880
       ],
-      "id": "377c73d7-ed20-4ff3-aca6-c15a044974f7",
+      "id": "37f9145d-5346-4b84-9a6f-a5415ec448a2",
       "name": "Basic LLM Chain1",
       "retryOnFail": true,
       "waitBetweenTries": 5000
@@ -33,10 +33,10 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        -288,
-        304
+        4864,
+        2880
       ],
-      "id": "c8924a9f-6c8b-46fe-8c2f-7a6f65be5489",
+      "id": "45011aae-c068-4b1c-a71c-cd2ad15c019d",
       "name": "Loop Over Items1"
     },
     {
@@ -46,10 +46,10 @@
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
       "position": [
-        512,
-        416
+        5664,
+        2992
       ],
-      "id": "2cc9b10e-5be3-4ae4-a8b5-5e827e62fff4",
+      "id": "a1a6d3d5-db51-460a-becc-74cb7ef7762d",
       "name": "Wait1",
       "webhookId": "475c843d-c122-434f-aeaa-380743824fb8"
     },
@@ -61,10 +61,10 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
       "typeVersion": 1,
       "position": [
-        -56,
-        520
+        5104,
+        3104
       ],
-      "id": "8e4c7717-f0a0-4173-a4bc-8fd1341163f1",
+      "id": "b4c99448-5887-4803-ac3d-4a0e50cd080d",
       "name": "Groq Chat Model1",
       "credentials": {
         "groqApi": {
@@ -81,10 +81,10 @@
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.3,
       "position": [
-        72,
-        520
+        5232,
+        3104
       ],
-      "id": "a76dc0e9-bce1-4d48-a754-5f8a4db195c4",
+      "id": "399a3666-c532-47cd-92c4-3a714e7defe5",
       "name": "Structured Output Parser"
     },
     {
@@ -152,10 +152,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.5,
       "position": [
-        288,
-        304
+        5440,
+        2880
       ],
-      "id": "62999a34-aeb6-47f9-bfc7-632b1a124ab5",
+      "id": "081c9cf6-7096-4b13-970d-f3c6560f4ee0",
       "name": "Edit Fields1"
     },
     {
@@ -165,10 +165,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        0,
-        0
+        5152,
+        2576
       ],
-      "id": "2bd56d6e-e4e6-4c7b-b449-77aa308aca6d",
+      "id": "390a66ad-120f-4a9e-8df4-47c0d30a5f3f",
       "name": "Consolidar Paquete OCI1"
     },
     {
@@ -181,10 +181,10 @@
       "type": "n8n-nodes-base.s3",
       "typeVersion": 1,
       "position": [
-        512,
-        0
+        5664,
+        2576
       ],
-      "id": "632e3227-2161-4aea-982e-90fbb7db9622",
+      "id": "94331a5c-ce89-4861-81c7-32bdc459a2cc",
       "name": "Upload a file1",
       "credentials": {
         "s3": {
@@ -205,10 +205,10 @@
       "type": "n8n-nodes-base.convertToFile",
       "typeVersion": 1.1,
       "position": [
-        288,
-        0
+        5440,
+        2576
       ],
-      "id": "a2bb2334-c957-40a9-bf3d-da1c7854a9c0",
+      "id": "12fbd1b8-dddd-4ae6-a999-9a9a94c635af",
       "name": "Convert to File1"
     },
     {
@@ -221,10 +221,10 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2.1,
       "position": [
-        -736,
-        304
+        4416,
+        2880
       ],
-      "id": "31b38a8b-038f-4a11-aea8-345b4cd3fb55",
+      "id": "a15f117f-39d8-4057-9564-4eb0be331f9b",
       "name": "Webhook",
       "webhookId": "6741e965-46ea-47b6-a308-273c27fa7b1a"
     },
@@ -235,10 +235,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -512,
-        304
+        4640,
+        2880
       ],
-      "id": "bbac7327-0b72-4c25-9962-34151317d0c3",
+      "id": "f224e2c6-5f46-4b59-8547-c07755eae2b3",
       "name": "Extract Interactions"
     },
     {
@@ -249,10 +249,10 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.5,
       "position": [
-        960,
-        0
+        6112,
+        2576
       ],
-      "id": "9ff4fe95-3186-490f-b4a4-645932a1076e",
+      "id": "16daa8e7-66cc-4fd2-a40a-692689b9b21c",
       "name": "Respond to Webhook"
     },
     {
@@ -262,34 +262,33 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        736,
-        0
+        5888,
+        2576
       ],
-      "id": "837db05e-6d6c-498d-be77-c3a1b6efab22",
+      "id": "4151a43c-e5f4-4a55-8d0b-3a43124be0ad",
       "name": "Preparar Respuesta"
     },
     {
       "parameters": {
-        "updates": [
-          "message"
-        ],
-        "additionalFields": {}
+        "httpMethod": "POST",
+        "path": "communitylab-telegram",
+        "responseMode": "responseNode",
+        "options": {}
       },
-      "type": "n8n-nodes-base.telegramTrigger",
-      "typeVersion": 1.2,
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
       "position": [
-        -736,
-        1184
+        4416,
+        3760
       ],
-      "id": "605a64c5-c057-4380-b1b0-cb49275196f8",
-      "name": "Telegram Trigger",
-      "webhookId": "91f43e29-60c6-489d-9cae-918ec93610ab",
-      "disabled": true
+      "id": "71d48c48-6fde-4cbe-8bc7-248aa0009268",
+      "name": "Telegram Webhook Trigger",
+      "webhookId": "tg-communitylab-hook"
     },
     {
       "parameters": {
         "promptType": "define",
-        "text": "=Analiza el siguiente mensaje recibido en el bot de la comunidad:\n\nUsuario: {{ $json.message?.from?.first_name || $json.autor || 'Usuario Telegram' }}\nCanal: #telegram-comunidad\nTexto: \"{{ $json.message?.text || $json.texto }}\"\n\nInstrucciones de Transformación CommunityLab:\n1. \"sentimiento\": Clasifica estrictamente en [\"positivo\", \"neutro\", \"negativo\"].\n2. \"tipo_contenido\": Clasifica en: \"logro_contratacion\", \"duda_tecnica\", \"feedback_general\" o \"showcase\".\n3. \"temas_clave\": Array de 1 a 4 tecnologías o conceptos clave identificados (ej: [\"OCI\", \"Docker\", \"Python\"]).\n4. \"respuesta_chat\": Redacta una respuesta conversacional, empática, concisa y cordial para responderle en el chat de Telegram. Salúdalo por su nombre y oriéntalo con amabilidad técnica.\n5. \"post_linkedin\": Si es \"logro_contratacion\" o \"showcase\", redacta un copy persuasivo para LinkedIn en estilo storytelling con gancho (hook), lección aprendida, llamado a la acción y 3-4 hashtags relevantes (#OracleONE #AluraLATAM #TechTalent); de lo contrario null.\n6. \"tip_tecnico_faq\": Si es \"duda_tecnica\", redacta una solución técnica completa, didáctica y de alto valor (estilo documentación técnica avanzada o FAQ) explicando la causa, pasos detallados y un snippet de código o comandos funcionales ejecutables (Python, SQL, Bash, etc.); de lo contrario null.",
+        "text": "=Analiza el siguiente mensaje recibido en el bot de la comunidad:\n\nUsuario: {{ $json.body?.message?.from?.first_name || $json.body?.author || $json.message?.from?.first_name || $json.author || 'Usuario Telegram' }}\nCanal: #telegram-comunidad\nTexto: \"{{ $json.body?.message?.text || $json.body?.text || $json.body?.content || $json.message?.text || $json.texto }}\"\n\nInstrucciones de Transformación CommunityLab:\n1. \"sentimiento\": Clasifica estrictamente en [\"positivo\", \"neutro\", \"negativo\"].\n2. \"tipo_contenido\": Clasifica en: \"logro_contratacion\", \"duda_tecnica\", \"feedback_general\" o \"showcase\".\n3. \"temas_clave\": Array de 1 a 4 tecnologías o conceptos clave identificados (ej: [\"OCI\", \"Docker\", \"Python\"]).\n4. \"respuesta_chat\": Redacta una respuesta conversacional, empática, concisa y cordial para responderle en el chat de Telegram. Salúdalo por su nombre y oriéntalo con amabilidad técnica.\n5. \"post_linkedin\": Si es \"logro_contratacion\" o \"showcase\", redacta un copy persuasivo para LinkedIn en estilo storytelling con gancho (hook), lección aprendida, llamado a la acción y 3-4 hashtags relevantes (#OracleONE #AluraLATAM #TechTalent); de lo contrario null.\n6. \"tip_tecnico_faq\": Si es \"duda_tecnica\", redacta una solución técnica completa, didáctica y de alto valor (estilo documentación técnica avanzada o FAQ) explicando la causa, pasos detallados y un snippet de código o comandos funcionales ejecutables (Python, SQL, Bash, etc.); de lo contrario null.",
         "hasOutputParser": true,
         "messages": {
           "messageValues": [
@@ -303,11 +302,13 @@
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "typeVersion": 1.7,
       "position": [
-        -512,
-        1072
+        4640,
+        3648
       ],
-      "id": "5bc00d94-b051-441f-a4ae-c8e210463c2f",
-      "name": "Procesador IA CommunityLab"
+      "id": "ba9e6262-3692-46ad-b858-ab6b905de338",
+      "name": "Procesador IA CommunityLab",
+      "retryOnFail": true,
+      "waitBetweenTries": 3000
     },
     {
       "parameters": {
@@ -317,10 +318,10 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
       "typeVersion": 1,
       "position": [
-        -504,
-        1304
+        4656,
+        3888
       ],
-      "id": "022e418f-d594-4fa3-b994-3bc3733c47ec",
+      "id": "596d1873-3ee2-43e7-a42f-626c07e8d487",
       "name": "Groq Model (Telegram)",
       "credentials": {
         "groqApi": {
@@ -337,43 +338,49 @@
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.3,
       "position": [
-        -376,
-        1304
+        4784,
+        3888
       ],
-      "id": "1823baf6-7c15-4fd4-a911-6760144b3685",
+      "id": "fea7acd5-282f-42f3-9892-6176d2d5b8c7",
       "name": "Parser (Telegram)"
     },
     {
       "parameters": {
-        "jsCode": "// Formatear mensaje Markdown para Telegram\nconst output = $json.output || $json;\nconst tgItem = $('Telegram Trigger').item.json.message;\nconst autor = (tgItem.from && tgItem.from.first_name) ? tgItem.from.first_name : 'Compañero';\n\nconst sentimientoEmoji = output.sentimiento === 'positivo' ? '🟢 Positivo' : (output.sentimiento === 'negativo' ? '🔴 Negativo' : '⚪ Neutro');\n\nlet msg = `🤖 *CommunityLab Assistant*\\n\\n`;\n\nif (output.respuesta_chat) {\n  msg += `${output.respuesta_chat}\\n\\n`;\n}\n\nif (output.tip_tecnico_faq) {\n  msg += `💡 *Tip Técnico / FAQ:*\\n${output.tip_tecnico_faq}\\n\\n`;\n}\n\nmsg += `📊 *Análisis de Comunidad:*\\n`;\nmsg += `• Sentimiento: ${sentimientoEmoji}\\n`;\nmsg += `• Categoría: \\`${output.tipo_contenido || 'general'}\\`\\n`;\n\nif (output.temas_clave && output.temas_clave.length > 0) {\n  msg += `• Temas: ${output.temas_clave.join(', ')}\\n`;\n}\n\nif (output.post_linkedin) {\n  msg += `\\n🚀 *Post LinkedIn Propuesto:*\\n${output.post_linkedin}\\n`;\n}\n\n// Persistir en /home/node/data/paquete_procesado_canales_n8n.json\ntry {\n  const fs = require('fs');\n  const filePath = '/home/node/data/paquete_procesado_canales_n8n.json';\n  let dataStore = {\n    metadata_paquete: {\n      generado_el: new Date().toISOString(),\n      motor_orquestacion: \"n8n_native_workflows\",\n      total_activos: 0,\n      ultima_actualizacion: new Date().toISOString()\n    },\n    activos: []\n  };\n\n  if (fs.existsSync(filePath)) {\n    try {\n      const content = fs.readFileSync(filePath, 'utf8');\n      if (content.trim()) {\n        dataStore = JSON.parse(content);\n      }\n    } catch (e) {}\n  }\n\n  const rawText = tgItem.text || '';\n  const autorUser = autor;\n  const eventTs = (tgItem.date || Date.now()).toString();\n\n  const nuevoActivo = {\n    interaccion: {\n      id: `telegram_${eventTs}`,\n      autor: autorUser,\n      canal: \"#telegram-comunidad\",\n      tipo: \"consulta_dinamica\",\n      texto: rawText\n    },\n    activo: {\n      sentimiento: output.sentimiento || \"neutro\",\n      tipo_contenido: output.tipo_contenido || \"feedback_general\",\n      temas_clave: Array.isArray(output.temas_clave) ? output.temas_clave : (output.temas_clave ? [output.temas_clave] : []),\n      post_linkedin: output.post_linkedin || null,\n      tip_tecnico_faq: output.tip_tecnico_faq || null\n    },\n    canal_origen_bot: \"#telegram-comunidad\",\n    motor_orquestacion: \"n8n_dynamic_channels\",\n    metadata_externa: {\n      chat_id: tgItem.chat?.id,\n      user_id: autorUser,\n      ts: eventTs\n    }\n  };\n\n  if (!dataStore.activos) dataStore.activos = [];\n  dataStore.activos.unshift(nuevoActivo);\n  dataStore.metadata_paquete = dataStore.metadata_paquete || {};\n  dataStore.metadata_paquete.total_activos = dataStore.activos.length;\n  dataStore.metadata_paquete.ultima_actualizacion = new Date().toISOString();\n\n  fs.writeFileSync(filePath, JSON.stringify(dataStore, null, 2), 'utf8');\n} catch (err) {}\n\nreturn [{\n  json: {\n    chat_id: tgItem.chat.id,\n    mensaje_telegram: msg,\n    raw_output: output\n  }\n}];\n"
+        "jsCode": "// Formatear mensaje Markdown para Telegram\nconst output = $json.output || $json;\nconst rawItem = $('Telegram Webhook Trigger').item.json;\nconst tgMessage = rawItem.body?.message || rawItem.message || {};\nconst autor = (tgMessage.from && tgMessage.from.first_name) ? tgMessage.from.first_name : (rawItem.body?.author || rawItem.author || 'Compañero');\n\nconst sentimientoEmoji = output.sentimiento === 'positivo' ? '🟢 Positivo' : (output.sentimiento === 'negativo' ? '🔴 Negativo' : '⚪ Neutro');\n\nlet msg = `🤖 *CommunityLab Assistant*\\n\\n`;\n\nif (output.respuesta_chat) {\n  msg += `${output.respuesta_chat}\\n\\n`;\n}\n\nif (output.tip_tecnico_faq) {\n  msg += `💡 *Tip Técnico / FAQ:*\\n${output.tip_tecnico_faq}\\n\\n`;\n}\n\nmsg += `📊 *Análisis de Comunidad:*\\n`;\nmsg += `• Sentimiento: ${sentimientoEmoji}\\n`;\nmsg += `• Categoría: \\`${output.tipo_contenido || 'general'}\\`\\n`;\n\nif (output.temas_clave && output.temas_clave.length > 0) {\n  msg += `• Temas: ${output.temas_clave.join(', ')}\\n`;\n}\n\nif (output.post_linkedin) {\n  msg += `\\n🚀 *Post LinkedIn Propuesto:*\\n${output.post_linkedin}\\n`;\n}\n\n// Persistir en /home/node/data/paquete_procesado_canales_n8n.json\ntry {\n  const fs = require('fs');\n  const filePath = '/home/node/data/paquete_procesado_canales_n8n.json';\n  let dataStore = {\n    metadata_paquete: {\n      generado_el: new Date().toISOString(),\n      motor_orquestacion: \"n8n_native_workflows\",\n      total_activos: 0,\n      ultima_actualizacion: new Date().toISOString()\n    },\n    activos: []\n  };\n\n  if (fs.existsSync(filePath)) {\n    try {\n      const content = fs.readFileSync(filePath, 'utf8');\n      if (content.trim()) {\n        dataStore = JSON.parse(content);\n      }\n    } catch (e) {}\n  }\n\n  const rawText = tgMessage.text || rawItem.body?.text || rawItem.body?.content || rawItem.texto || '';\n  const autorUser = autor;\n  const eventTs = (tgMessage.date || Date.now()).toString();\n\n  const nuevoActivo = {\n    interaccion: {\n      id: `telegram_${eventTs}`,\n      autor: autorUser,\n      canal: \"#telegram-comunidad\",\n      tipo: \"consulta_dinamica\",\n      texto: rawText\n    },\n    activo: {\n      sentimiento: output.sentimiento || \"neutro\",\n      tipo_contenido: output.tipo_contenido || \"feedback_general\",\n      temas_clave: Array.isArray(output.temas_clave) ? output.temas_clave : (output.temas_clave ? [output.temas_clave] : []),\n      post_linkedin: output.post_linkedin || null,\n      tip_tecnico_faq: output.tip_tecnico_faq || null\n    },\n    canal_origen_bot: \"#telegram-comunidad\",\n    motor_orquestacion: \"n8n_dynamic_channels\",\n    metadata_externa: {\n      chat_id: tgMessage.chat?.id || rawItem.body?.chat_id,\n      user_id: autorUser,\n      ts: eventTs\n    }\n  };\n\n  if (!dataStore.activos) dataStore.activos = [];\n  dataStore.activos.unshift(nuevoActivo);\n  dataStore.metadata_paquete = dataStore.metadata_paquete || {};\n  dataStore.metadata_paquete.total_activos = dataStore.activos.length;\n  dataStore.metadata_paquete.ultima_actualizacion = new Date().toISOString();\n\n  fs.writeFileSync(filePath, JSON.stringify(dataStore, null, 2), 'utf8');\n} catch (err) {}\n\nconst chatId = tgMessage.chat?.id || rawItem.body?.chat_id;\nreturn [{\n  json: {\n    chat_id: chatId,\n    mensaje_telegram: msg,\n    respuesta_chat: output.respuesta_chat,\n    tip_tecnico_faq: output.tip_tecnico_faq,\n    post_linkedin: output.post_linkedin,\n    sentimiento: output.sentimiento,\n    tipo_contenido: output.tipo_contenido,\n    temas_clave: output.temas_clave,\n    raw_output: output\n  }\n}];\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -160,
-        1184
+        4992,
+        3760
       ],
-      "id": "2d685251-ef22-4e49-90b7-36b9cb9ffdce",
+      "id": "6d7bb463-389a-4bc8-a3bb-5d570517ede7",
       "name": "Formatear Respuesta Markdown"
     },
     {
       "parameters": {
-        "chatId": "={{ $json.chat_id }}",
-        "text": "={{ $json.mensaje_telegram }}",
-        "additionalFields": {
-          "parse_mode": "Markdown"
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify($json) }}",
+        "options": {
+          "responseCode": 200,
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          }
         }
       },
-      "type": "n8n-nodes-base.telegram",
-      "typeVersion": 1.2,
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
       "position": [
-        64,
-        1184
+        5216,
+        3760
       ],
-      "id": "47627bd4-d4bc-4392-a5c9-3d18a70168a5",
-      "name": "Enviar Respuesta Telegram",
-      "webhookId": "9b6e0a2f-1249-4e37-ae87-b9765070f0cb",
-      "disabled": true
+      "id": "3b8e8db0-1233-49c2-ade7-45ef894b2671",
+      "name": "Responder a Telegram Webhook"
     },
     {
       "parameters": {
@@ -385,10 +392,10 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
       "position": [
-        -736,
-        752
+        4416,
+        3328
       ],
-      "id": "9835cc4c-7c86-4c6b-941c-8150f44fe5cc",
+      "id": "c7e9791f-854f-461d-be4e-caf754d4c25a",
       "name": "Discord Webhook Trigger",
       "webhookId": "dc-communitylab-hook"
     },
@@ -409,10 +416,10 @@
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "typeVersion": 1.7,
       "position": [
-        -512,
-        640
+        4640,
+        3216
       ],
-      "id": "f5df3ada-e045-465a-94cd-788d65d97d5b",
+      "id": "b36aa406-8a73-432d-8ab3-4aeb46ff8cb6",
       "name": "Procesador IA Discord"
     },
     {
@@ -423,10 +430,10 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
       "typeVersion": 1,
       "position": [
-        -504,
-        872
+        4656,
+        3456
       ],
-      "id": "23d1873d-37ea-447f-87ac-6db789f86d21",
+      "id": "87903ff6-c606-46a4-8d89-dda20d05d281",
       "name": "Groq Model (Discord)",
       "credentials": {
         "groqApi": {
@@ -443,10 +450,10 @@
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.3,
       "position": [
-        -376,
-        872
+        4784,
+        3456
       ],
-      "id": "9d1f0ccd-3bce-4188-866b-389e1b6fae61",
+      "id": "e26138de-17d5-4a88-a158-5489b8c1b16f",
       "name": "Parser (Discord)"
     },
     {
@@ -456,10 +463,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -160,
-        752
+        4992,
+        3328
       ],
-      "id": "25c9ceb8-e794-40a3-85e0-d4d2f3350c1b",
+      "id": "bde5fe3c-397f-4220-8aed-f321d146c4fd",
       "name": "Formatear Discord Embed"
     },
     {
@@ -481,10 +488,10 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
       "position": [
-        64,
-        752
+        5216,
+        3328
       ],
-      "id": "0ba86708-fc3e-4c54-ae7b-2aaf0321a54b",
+      "id": "4e57580d-76ea-4f05-97c0-3a2df4653a7e",
       "name": "Responder a Webhook Discord"
     },
     {
@@ -497,10 +504,10 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
       "position": [
-        -736,
-        1600
+        4416,
+        4176
       ],
-      "id": "72d91968-97fa-4c85-aa9f-247418845754",
+      "id": "2d17084e-cce2-4273-9d37-5ca84ad918c1",
       "name": "Slack Events Webhook",
       "webhookId": "sk-communitylab-hook"
     },
@@ -518,10 +525,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        -512,
-        1600
+        4640,
+        4176
       ],
-      "id": "e01c3ce4-5cf0-4edc-86f5-dd57ffdb0147",
+      "id": "fd05d666-1951-4ae3-8d32-4e0d85037766",
       "name": "¿Es Verificación de Slack?"
     },
     {
@@ -535,10 +542,10 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
       "position": [
-        -288,
-        1504
+        4864,
+        4080
       ],
-      "id": "c67ace5e-d340-4385-9a4c-bbcdb52b646c",
+      "id": "ab938ae3-d035-41d2-9ee6-a74213ab9b13",
       "name": "Responder Challenge Slack"
     },
     {
@@ -558,10 +565,10 @@
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "typeVersion": 1.7,
       "position": [
-        -64,
-        1696
+        5088,
+        4272
       ],
-      "id": "759922a3-7dad-4d66-9d4e-293a685b0ca2",
+      "id": "ba36eb10-f489-4059-bec5-87bd5b8276c7",
       "name": "Procesador IA Slack",
       "retryOnFail": true,
       "waitBetweenTries": 3000
@@ -574,10 +581,10 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
       "typeVersion": 1,
       "position": [
-        -56,
-        1928
+        5104,
+        4512
       ],
-      "id": "fc69f860-098b-423f-9071-2be122362fb1",
+      "id": "298ba48e-14f7-4255-860c-d86819e0b50a",
       "name": "Groq Model (Slack)",
       "credentials": {
         "groqApi": {
@@ -594,10 +601,10 @@
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.3,
       "position": [
-        72,
-        1928
+        5232,
+        4512
       ],
-      "id": "e7778e1e-2154-4b75-97a4-295a9a4b83d8",
+      "id": "45884fb4-6eef-46ef-bce0-29fefb81bc0a",
       "name": "Parser (Slack)"
     },
     {
@@ -607,10 +614,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        288,
-        1696
+        5440,
+        4272
       ],
-      "id": "38e32eaf-be31-4bec-8b10-885c234ce5a6",
+      "id": "ffc5a62b-f1cf-4e94-8042-0680be762939",
       "name": "Formatear Slack Blocks"
     },
     {
@@ -624,10 +631,10 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
       "position": [
-        512,
-        1696
+        5664,
+        4272
       ],
-      "id": "3968f240-9093-4c3e-82a3-26df1dfa0ab1",
+      "id": "79cfa98c-b0e9-4cd0-8d88-128089df3cc5",
       "name": "Responder a Slack Event"
     },
     {
@@ -637,10 +644,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -288,
-        1696
+        4864,
+        4272
       ],
-      "id": "eee22055-8664-40d2-8996-8b062960ed14",
+      "id": "4d391003-21fb-4f72-bca8-e08038605f19",
       "name": "Filtrar Reintentos Slack"
     }
   ],
@@ -785,7 +792,7 @@
         ]
       ]
     },
-    "Telegram Trigger": {
+    "Telegram Webhook Trigger": {
       "main": [
         [
           {
@@ -833,7 +840,7 @@
       "main": [
         [
           {
-            "node": "Enviar Respuesta Telegram",
+            "node": "Responder a Telegram Webhook",
             "type": "main",
             "index": 0
           }
@@ -978,19 +985,14 @@
           }
         ]
       ]
-    },
-    "Responder a Slack Event": {
-      "main": [
-        []
-      ]
     }
   },
-  "active": true,
+  "active": false,
   "settings": {
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "7732b45c-6cec-4ea7-8d63-8c0c0e1905df",
+  "versionId": "cd744eb6-49d0-4ae1-90be-a0e61cb65237",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "cb0b9a3b8b392f0b0fbc26be213326cbdfd285ed78e8eb9be9b7984b7130dd64"
