@@ -300,7 +300,9 @@ if "Curaduría" in modo or modo == VISTA_CURADURIA:
                         from src.cloud_oci.storage_client import OCIStorageManager
                         sm = OCIStorageManager(allow_local_fallback=True)
                         motor_name = "python_canales" if "Python" in fuente_seleccionada else "n8n_canales"
-                        obj_subido = sm.upload_asset(datos_paquete, motor=motor_name)
+                        fname = f"canales_dinamicos_{motor_name}.json"
+                        res_subida = sm.upload_asset_package(datos_paquete, filename=fname)
+                        obj_subido = res_subida.get("object_name", fname)
                         st.toast(f"¡Interacciones sincronizadas a Storage como '{obj_subido}'!", icon="🚀")
                         time.sleep(1)
                         st.rerun()
