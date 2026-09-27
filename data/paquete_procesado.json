@@ -1,0 +1,43 @@
+{
+  "metadata_paquete": {
+    "version": "1.0.0",
+    "generado_en": "2026-09-27T22:31:08.369845+00:00",
+    "archivo_origen": "interacciones_ejemplo.json",
+    "total_registros_origen": 15,
+    "total_procesados_exitosamente": 0,
+    "total_fallidos": 3
+  },
+  "metricas": {
+    "distribucion_sentimiento": {
+      "positivo": 0,
+      "neutro": 0,
+      "negativo": 0
+    },
+    "distribucion_tipo_contenido": {
+      "logro_contratacion": 0,
+      "duda_tecnica": 0,
+      "feedback_general": 0,
+      "showcase": 0
+    },
+    "total_posts_linkedin_generados": 0,
+    "total_tips_faq_generados": 0
+  },
+  "activos": [],
+  "fallidos": [
+    {
+      "id": "msg_001",
+      "autor": "Mariana Souza",
+      "error": "No fue posible procesar la interacción msg_001 tras 3 intentos: GEMINI_API_KEY no está configurada. Define la variable en tu archivo .env o pásala directamente al inicializar GeminiService."
+    },
+    {
+      "id": "msg_002",
+      "autor": "Lucas Albuquerque",
+      "error": "No fue posible procesar la interacción msg_002 tras 3 intentos: GEMINI_API_KEY no está configurada. Define la variable en tu archivo .env o pásala directamente al inicializar GeminiService."
+    },
+    {
+      "id": "msg_003",
+      "autor": "Carlos Mendoza",
+      "error": "No fue posible procesar la interacción msg_003 tras 3 intentos: GEMINI_API_KEY no está configurada. Define la variable en tu archivo .env o pásala directamente al inicializar GeminiService."
+    }
+  ]
+}
