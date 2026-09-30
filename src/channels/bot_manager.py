@@ -128,6 +128,9 @@ class OmnichannelBotManager:
             self._status["telegram"]["error"] = msg
             return False, msg
 
+        self._status["telegram"]["running"] = True
+        self._status["telegram"]["error"] = None
+        self._status["telegram"]["last_started"] = datetime.now(timezone.utc).isoformat()
         self._telegram_thread = threading.Thread(
             target=self._run_telegram_worker,
             name="CommunityLab-Telegram-Thread",
@@ -208,6 +211,9 @@ class OmnichannelBotManager:
             self._status["discord"]["error"] = msg
             return False, msg
 
+        self._status["discord"]["running"] = True
+        self._status["discord"]["error"] = None
+        self._status["discord"]["last_started"] = datetime.now(timezone.utc).isoformat()
         self._discord_thread = threading.Thread(
             target=self._run_discord_worker,
             name="CommunityLab-Discord-Thread",
