@@ -6,44 +6,55 @@
 ---
 
 ## 📌 Descripción del Proyecto
-**CommunityLab** es una plataforma automatizada que ingiere la actividad orgánica de comunidades de aprendizaje y tecnología (chats de Discord, foros, dudas de cursos, testimonios espontáneos) y la transforma mediante Modelos de Lenguaje (LLMs) en **activos de marketing y distribución listos para publicar**:
+listos para publicar**:
 - 💼 **Publicaciones inspiradoras para LinkedIn & X (Twitter)** a partir de contrataciones y logros de estudiantes.
 - 📰 **Resúmenes semanales (Community Highlights)** y secciones destacadas para Newsletters.
 - 💡 **Preguntas Frecuentes (FAQs) y Tips Técnicos** detectados automáticamente desde las dudas recurrentes.
+- 🤖 **Bots Omnicanal en Vivo:** Escucha activa y bidireccional en tiempo real para **Telegram** (`@G10_Latam_06_bot`), **Discord** (`G10-LATAM-06`) y **Slack** (Socket Mode), con conmutación dinámica de motor (Python puro o n8n).
 - ☁️ **Persistencia en la nube:** almacenamiento seguro y estructurado de los activos en **Oracle Cloud Infrastructure (OCI) Object Storage (Always Free)**.
-- 📊 **Panel de Curaduría en Streamlit:** interfaz visual para que el equipo de Community Managers y Marketing apruebe, edite y gestione los copys antes de publicarlos.
+- 🎨 **Panel de Curaduría NovaEdu (Streamlit):** interfaz rediseñada con paleta profesional (Deep Navy / Electric Blue / Amber Gold) para que el equipo de Community Managers y Marketing apruebe, edite y gestione los copys antes de publicarlos.
 
 ---
 
-## 🏗️ Arquitectura de la Solución (Dual-Engine Cloud-Native)
+## 🏗️ Arquitectura de la Solución (Omnicanal & Dual-Engine Cloud-Native)
 
-CommunityLab cuenta con una **arquitectura dual de orquestación homologada** que permite procesar interacciones tanto desde un workflow automatizado visual (**n8n**) como desde un pipeline directo de alto rendimiento (**Python Nativo con Google Gemini**), convergiendo ambos en **Oracle Cloud Infrastructure (OCI) Object Storage** como única fuente de verdad:
+CommunityLab cuenta con una **arquitectura omnicanal y dual de orquestación homologada** que permite procesar tanto lotes históricos como mensajes en vivo desde chats comunitarios, convergiendo en **Oracle Cloud Infrastructure (OCI) Object Storage** como única fuente de verdad:
 
 ```mermaid
 flowchart TD
-    A[Canales de Comunidad: Discord / Webhooks / JSON / CSV] -->|Dataset Ingesta| DEDUP{Deduplicador Inteligente OCI}
-    
-    subgraph DUAL_ENGINE ["Motores de Procesamiento Homologados"]
-        DEDUP -->|Motor 1: Orquestador No-Code| N8N[Workflow n8n con Webhook HTTP]
-        DEDUP -->|Motor 2: Pipeline Python Nativo| PY[src/pipeline.py con Google Gemini 2.5]
+    subgraph INGESTA_EN_VIVO ["Canales en Vivo & Lotes"]
+        TG[✈️ Telegram Bot]
+        DC[🎮 Discord Bot]
+        SL[💬 Slack Socket Mode]
+        BATCH[📁 Lotes JSON / CSV]
     end
-    
+
+    subgraph DISPATCHER ["Despachador Omnicanal"]
+        TG & DC & SL --> DISP{ChannelMessageDispatcher}
+        BATCH --> DEDUP{Deduplicador OCI}
+    end
+
+    subgraph DUAL_ENGINE ["Motores de Procesamiento Homologados"]
+        DISP & DEDUP -->|Modo N8N| N8N[Workflows n8n con Webhooks HTTP]
+        DISP & DEDUP -->|Modo Python| PY[src/pipeline.py con Google Gemini 2.5]
+    end
+
     subgraph ESPECIALIZACION ["4 Archivos Temáticos Especializados"]
         N8N & PY --> ARCH1[marketing_linkedin_logros.json]
         N8N & PY --> ARCH2[marketing_showcase.json]
         N8N & PY --> ARCH3[faqs_soporte_tecnico.json]
         N8N & PY --> ARCH4[metricas_feedback_comunidad.json]
     end
-    
+
     subgraph OCI_CLOUD ["Oracle Cloud Infrastructure (Always Free)"]
         ARCH1 & ARCH2 & ARCH3 & ARCH4 -->|Subida Cloud Directa| BUCKET[("OCI Object Storage: communitylab-activos-marketing<br/>activos/YYYY-MM-DD/*.json")]
         CUR_DATA[("curaduria/curaduria_aprobados.json")]
     end
-    
-    subgraph STREAMLIT_PANEL ["Panel Interactivo de Curaduría (Streamlit)"]
+
+    subgraph STREAMLIT_PANEL ["Panel Interactivo NovaEdu (Streamlit)"]
         BUCKET -->|Lectura Cloud-First| UI[src/ui/app.py: Dashboard & Curaduría]
         UI -->|Aprobar 🟢 / Descartar 🔴 / Leer 🔵| CUR_DATA
-        UI -->|Disparo de Lotes| DUAL_ENGINE
+        UI -->|Control de Bots ▶️/⏹️ y Conmutador| DISP
     end
 ```
 
@@ -69,7 +80,7 @@ flowchart TD
 
 ```text
 ├── docker-compose.yml                # Despliegue de n8n (Local & OCI Compute VM)
-├── .env.example                      # Plantilla de variables de entorno (Gemini, OCI, n8n)
+├── .env.example                      # Plantilla de variables de entorno (Gemini, OCI, n8n, Bots)
 ├── README.md                         # Documentación general y arquitectura
 ├── backend-pipeline.md               # Guía técnica profunda del Backend y persistencia OCI
 ├── PM_Files/                         # Gestión del Proyecto y Metodología Ágil
@@ -84,12 +95,13 @@ flowchart TD
 │   └── workflows/                    # Workflows exportados en JSON para Git
 ├── src/
 │   ├── ai_engine/                    # Modelos Pydantic v2, prompts y cliente Gemini
+│   ├── channels/                     # Integración omnicanal en vivo (Telegram, Discord, Slack, BotManager)
 │   ├── cloud_oci/                    # Conector con Oracle Cloud Infrastructure Object Storage
 │   ├── ingestion/                    # Lectura, validación, batching y deduplicación
 │   ├── pipeline.py                   # Pipeline Python E2E y CLI
-│   ├── ui/                           # Panel de curaduría y orquestador en Streamlit
+│   ├── ui/                           # Panel de curaduría NovaEdu y orquestador en Streamlit
 │   └── utils/                        # Logging y utilidades transversales
-└── tests/                            # Suite automatizada (49/49 pruebas pasando)
+└── tests/                            # Suite automatizada (73/73 pruebas pasando)
 ```
 
 ---
@@ -110,7 +122,7 @@ pip install -r requirements.txt
 ```
 
 ### 3. Variables de Entorno
-Copia el archivo `.env.example` como `.env` y completa tus credenciales de Gemini y OCI:
+Copia el archivo `.env.example` como `.env` y completa tus credenciales de Gemini, OCI y Bots:
 ```bash
 cp .env.example .env
 ```
@@ -121,6 +133,8 @@ streamlit run src/ui/app.py
 ```
 Accede a través de tu navegador a `http://localhost:8501`.
 
+Si tienes `AUTOSTART_BOTS=true` en tu `.env`, los bots de Telegram, Discord y Slack arrancarán automáticamente a escuchar en segundo plano al iniciar la app.
+
 ### 5. Orquestador n8n
 - **En la Nube (Instancia oficial del equipo):** La VM de OCI Always Free corre n8n directamente en [http://147.15.9.116:5678](http://147.15.9.116:5678).
 - **En Local:** Ejecuta `docker compose up -d` y accede en `http://localhost:5678`.
@@ -130,7 +144,7 @@ Accede a través de tu navegador a `http://localhost:8501`.
 ```bash
 pytest tests/ -v
 ```
-*Total:* 49 tests unitarios e integrales (100% aprobados).
+*Total:* **73 tests unitarios e integrales (100% aprobados)** cubriendo ingesta, validación Pydantic, cliente OCI, bots omnicanal, pipeline y UI.
 
 ---
 

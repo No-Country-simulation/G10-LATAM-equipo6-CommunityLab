@@ -3,22 +3,23 @@
 **Proyecto:** CommunityLab — Hackathon ONE G10 (Oracle & Alura / No Country)  
 **Equipo:** Equipo 6 - LATAM  
 **Destinatarios:** Integrantes del Equipo (Célula Frontend, Célula Cloud, Célula IA & Mentores)  
-**Fecha:** 21 de septiembre de 2026  
-**Rama Oficial:** `feat/semana3-integration-e2e`  
-**Estado:** 100% Funcional — 49/49 Tests Unitarios e Integrales Pasando
+**Fecha:** 30 de septiembre de 2026  
+**Rama Oficial:** `main`  
+**Estado:** 100% Funcional — 73/73 Tests Unitarios e Integrales Pasando (Bots Omnicanal & UI NovaEdu Integrados)
 
 ---
 
 ## 📌 1. Descripción General del Sistema
 
-**CommunityLab** es una plataforma diseñada para ingerir interacciones orgánicas de comunidades de aprendizaje técnico (como Discord o foros de Alura / Oracle ONE), analizarlas mediante modelos de lenguaje avanzados (LLMs) y transformarlas automáticamente en:
+**CommunityLab** es una plataforma diseñada para ingerir interacciones orgánicas de comunidades de aprendizaje técnico (como Discord, Telegram, Slack o foros de Alura / Oracle ONE), analizarlas mediante modelos de lenguaje avanzados (LLMs) y transformarlas automáticamente en:
 
 1. **Publicaciones para Redes Sociales (LinkedIn y X):** Copys estructurados con ganchos persuasivos, lecciones aprendidas y hashtags relevantes (`marketing_linkedin_logros.json`).
 2. **Showcase de Proyectos:** Casos de estudio y proyectos construidos por la comunidad (`marketing_showcase.json`).
 3. **Contenido Educativo y FAQs Dinámicas:** Tips técnicos paso a paso para resolver dudas recurrentes de los estudiantes (`faqs_soporte_tecnico.json`).
 4. **Métricas de Salud y Feedback:** Monitoreo de sentimiento, felicitaciones y áreas de mejora (`metricas_feedback_comunidad.json`).
 5. **Persistencia Cloud-Native en OCI:** Almacenamiento seguro en **Oracle Cloud Infrastructure (OCI) Object Storage** en la capa Always Free (`communitylab-activos-marketing`), eliminando la necesidad de persistir JSONs redundantes en el disco de la VM (Arquitectura Stateless).
-6. **Panel de Curaduría Humana (Streamlit):** Interfaz interactiva donde los Community Managers pueden filtrar, editar, aprobar (`🟢 APROBADO`), descartar (`🔴 DESCARTADO`) o marcar como leídos (`🔵 LEÍDO`) los activos generados.
+6. **Bots Omnicanal en Vivo:** Escucha activa y bidireccional en segundo plano para Telegram (`@G10_Latam_06_bot`), Discord (`G10-LATAM-06`) y Slack (Socket Mode) con auto-arranque opcional (`AUTOSTART_BOTS=true`).
+7. **Panel de Curaduría Humana NovaEdu (Streamlit):** Interfaz interactiva donde los Community Managers pueden filtrar, editar, aprobar (`🟢 APROBADO`), descartar (`🔴 DESCARTADO`) o marcar como leídos (`🔵 LEÍDO`) los activos generados.
 
 ---
 

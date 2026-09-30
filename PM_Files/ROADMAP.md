@@ -169,19 +169,29 @@ gantt
 
 ---
 
-### Semana 4: Pruebas E2E, Blindaje QA & Grabación Preliminar (En curso — Tareas avanzadas 🚀)
-* **Objetivo:** Estabilizar la aplicación integral, ejecutar pruebas de carga/QA y preparar el material audiovisual.
+### Semana 4: Canales Omnicanal, Rediseño UI NovaEdu & Blindaje QA (Completada con éxito 🎉)
+* **Objetivo:** Estabilizar la aplicación integral, integrar bots omnicanal en tiempo real (Telegram, Discord, Slack), rediseñar la UI corporativa y expandir la suite de pruebas.
 * **Lunes:** *Sprint Planning Meet*.
-* **Desarrollo y Avances:**
-  - [x] **Automatización de pruebas unitarias y de integración:** Suite de 49 pruebas automatizadas en `tests/` cubriendo ingesta, validación Pydantic, cliente OCI, pipeline y UI (100% pasando).
-  - [x] **Blindaje y resiliencia ante caídas de red o cuotas:** Circuit Breaker implementado y reintentos con backoff exponencial para llamadas a LLMs.
-  - [x] **Validación de consistencia en OCI Object Storage:** Verificación de subida, descarga y deduplicación de activos en la nube de Oracle.
-  - [x] **Optimización de recursos en la VM OCI Always Free:** Arquitectura sin estado (Stateless) que no satura el disco con volcados JSON locales.
-  - [ ] Pruebas exhaustivas manuales por parte del equipo de QA (Edwin, Raúl, Rodrigo) con entradas atípicas de usuarios.
-  - [ ] Refinamiento del prototipo Frontend en Streamlit (Carol Huarancay).
-  - [x] Apertura de regla de red (puerto 8501) en la consola OCI (José Medina / César Cely) — Verificado acceso público `200 OK`.
-  - [ ] Guión detallado del video demo y primer ensayo general de grabación.
-* **Jueves:** *Sprint Demo Meet S4*. Demostración E2E libre de fallos y presentación del video preliminar.
+* **Desarrollo y Avances Logrados:**
+  - [x] **Integración Omnicanal en Vivo (`src/channels/`):**
+    - Telegram Bot (`@G10_Latam_06_bot`) con long polling en hilo secundario y webhook HTTP seguro para n8n.
+    - Discord Bot (`G10-LATAM-06`) con Gateway WebSocket asíncrono y soporte para menciones/canales.
+    - Slack Bot con Socket Mode WebSocket sin requerir exponer puertos públicos de entrada.
+    - Gestor centralizado `OmnichannelBotManager` con soporte de arranque concurrente y arranque automático con `AUTOSTART_BOTS=true`.
+  - [x] **Conmutador Dinámico de Motor (Dual-Engine Live):**
+    - Permite conmutar en tiempo real desde el sidebar de Streamlit entre procesamiento local **🐍 Python Nativo (Gemini 2.5/3.5)** o despacho a los flujos de **⚡ n8n Workflow**.
+  - [x] **Rediseño Completo de UI (NovaEdu Design System):**
+    - Implementación de CSS puro profesional (`src/ui/styles.py`) con paleta Deep Navy (#0d131f), Electric Blue (#3b82f6) y Amber Gold (#f59e0b).
+    - Tipografía moderna (Outfit & Inter de Google Fonts), botones interactivos, cards de curaduría con métricas y controles visuales optimizados.
+  - [x] **Correcciones Críticas de Resiliencia en Nube:**
+    - Corrección en la deserialización de fechas y métricas agregadas en la pestaña *Histórico OCI* (`TypeError NoneType`).
+    - Adaptación del webhook de n8n para Telegram para operar en HTTP directo evitando el bloqueo de certificados SSL en IP de OCI.
+    - Sincronización dinámica de paquetes procesados hacia OCI Object Storage (`sm.upload_asset_package`).
+  - [x] **Expansión y Automatización QA:**
+    - Suite automatizada ampliada de 49 a **73 tests unitarios e integrales pasando al 100%** (`pytest tests/ -v`).
+  - [x] **Despliegue y Validación en Servidor OCI (`147.15.9.116`):**
+    - Apertura de reglas de red (puerto 8501 y 5678) y validación en vivo.
+* **Jueves:** *Sprint Demo Meet S4*. Demostración omnicanal en vivo con Telegram, Discord, Slack y panel de curaduría NovaEdu en OCI.
 * **Fin de semana:** Subir entregables a No Country.
 
 ---

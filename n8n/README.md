@@ -47,7 +47,15 @@ Utilizado para el disparo interactivo desde la UI ([`n8n/workflows/communitylab_
 5. **Persistencia en OCI Object Storage:** Carga directa al Bucket `communitylab-activos-marketing` bajo el prefijo `activos/{YYYY-MM-DD}/`.
 6. **Respuesta al Webhook:** Retorna el paquete consolidado a Streamlit para su inspección inmediata.
 
-### 2. Flujo Autónomo en Lote (Batching con Rate Limiting)
+### 2. Webhooks Omnicanal en Vivo (Telegram, Discord, Slack)
+El motor de n8n también cuenta con endpoints de webhook especializados para procesar mensajes originados en vivo desde las plataformas de mensajería:
+- `POST /webhook/communitylab-discord`: Recibe menciones o mensajes de los canales de Discord (`G10-LATAM-06`).
+- `POST /webhook/communitylab-telegram`: Recibe las interacciones del bot de Telegram (`@G10_Latam_06_bot`) vía HTTP seguro/webhook adaptado para OCI.
+- `POST /webhook/communitylab-slack`: Recibe eventos reenviados desde la integración de Slack.
+
+Estos endpoints procesan el mensaje con Gemini/Groq, generan el copy y lo suben directamente a OCI Object Storage bajo el prefijo `activos/{YYYY-MM-DD}/`.
+
+### 3. Flujo Autónomo en Lote (Batching con Rate Limiting)
 Para procesar interacciones directamente en lote desde el almacenamiento:
 1. **Ingesta de Datos:** Nodo `Code` que lee y emite individualmente los registros del dataset.
 2. **Control de Flujo:** Nodo `Loop Over Items` con `Batch Size: 1` para procesamiento secuencial.
