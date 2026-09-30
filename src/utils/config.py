@@ -133,6 +133,11 @@ def get_channel_processing_engine() -> str:
     return "N8N" if val == "N8N" else "PYTHON"
 
 
+def should_autostart_bots() -> bool:
+    """Retorna True si los bots deben iniciar automáticamente al arrancar la app."""
+    return os.getenv("AUTOSTART_BOTS", "false").strip().lower() in ("true", "1", "yes")
+
+
 def get_n8n_channel_webhook_url(canal: str) -> str:
     """Retorna la URL del Webhook de n8n para un canal específico ('telegram', 'discord', 'slack').
 

@@ -33,7 +33,7 @@ from src.ui.services import (
     obtener_ids_procesados_sesion,
 )
 from src.utils.logger import obtener_ultimas_lineas_log, limpiar_archivo_log
-from src.utils.config import get_n8n_webhook_url, get_channel_processing_engine
+from src.utils.config import get_n8n_webhook_url, get_channel_processing_engine, should_autostart_bots
 from src.channels.bot_manager import get_bot_manager
 from src.ui.styles import get_novaedu_css
 
@@ -117,6 +117,11 @@ if os.environ.get("CHANNEL_PROCESSING_ENGINE") != nuevo_engine:
     os.environ["CHANNEL_PROCESSING_ENGINE"] = nuevo_engine
 
 bot_manager = get_bot_manager()
+
+# Auto-inicio de bots en segundo plano si está configurado en el entorno
+if should_autostart_bots() and not bot_manager.is_running():
+    bot_manager.start_all()
+
 status_bots = bot_manager.get_status()
 any_running = bot_manager.is_running()
 

@@ -357,3 +357,17 @@ class OmnichannelBotManager:
 def get_bot_manager() -> OmnichannelBotManager:
     """Función de conveniencia para obtener el gestor global de bots."""
     return OmnichannelBotManager.get_instance()
+
+
+if __name__ == "__main__":
+    import time
+    logger.info("Iniciando OmnichannelBotManager en modo independiente (CLI)...")
+    manager = get_bot_manager()
+    manager.start_all()
+    try:
+        while True:
+            time.sleep(1)
+    except KeyboardInterrupt:
+        logger.info("Interrupción por teclado detectada. Deteniendo bots...")
+        manager.stop_all()
+        logger.info("Bots detenidos exitosamente.")
