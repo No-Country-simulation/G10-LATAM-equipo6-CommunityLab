@@ -24,6 +24,7 @@ Para optimizar la colaboración y garantizar aprendizaje transversal, el equipo 
   * Diseño de *system prompts* con *few-shot learning* para distintos canales y tonos.
   * Extracción estructurada de métricas de sentimiento y temas clave.
   * Implementación y modelado de flujos en **n8n** (nodos de webhook, Gemini AI, bifurcación switch y exportación JSON a `n8n/workflows/`).
+  * Subflujo síncrono de generación e iteración de imágenes para posts (`POST /webhook/generar-imagen-post` con Gemini Prompt Engineer + Pollinations.ai / FLUX + persistencia OCI S3).
   * Integración híbrida con scripts de Python auxiliares si son requeridos.
 
 ### ☁️ Célula 2: Cloud OCI, Infraestructura & Backend
@@ -191,6 +192,13 @@ gantt
     - Suite automatizada ampliada de 49 a **73 tests unitarios e integrales pasando al 100%** (`pytest tests/ -v`).
   - [x] **Despliegue y Validación en Servidor OCI (`147.15.9.116`):**
     - Apertura de reglas de red (puerto 8501 y 5678) y validación en vivo.
+  - [x] **Subworkflow de Generación e Iteración de Imágenes (`CommunityLab_Generador_Imagenes_Post` - José Medina):**
+    - Implementación de microservicio síncrono dedicado en n8n (`POST /webhook/generar-imagen-post`).
+    - Cadena de 5 nodos: Webhook Trigger $\rightarrow$ Google Gemini (*Prompt Engineer* para traducción y estilo 3D isométrico) $\rightarrow$ Code Node (limpieza y URL encode) $\rightarrow$ Inferencia en Pollinations.ai (modelo FLUX con seed aleatoria por iteración) $\rightarrow$ Subida directa de binario a OCI Object Storage vía S3 (`/previews/preview_{id_post}.png`) $\rightarrow$ Respuesta `200 OK` con URL pública.
+  - [ ] **Integración del Generador de Imágenes en Frontend (Streamlit):**
+    - Conectar el botón de "Generar / Regenerar Imagen" del Editor de Contenido al endpoint `/webhook/generar-imagen-post`.
+    - Input para `instruccion_custom` en la tarjeta de curaduría para ajuste de estilo visual por el Community Manager.
+    - Renderizado responsivo de la imagen generada (`preview_{id_post}.png`) en el mockup de LinkedIn con `st.image()`.
 * **Jueves:** *Sprint Demo Meet S4*. Demostración omnicanal en vivo con Telegram, Discord, Slack y panel de curaduría NovaEdu en OCI.
 * **Fin de semana:** Subir entregables a No Country.
 
@@ -200,7 +208,8 @@ gantt
 * **Objetivo:** Presentación del proyecto ante la comunidad evaluadora y cierre formal de la Hackathon.
 * **Lunes:** *Sprint Planning Meet* de cierre. Apertura de feedback entre compañeros en la plataforma.
 * **Tareas críticas:**
-  - [ ] Grabación y edición del **Video Demo de YouTube** (máximo 10 minutos, destacando el problema de negocio, arquitectura en OCI Always Free, orquestación en n8n e IA).
+  - [ ] Integración y pruebas E2E de la Versión 2 del generador de imágenes (opciones avanzadas de aspecto y estilos).
+  - [ ] Grabación y edición del **Video Demo de YouTube** (máximo 10 minutos, destacando el problema de negocio, arquitectura en OCI Always Free, orquestación en n8n e IA, generación de copys e imágenes).
   - [ ] Pulido final del `README.md` (diagrama de arquitectura, capturas de pantalla, badges, pasos de instalación).
   - [ ] **Pre Demo Meet (Jueves):** Ensayo general con mentores de No Country / Oracle.
   - [ ] **Subir entregables finales** (Cierre formal domingo 23:59 pm).
