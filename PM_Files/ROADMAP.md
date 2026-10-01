@@ -25,6 +25,7 @@ Para optimizar la colaboración y garantizar aprendizaje transversal, el equipo 
   * Extracción estructurada de métricas de sentimiento y temas clave.
   * Implementación y modelado de flujos en **n8n** (nodos de webhook, Gemini AI, bifurcación switch y exportación JSON a `n8n/workflows/`).
   * Subflujo síncrono de generación e iteración de imágenes para posts (`POST /webhook/generar-imagen-post` con Gemini Prompt Engineer + Pollinations.ai / FLUX + persistencia OCI S3).
+  * Investigación e integración de conectores de publicación externa a **LinkedIn & X (Twitter)** (análisis de restricciones de API y alternativas 100% free - Max Ferrer).
   * Integración híbrida con scripts de Python auxiliares si son requeridos.
 
 ### ☁️ Célula 2: Cloud OCI, Infraestructura & Backend
@@ -36,10 +37,10 @@ Para optimizar la colaboración y garantizar aprendizaje transversal, el equipo 
   * Manejo seguro de variables de entorno (`.env`, `.env.example`).
 
 ### 💻 Célula 3: Frontend (Streamlit), Datos & QA
-* **Miembros sugeridos:** Edwin Enriquez (Especialista QA), Carol Arancay, Víctor Araya, Rodrigo Ramírez.
+* **Miembros sugeridos:** Edwin Enriquez (Especialista QA), Carol Arancay, Max Ferrer (Adaptación Frontend), Víctor Araya, Rodrigo Ramírez.
 * **Responsabilidades:**
   * Creación y enriquecimiento de datasets de prueba (`data/interacciones_ejemplo.json` y `.csv`).
-  * Desarrollo del panel en **Streamlit** (dashboard de salud de comunidad + panel de aprobación/edición de copys).
+  * Desarrollo y modernización del panel en **Streamlit** (adaptación del template UI de Carol Arancay por Max Ferrer: Dashboard general, Fuentes activas, Curaduría, Histórico OCI y Settings).
   * Pruebas funcionales, automatización de pruebas (Selenium / Pytest) y control de calidad.
   * Documentación de flujos de usuario y guías de uso.
 
@@ -199,6 +200,17 @@ gantt
     - Conectar el botón de "Generar / Regenerar Imagen" del Editor de Contenido al endpoint `/webhook/generar-imagen-post`.
     - Input para `instruccion_custom` en la tarjeta de curaduría para ajuste de estilo visual por el Community Manager.
     - Renderizado responsivo de la imagen generada (`preview_{id_post}.png`) en el mockup de LinkedIn con `st.image()`.
+  - [x] **Pruebas de Publicación Directa en LinkedIn & X / Twitter (Investigación & POC - Max Ferrer):**
+    - **LinkedIn:** Superación de la restricción de 60 días para páginas corporativas mediante creación de página suplementaria vinculada al perfil ([Hackathon ONE G10 Team 6](https://www.linkedin.com/company/hackaton-one-g10-team-6/)). Validación exitosa de publicación automatizada vía `cURL` lista para integrarse.
+    - **X (Twitter):** Evaluación de costos y restricciones de planes de pago de la API oficial; investigación de vías alternativas para preservar el principio 100% Free de la Hackathon.
+  - [ ] **Adaptación del Nuevo Template UI Streamlit (Carol Huarancay & Max Ferrer):**
+    - En desarrollo activo como template Python/Streamlit basado en los mockups de diseño de Carol Arancay (`@Caroli2812`).
+    - Estructuración modular de navegación lateral:
+      - 📊 *Dashboard de la Comunidad:* Métricas globales, gráficos de volumen por canal y sentimiento LLM.
+      - 📡 *Fuentes Activas:* Monitoreo y control directo de bots omnicanal (Telegram, Discord, Slack) e ingesta en vivo.
+      - 📝 *Curaduría de Contenido:* Bandeja de pendientes, editor central y preview interactivo multidispositivo (LinkedIn, X, Discord, Slack).
+      - ☁️ *OCI & Activo Digital:* Explorador de almacenamiento OCI y paquetes generados.
+      - ⚙️ *Settings / Configuración:* Gestión unificada de variables de entorno (38 detectadas, 12 sensibles) por pestañas temáticas (Canales/Bots, LLMs, OCI, n8n, Infra).
 * **Jueves:** *Sprint Demo Meet S4*. Demostración omnicanal en vivo con Telegram, Discord, Slack y panel de curaduría NovaEdu en OCI.
 * **Fin de semana:** Subir entregables a No Country.
 
@@ -209,6 +221,8 @@ gantt
 * **Lunes:** *Sprint Planning Meet* de cierre. Apertura de feedback entre compañeros en la plataforma.
 * **Tareas críticas:**
   - [ ] Integración y pruebas E2E de la Versión 2 del generador de imágenes (opciones avanzadas de aspecto y estilos).
+  - [ ] Integración del conector de publicación automática en LinkedIn (aprobación en un clic desde la curaduría).
+  - [ ] Consolidación de la adaptación del template UI de Carol & Max en la rama principal.
   - [ ] Grabación y edición del **Video Demo de YouTube** (máximo 10 minutos, destacando el problema de negocio, arquitectura en OCI Always Free, orquestación en n8n e IA, generación de copys e imágenes).
   - [ ] Pulido final del `README.md` (diagrama de arquitectura, capturas de pantalla, badges, pasos de instalación).
   - [ ] **Pre Demo Meet (Jueves):** Ensayo general con mentores de No Country / Oracle.
