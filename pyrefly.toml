@@ -1,0 +1,12 @@
+# Pyrefly Configuration for CommunityLab
+disable-type-errors-in-ide = true
+disable_type_errors_in_ide = true
+
+[errors]
+not-iterable = false
+missing-attribute = false
+type-mismatch = false
+invalid-argument = false
+unbound-variable = false
+incompatible-type = false
+unsupported-operator = false

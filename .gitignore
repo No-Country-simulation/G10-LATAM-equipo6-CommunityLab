@@ -6,6 +6,8 @@
 .env.local
 *.env
 !.env.example
+config/settings.json
+!config/settings.example.json
 
 # --- Volúmenes locales y datos persistentes de Docker ---
 # Directorio donde n8n almacena flujos, credenciales cifradas y SQLite (si aplica)
@@ -50,4 +52,7 @@ __pycache__/
 *.pyc
 *.pyo
 .pytest_cache/
+
+# --- Enlaces de desarrollo temporal ---
+_external_*
 

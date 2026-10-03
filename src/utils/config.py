@@ -95,6 +95,14 @@ def get_n8n_webhook_url() -> str:
     )
 
 
+def get_n8n_local_webhook_url() -> str:
+    """Retorna la URL del Webhook de n8n para entorno local/túnel."""
+    return (
+        os.getenv("N8N_LOCAL_WEBHOOK_URL", "").strip()
+        or "http://localhost:5678/webhook/communitylab-ingesta"
+    )
+
+
 def get_n8n_webhook_base() -> str:
     """Retorna la URL base de Webhooks de n8n para Docker/tunel segun el entorno."""
     if is_production():
