@@ -54,27 +54,86 @@ def estado_a_badge(estado_cur: str) -> str:
     return "En revisión"
 
 
-def cargar_paquete_actual() -> tuple[Optional[dict], str]:
-    """Carga el paquete seleccionado o el más reciente disponible en disco/OCI."""
+def normalizar_item_si_es_necesario(item: dict, meta_paquete: dict) -> dict:
+    """Normaliza un activo si viene en formato aplanado desde OCI Object Storage."""
+    if "interaccion" in item and "activo" in item:
+        return item
+
+    # Formato aplanado persistido en OCI
+    item_id = str(item.get("id") or "item")
+    autor = item.get("autor", "Estudiante de Comunidad")
+    canal = item.get("canal", "#general")
+    texto = (
+        item.get("comentario")
+        or item.get("pregunta_original")
+        or item.get("texto")
+        or item.get("post_linkedin")
+        or ""
+    )
+    canal_origen_bot = item.get("canal_origen_bot") or canal
+
+    tipo_contenido = item.get("tipo_contenido") or meta_paquete.get("categoria", "feedback_general")
+    sentimiento = item.get(
+        "sentimiento",
+        "positivo" if tipo_contenido in ("logro_contratacion", "showcase") else "neutro",
+    )
+    temas = item.get("temas_clave") or ["CommunityLab"]
+    motor = item.get("motor_orquestacion") or meta_paquete.get("motor_orquestacion", "Python")
+
+    return {
+        "interaccion": {
+            "id": item_id,
+            "autor": autor,
+            "canal": canal,
+            "texto": texto,
+        },
+        "activo": {
+            "tipo_contenido": tipo_contenido,
+            "sentimiento": sentimiento,
+            "temas_clave": temas,
+            "post_linkedin": item.get("post_linkedin") or item.get("respuesta_asistente") or texto,
+            "tip_tecnico_faq": item.get("tip_tecnico_faq") or item.get("respuesta_asistente"),
+        },
+        "canal_origen_bot": canal_origen_bot,
+        "motor_orquestacion": motor,
+        "procesado_en": item.get("procesado_el") or item.get("procesado_en") or "",
+        "_raw_oci": item,
+    }
+
+
+def obtener_opciones_fuente() -> list[tuple[str, str, str]]:
+    """Devuelve las opciones de fuente disponibles (Etiqueta, Ruta o Nombre, Tipo).
+    Prioriza OCI si está configurado.
+    """
     opciones = []
+
+    # 1. Fuentes Cloud OCI
+    try:
+        paquetes_cloud = obtener_ultimos_paquetes(limite=10)
+        for p in paquetes_cloud:
+            opciones.append((f"☁️ OCI: {p['name']}", p["name"], "oci"))
+    except Exception:
+        pass
+
+    # 2. Fuentes Locales
     rutas_locales = [
-        ("Canales (Python)", Path("data/paquete_procesado_canales_python.json")),
-        ("Canales (N8N)", Path("data/paquete_procesado_canales_n8n.json")),
-        ("Lotes (Python)", Path("data/paquete_procesado_python.json")),
-        ("Lotes (N8N)", Path("data/paquete_procesado_n8n.json")),
-        ("Lote General", Path("data/paquete_procesado.json")),
+        ("📁 Local: Canales (Python)", Path("data/paquete_procesado_canales_python.json")),
+        ("📁 Local: Canales (N8N)", Path("data/paquete_procesado_canales_n8n.json")),
+        ("📁 Local: Lotes (Python)", Path("data/paquete_procesado_python.json")),
+        ("📁 Local: Lotes (N8N)", Path("data/paquete_procesado_n8n.json")),
+        ("📁 Local: Lote General", Path("data/paquete_procesado.json")),
     ]
 
     for label, p in rutas_locales:
         if p.exists():
             opciones.append((label, str(p), "local"))
 
-    try:
-        paquetes_cloud = obtener_ultimos_paquetes(limite=10)
-        for p in paquetes_cloud:
-            opciones.append((f"Storage: {p['name']}", p["name"], "oci"))
-    except Exception:
-        pass
+    return opciones
+
+
+def cargar_paquete_actual() -> tuple[Optional[dict], str]:
+    """Carga el paquete seleccionado o el más reciente disponible en OCI/disco."""
+    opciones = obtener_opciones_fuente()
 
     if not opciones:
         return None, "Sin datos disponibles"
@@ -86,16 +145,27 @@ def cargar_paquete_actual() -> tuple[Optional[dict], str]:
     if tipo_fuente == "local":
         try:
             with open(path_or_name, "r", encoding="utf-8") as f:
-                return json.load(f), label
+                datos = json.load(f)
+                return datos, label
         except Exception:
             return None, label
     else:
         raw_datos = cargar_paquete(path_or_name)
+        if isinstance(raw_datos, dict) and "activos" in raw_datos:
+            meta = raw_datos.get("metadata_paquete", {}) or raw_datos.get("metadata", {})
+            norm_activos = []
+            for item in raw_datos["activos"]:
+                if isinstance(item, dict):
+                    norm_activos.append(normalizar_item_si_es_necesario(item, meta))
+            raw_datos["activos"] = norm_activos
         return raw_datos, label
 
 
 def transformar_item_a_post(item: dict, meta_paquete: dict, mapa_curaduria: dict) -> dict:
     """Transforma un ítem real de activos en el formato esperado por los componentes visuales."""
+    # Asegurar que esté normalizado si vino plano desde OCI
+    item = normalizar_item_si_es_necesario(item, meta_paquete)
+
     interaccion = item.get("interaccion", {})
     activo = item.get("activo", {})
     item_id = str(interaccion.get("id") or "item")
@@ -124,7 +194,7 @@ def transformar_item_a_post(item: dict, meta_paquete: dict, mapa_curaduria: dict
     temas = activo.get("temas_clave") or ["CommunityLab"]
     banner_titulo = temas[0].replace("#", "") if temas else "CommunityLab"
 
-    proc_time = item.get("procesado_en", "")
+    proc_time = item.get("procesado_en", "") or item.get("procesado_el", "")
     hace_str = proc_time[11:16] if len(proc_time) >= 16 else "Reciente"
 
     return {
@@ -153,7 +223,7 @@ def get_real_posts() -> list[dict]:
     if not datos_paquete or "activos" not in datos_paquete or not datos_paquete["activos"]:
         return FALLBACK_POSTS
 
-    meta = datos_paquete.get("metadata_paquete", {})
+    meta = datos_paquete.get("metadata_paquete", {}) or datos_paquete.get("metadata", {})
     mapa_cur = obtener_mapa_curaduria()
 
     posts = []

@@ -101,6 +101,7 @@ DOMAIN_MAPPING: Dict[str, List[str]] = {
         "STREAMLIT_SERVER_PORT",
         "ENABLE_DETAILED_LOG",
         "LOG_FILE_PATH",
+        "SETTINGS_ADMIN_KEY",
     ],
 }
 

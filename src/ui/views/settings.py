@@ -312,6 +312,32 @@ def render_settings() -> None:
                     st.caption("Configura el token en Ngrok desde PowerShell con:")
                     st.code("ngrok config add-authtoken <TU_TOKEN_NGROK>", language="powershell")
 
+        # ==============================================================================
+        # CONTROL DE SEGURIDAD: CLAVE DE VERIFICACIÓN ADMINISTRATIVA
+        # ==============================================================================
+        st.markdown("---")
+        st.markdown(
+            """
+            <div style="background:rgba(239, 68, 68, 0.08); border:1px solid rgba(239, 68, 68, 0.25); border-radius:10px; padding:12px 16px; margin-bottom:12px;">
+                <div style="font-weight:700; color:#EF4444; font-size:0.95rem; display:flex; align-items:center; gap:8px;">
+                    🛡️ Autorización Requerida para Modificar Configuración
+                </div>
+                <div style="font-size:0.82rem; color:#64748B; margin-top:4px;">
+                    Por políticas de seguridad, para persistir cambios en variables de entorno o credenciales en el sistema debes ingresar la <b>Clave de Verificación de Administrador</b>.
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+        admin_key_input = st.text_input(
+            "🔑 Clave de Verificación de Administrador",
+            type="password",
+            placeholder="Introduce la clave de verificación administrativa",
+            help="Ingresa la clave de autorización administrativa para confirmar los cambios.",
+            key="admin_verification_key_input",
+        )
+
         submitted = st.form_submit_button(
             "💾 Guardar configuración y sincronizar (.env + JSON)",
             type="primary",
@@ -319,27 +345,38 @@ def render_settings() -> None:
         )
 
         if submitted:
-            # 1. Guardar en JSON estructurado y volcar a .env preservando comentarios
-            json_path, env_path = save_settings(values)
-            _seed_default_values(force_reload=True)
+            # Obtener clave esperada del entorno (.env o os.environ)
+            expected_admin_key = str(os.environ.get("SETTINGS_ADMIN_KEY") or "communitylab2026").strip()
+            provided_key = admin_key_input.strip()
 
-            st.success("✅ Configuración guardada y sincronizada correctamente.")
-            st.markdown(
-                f"""
-                <div style="background:rgba(16, 185, 129, 0.12); border:1px solid #10B981; border-radius:12px; padding:14px 18px; margin:12px 0; color:#E2E8F0;">
-                    <div style="font-weight:700; color:#34D399; margin-bottom:6px; font-size:1.05rem;">✨ Doble Persistencia Activa:</div>
-                    <ul style="margin:0; padding-left:20px; font-size:0.9rem; line-height:1.6;">
-                        <li>📄 <b>JSON Estructurado:</b> <code>config/settings.json</code> (jerárquico, tipado y respaldado)</li>
-                        <li>🛡️ <b>Archivo de Entorno:</b> <code>.env</code> (comentarios <code>#</code>, encabezados y formato original 100% conservados)</li>
-                        <li>⚙️ <b>Memoria en Ejecución:</b> Variables inyectadas en <code>os.environ</code> para el proceso actual</li>
-                    </ul>
-                    <div style="margin-top:10px; font-size:0.83rem; color:#94A3B8;">
-                        ℹ️ <i>Nota: Si modificaste credenciales de bots (Discord, Slack, Telegram) o puertos externos, recuerda reiniciar sus respectivos procesos para que tomen los nuevos valores.</i>
+            if not provided_key:
+                st.error("⛔ **Operación Denegada:** Debes ingresar la clave de verificación para autorizar la modificación de `.env` y `settings.json`.")
+                st.toast("Clave de verificación requerida", icon="🔒")
+            elif provided_key != expected_admin_key:
+                st.error("❌ **Clave de Verificación Incorrecta:** No tienes autorización para alterar las variables de entorno.")
+                st.toast("Clave administrativa incorrecta", icon="❌")
+            else:
+                # 1. Guardar en JSON estructurado y volcar a .env preservando comentarios
+                json_path, env_path = save_settings(values)
+                _seed_default_values(force_reload=True)
+
+                st.success("✅ **Autorización Concedida:** Configuración guardada y sincronizada correctamente en `.env` y `settings.json`.")
+                st.markdown(
+                    f"""
+                    <div style="background:rgba(16, 185, 129, 0.12); border:1px solid #10B981; border-radius:12px; padding:14px 18px; margin:12px 0; color:#E2E8F0;">
+                        <div style="font-weight:700; color:#34D399; margin-bottom:6px; font-size:1.05rem;">✨ Doble Persistencia Activa:</div>
+                        <ul style="margin:0; padding-left:20px; font-size:0.9rem; line-height:1.6;">
+                            <li>📄 <b>JSON Estructurado:</b> <code>config/settings.json</code> (jerárquico, tipado y respaldado)</li>
+                            <li>🛡️ <b>Archivo de Entorno:</b> <code>.env</code> (comentarios <code>#</code>, encabezados y formato original 100% conservados)</li>
+                            <li>⚙️ <b>Memoria en Ejecución:</b> Variables inyectadas en <code>os.environ</code> para el proceso actual</li>
+                        </ul>
+                        <div style="margin-top:10px; font-size:0.83rem; color:#94A3B8;">
+                            ℹ️ <i>Nota: Si modificaste credenciales de bots (Discord, Slack, Telegram) o puertos externos, recuerda reiniciar sus respectivos procesos para que tomen los nuevos valores.</i>
+                        </div>
                     </div>
-                </div>
-                """,
-                unsafe_allow_html=True,
-            )
+                    """,
+                    unsafe_allow_html=True,
+                )
 
     # Visor interactivo seguro de la configuración (secretos siempre enmascarados)
     st.markdown("<div style='height: 0.8rem;'></div>", unsafe_allow_html=True)

@@ -59,6 +59,7 @@
     "app_env": "development",
     "streamlit_server_port": "8501",
     "enable_detailed_log": "true",
-    "log_file_path": "logs/communitylab.log"
+    "log_file_path": "logs/communitylab.log",
+    "settings_admin_key": "communitylab2026"
   }
 }

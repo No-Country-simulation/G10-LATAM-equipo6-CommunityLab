@@ -22,7 +22,7 @@ def render_cloud_explorer():
     sm = OCIStorageManager()
     oci_active = sm.is_configured()
     paquetes = obtener_ultimos_paquetes(limite=30)
-    total_bytes = sum(p.get("size", 0) for p in paquetes)
+    total_bytes = sum(int(p.get("size") or 0) for p in paquetes)
     total_kb = round(total_bytes / 1024, 2)
 
     # Banner Oficial OCI
@@ -120,7 +120,8 @@ def render_cloud_explorer():
             c_info, c_action = st.columns([3.2, 1.3])
             with c_info:
                 nombre = pkg.get("name", "sin_nombre.json")
-                size_kb = round(pkg.get("size", 0) / 1024, 2)
+                raw_size = pkg.get("size")
+                size_kb = round((int(raw_size) if raw_size is not None else 0) / 1024, 2)
                 fecha = pkg.get("time_created", "Reciente")
                 source = pkg.get("source", "local").upper()
                 st.markdown(f"**📄 `{nombre}`**")

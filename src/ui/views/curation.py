@@ -6,6 +6,7 @@ import streamlit as st
 
 from components import editor, post_list, preview
 from scripts.config import BADGE, CANAL_ICON
+from scripts.data_adapter import obtener_opciones_fuente
 from scripts.services import get_visible_posts
 from scripts.state import select_post
 from scripts.utils import H, esc
@@ -14,6 +15,33 @@ from .common import render_page_card
 
 def render_pending_review():
     """Vista tri-panel de revisión humana de activos generados."""
+    # Selector de Fuente / Paquete (OCI vs Local)
+    opciones_fuente = obtener_opciones_fuente()
+    etiquetas = [opt[0] for opt in opciones_fuente]
+    idx_defecto = 0
+    sel_actual = st.session_state.get("selected_package_label")
+    if sel_actual in etiquetas:
+        idx_defecto = etiquetas.index(sel_actual)
+
+    col_sel, col_ref = st.columns([4, 1])
+    with col_sel:
+        fuente_elegida = st.selectbox(
+            "📦 Fuente de Activos a Curar:",
+            etiquetas,
+            index=idx_defecto,
+            key="sb_fuente_curaduria",
+            help="Selecciona un paquete almacenado en Oracle Cloud (OCI) o en disco local.",
+        )
+        if fuente_elegida != st.session_state.get("selected_package_label"):
+            st.session_state["selected_package_label"] = fuente_elegida
+            st.rerun()
+
+    with col_ref:
+        st.write("")
+        st.write("")
+        if st.button("🔄 Refrescar", use_container_width=True, help="Recarga datos desde OCI / disco"):
+            st.rerun()
+
     todos = get_visible_posts()
     n_total = len(todos)
     n_aprobados = sum(1 for p in todos if p.get("estado") == "Aprobado")
@@ -21,6 +49,7 @@ def render_pending_review():
     n_descartados = sum(1 for p in todos if p.get("estado") == "Descartado")
 
     # Barra resumen de curaduría
+    es_oci = "OCI" in str(st.session_state.get("selected_package_label", ""))
     st.markdown(
         f"""
         <div style="background:linear-gradient(135deg,#F8FAFC,#EFF6FF); border:1px solid #DBEAFE; border-radius:14px; padding:12px 18px; margin-bottom:14px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
@@ -32,10 +61,10 @@ def render_pending_review():
                 </div>
             </div>
             <div style="display:flex; gap:10px; align-items:center;">
+                <span class="status-pill {'oci' if es_oci else 'standby'}">Fuente: {'☁️ OCI Cloud' if es_oci else '📁 Local'}</span>
                 <span class="status-pill standby">⏳ {n_pendientes} Pendientes</span>
                 <span class="status-pill online">✅ {n_aprobados} Aprobados</span>
                 <span class="status-pill offline">❌ {n_descartados} Descartados</span>
-                <span class="status-pill oci">☁️ OCI Sync</span>
             </div>
         </div>
         """,
