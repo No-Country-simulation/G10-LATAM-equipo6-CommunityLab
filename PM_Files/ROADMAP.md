@@ -218,15 +218,16 @@ gantt
 
 ---
 
-### Semana 5: Pre-Demo, Video Demo Final y Demo Day
-* **Objetivo:** Presentación del proyecto ante la comunidad evaluadora y cierre formal de la Hackathon.
-* **Lunes:** *Sprint Planning Meet* de cierre. Apertura de feedback entre compañeros en la plataforma.
-* **Tareas críticas:**
-  - [ ] Integración y pruebas E2E de la Versión 2 del generador de imágenes (opciones avanzadas de aspecto y estilos).
-  - [ ] Integración del conector de publicación automática en LinkedIn (aprobación en un clic desde la curaduría).
-  - [ ] Consolidación de la adaptación del template UI de Carol & Max en la rama principal.
-  - [ ] Grabación y edición del **Video Demo de YouTube** (máximo 10 minutos, destacando el problema de negocio, arquitectura en OCI Always Free, orquestación en n8n e IA, generación de copys e imágenes).
-  - [ ] Pulido final del `README.md` (diagrama de arquitectura, capturas de pantalla, badges, pasos de instalación).
+### Semana 5: QA Intensivo, Hardening & Cierre Pre-Demo (Semana Ganada de Ventaja 🎉)
+* **Objetivo:** Aprovechar la ventaja de 1 semana adelantada en el cronograma para realizar pruebas intensivas E2E, aseguramiento de calidad (QA), refinamientos de UI/UX, estabilización en OCI y preparación del Video Demo Final.
+* **Foco Principal de QA & Hardening:**
+  - [ ] **Suite de Pruebas Extendida & Resiliencia:** Expansión de casos límite (*edge cases*) en ingesta, manejo de excepciones y reconexión automática de WebSocket en Telegram/Discord/Slack.
+  - [ ] **Pruebas de Estrés & Carga en OCI:** Validación de concurrencia y tiempos de respuesta con volumen en OCI Object Storage.
+  - [ ] **Refinamiento de UX/UI NovaEdu:** Ajustes visuales finos en las 7 vistas de la UI Streamlit según retroalimentación del equipo.
+* **Tareas Críticas de Entrega:**
+  - [ ] Integración y pruebas E2E del microservicio de generación de imágenes (n8n).
+  - [ ] Integración del conector de publicación automática en LinkedIn.
+  - [ ] Grabación y edición del **Video Demo de YouTube** (máximo 10 minutos, destacando el problema de negocio, arquitectura en OCI Always Free, orquestación en n8n e IA).
   - [ ] **Pre Demo Meet (Jueves):** Ensayo general con mentores de No Country / Oracle.
   - [ ] **Subir entregables finales** (Cierre formal domingo 23:59 pm).
   - [ ] **Demo Day (Martes/Jueves):** Presentación en vivo y pitch del equipo.

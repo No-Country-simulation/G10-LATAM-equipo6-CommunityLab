@@ -150,11 +150,12 @@ Si tienes `AUTOSTART_BOTS=true` en tu `.env`, los bots de Telegram, Discord y Sl
 - **En Local:** Ejecuta `docker compose up -d` y accede en `http://localhost:5678`.
 - Consulta la guía completa de flujos y versionado en [`n8n/README.md`](n8n/README.md).
 
-### 6. Ejecución de Pruebas Automatizadas
+### 6. Ejecución de Pruebas Automatizadas & Estrategia de QA
 ```bash
 pytest tests/ -v
 ```
-*Total:* **73 tests unitarios e integrales (100% aprobados)** cubriendo ingesta, validación Pydantic, cliente OCI, bots omnicanal, pipeline y UI.
+*Total:* **73 tests unitarios e integrales (100% aprobados)** cubriendo ingesta, validación Pydantic, cliente OCI, bots omnicanal, pipeline y servicios UI.  
+*Estrategia QA (Semana Ganada de Ventaja):* Gracias a un desarrollo acelerado, el equipo cuenta con 1 semana de ventaja antes del Demo Day dedicada exclusivamente al aseguramiento de calidad (QA), resiliencia de bots, pruebas de carga en OCI Object Storage y refinamiento continuo de UX/UI.
 
 ---
 
