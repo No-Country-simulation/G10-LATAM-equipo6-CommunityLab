@@ -35,6 +35,14 @@ def configure_app() -> None:
     init_state()
     inject_css()
 
+    # Iniciar bots automáticamente si está configurado en .env (AUTOSTART_BOTS=true)
+    from src.utils.config import should_autostart_bots
+    from src.channels.bot_manager import OmnichannelBotManager
+    if should_autostart_bots():
+        bm = OmnichannelBotManager.get_instance()
+        if not bm.is_running():
+            bm.start_all()
+
 
 def main() -> None:
     """Renderiza la aplicación modular: sidebar, header y vista activa."""

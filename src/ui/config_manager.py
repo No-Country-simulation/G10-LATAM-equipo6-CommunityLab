@@ -195,12 +195,20 @@ def structure_config(flat_config: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
 
 
 def mask_secret_for_example(key: str, val: Any) -> Any:
-    """Enmascara valores sensibles para generar settings.example.json."""
+    """Enmascara valores sensibles para generar settings.example.json de forma segura."""
     if isinstance(val, bool):
         return val
     upper_k = key.upper()
     if any(s in upper_k for s in ["KEY", "TOKEN", "SECRET", "PASSWORD", "AUTHTOKEN"]):
         return f"tu_{key.lower()}_aqui"
+    if "OCID" in upper_k:
+        return "ocid1.user.oc1..aaaaaaaaxxx" if "USER" in upper_k else "ocid1.tenancy.oc1..aaaaaaaaxxx"
+    if "FINGERPRINT" in upper_k:
+        return "xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx"
+    if "NAMESPACE" in upper_k:
+        return "tu_namespace_aqui"
+    if "WEBHOOK" in upper_k and "URL" in upper_k and "DISCORD" in upper_k:
+        return "https://discord.com/api/webhooks/tu_webhook_id/tu_webhook_token_aqui"
     return val
 
 

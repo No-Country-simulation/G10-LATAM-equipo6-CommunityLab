@@ -1,11 +1,11 @@
 {
   "servicios_activos": {
-    "telegram_enabled": false,
-    "discord_enabled": false,
-    "slack_enabled": false
+    "telegram_enabled": true,
+    "discord_enabled": true,
+    "slack_enabled": true
   },
   "procesamiento_por_lotes": {
-    "processing_n8n_enabled": false,
+    "processing_n8n_enabled": true,
     "processing_python_enabled": false
   },
   "llm_engines": {
@@ -15,18 +15,18 @@
     "groq_model": "openai/gpt-oss-20b"
   },
   "oci_cloud": {
-    "oci_user_ocid": "ocid1.user.oc1..aaaaaaaa2axp3xvd56xfqz4t4ghqcb2xt6oerd2emezhyjmxg66d6jy3akea",
-    "oci_tenancy_ocid": "ocid1.tenancy.oc1..aaaaaaaabrjh72yapu6umuvmy56jhpw7ybzpbp4tsgyt2oendlsnilmrdqsa",
-    "oci_fingerprint": "34:2f:6f:fc:39:04:bb:05:67:e5:7f:8b:3e:6c:f0:74",
-    "oci_key_file": "tu_oci_key_file_aqui",
+    "oci_user_ocid": "ocid1.user.oc1..aaaaaaaaxxx",
+    "oci_tenancy_ocid": "ocid1.tenancy.oc1..aaaaaaaaxxx",
+    "oci_fingerprint": "xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx",
+    "oci_key_file": "~/.oci/oci_api_key.pem",
     "oci_region": "us-ashburn-1",
-    "oci_namespace": "idmt2idfm08g",
+    "oci_namespace": "tu_namespace_aqui",
     "oci_bucket_name": "communitylab-activos-marketing"
   },
   "canales_produccion": {
     "telegram_bot_token": "tu_telegram_bot_token_aqui",
     "discord_bot_token": "tu_discord_bot_token_aqui",
-    "discord_webhook_url": "https://discord.com/api/webhooks/1552163956368474112/HSdxkQZd-GjlEs_Roh04MYCIiAOirAZGLX3D6nhNwFIki2dSJ3qIP2ZtbyrxK4ODM77Z",
+    "discord_webhook_url": "https://discord.com/api/webhooks/tu_webhook_id/tu_webhook_token_aqui",
     "slack1_bot_token": "tu_slack1_bot_token_aqui",
     "slack1_app_token": "tu_slack1_app_token_aqui",
     "slack2_bot_token": "tu_slack2_bot_token_aqui",

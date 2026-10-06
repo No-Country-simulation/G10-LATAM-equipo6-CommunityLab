@@ -107,22 +107,33 @@ def render_bot_status():
     st.markdown("<div style='height: 0.8rem;'></div>", unsafe_allow_html=True)
 
     # Botones de control global
+    any_running = bm.is_running()
     col_g1, col_g2, col_g3 = st.columns([1.5, 1.5, 3])
     with col_g1:
-        st.button(
+        if st.button(
             "🟢 Iniciar Todos los Bots",
-            disabled=True,
+            disabled=any_running,
             use_container_width=True,
-            help="Deshabilitado: Los bots ya operan de forma continua 24/7 en la VM de OCI (Oracle Cloud).",
-        )
+            help="Inicia la escucha en segundo plano de Telegram, Discord y Slack.",
+        ):
+            bm.start_all()
+            st.toast("Bots iniciados en segundo plano.", icon="🚀")
+            import time
+            time.sleep(0.5)
+            st.rerun()
 
     with col_g2:
-        st.button(
+        if st.button(
             "🔴 Detener Todos los Bots",
-            disabled=True,
+            disabled=not any_running,
             use_container_width=True,
-            help="Deshabilitado: El servicio en la nube se administra a nivel de sistema operativo en OCI (systemctl).",
-        )
+            help="Detiene la escucha de todos los bots en segundo plano.",
+        ):
+            bm.stop_all()
+            st.toast("Bots detenidos.", icon="🛑")
+            import time
+            time.sleep(0.5)
+            st.rerun()
 
     with col_g3:
         if st.button("🔄 Refrescar Estado", type="primary", use_container_width=True):
@@ -181,14 +192,15 @@ def render_bot_status():
                     unsafe_allow_html=True,
                 )
 
-                st.write(f"**Modo de Ejecución:** `OCI Linux Daemon`")
+                is_chan_running = bdata.get("running", False)
+                st.write(f"**Modo de Ejecución:** `Subproceso Daemon (OCI/Local)`")
                 st.write(f"**Respuesta:** `Automática con IA`")
-                st.write(f"**Estado del Servicio:** `🟢 Activo 24/7 (systemd)`")
+                st.write(f"**Estado del Servicio:** `{'🟢 En línea' if is_chan_running else '🔴 Inactivo'}`")
 
                 st.link_button(f"🔗 {blabel}", burl, use_container_width=True)
 
                 st.markdown("<div style='height: 0.3rem;'></div>", unsafe_allow_html=True)
-                st.caption("Control local de subproceso (Deshabilitado en OCI):")
+                st.caption("Control manual del canal:")
 
                 err = bdata.get("error")
                 if err:
@@ -196,22 +208,32 @@ def render_bot_status():
 
                 btn_col1, btn_col2 = st.columns(2)
                 with btn_col1:
-                    st.button(
+                    if st.button(
                         "▶️ Iniciar",
                         key=f"start_{bkey}",
-                        disabled=True,
+                        disabled=is_chan_running,
                         use_container_width=True,
-                        help="Deshabilitado: El servicio ya está configurado y activo como daemon 24/7 en la VM de OCI.",
-                    )
+                        help=f"Inicia el bot de {title} en segundo plano.",
+                    ):
+                        bm.start_channel(bkey)
+                        st.toast(f"{title} iniciado.", icon="🚀")
+                        import time
+                        time.sleep(0.5)
+                        st.rerun()
 
                 with btn_col2:
-                    st.button(
+                    if st.button(
                         "⏹️ Parar",
                         key=f"stop_{bkey}",
-                        disabled=True,
+                        disabled=not is_chan_running,
                         use_container_width=True,
-                        help="Deshabilitado: El servicio se gestiona en la VM de OCI vía systemd (systemctl stop).",
-                    )
+                        help=f"Detiene el bot de {title}.",
+                    ):
+                        bm.stop_channel(bkey)
+                        st.toast(f"{title} detenido.", icon="🛑")
+                        import time
+                        time.sleep(0.5)
+                        st.rerun()
 
 
 def render_webhooks_tunnel():

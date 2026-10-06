@@ -127,6 +127,56 @@ def get_n8n_port() -> int:
     return int(os.getenv("N8N_LOCAL_PORT", "5678"))
 
 
+def get_channel_processing_engine() -> str:
+    """Retorna el motor activo para procesar canales en vivo: 'PYTHON' o 'N8N'."""
+    val = os.getenv("CHANNEL_PROCESSING_ENGINE", "PYTHON").strip().upper()
+    return "N8N" if val == "N8N" else "PYTHON"
+
+
+def should_autostart_bots() -> bool:
+    """Retorna True si los bots deben iniciar automáticamente al arrancar la app."""
+    return os.getenv("AUTOSTART_BOTS", "false").strip().lower() in ("true", "1", "yes")
+
+
+def is_telegram_enabled() -> bool:
+    """Verifica si el servicio de Telegram está habilitado (default True)."""
+    return os.getenv("TELEGRAM_ENABLED", "true").strip().lower() in ("true", "1", "yes", "on")
+
+
+def is_discord_enabled() -> bool:
+    """Verifica si el servicio de Discord está habilitado (default True)."""
+    return os.getenv("DISCORD_ENABLED", "true").strip().lower() in ("true", "1", "yes", "on")
+
+
+def is_slack_enabled() -> bool:
+    """Verifica si el servicio de Slack está habilitado (default True)."""
+    return os.getenv("SLACK_ENABLED", "true").strip().lower() in ("true", "1", "yes", "on")
+
+
+def get_n8n_channel_webhook_url(canal: str) -> str:
+    """Retorna la URL del Webhook de n8n para un canal específico ('telegram', 'discord', 'slack').
+
+    Mapea de forma inteligente cualquier identificador de canal hacia el endpoint correcto de n8n:
+    - Discord  -> /webhook/communitylab-discord
+    - Telegram -> /webhook/communitylab-telegram
+    - Slack    -> /webhook/communitylab-slack
+    - Otros    -> /webhook/communitylab-ingesta
+    """
+    base = get_n8n_webhook_base().rstrip("/")
+    c_lower = canal.lower().replace("#", "").strip()
+
+    if "discord" in c_lower:
+        endpoint = "communitylab-discord"
+    elif "telegram" in c_lower or "tg" in c_lower:
+        endpoint = "communitylab-telegram"
+    elif "slack" in c_lower or "latam" in c_lower or "all-" in c_lower:
+        endpoint = "communitylab-slack"
+    else:
+        endpoint = "communitylab-discord" if "dudas" in c_lower else "communitylab-ingesta"
+
+    return f"{base}/webhook/{endpoint}"
+
+
 def get_active_config_summary() -> Dict[str, Any]:
     """Genera un resumen seguro de la configuracion activa (sin exponer tokens completos)."""
     entorno = get_entorno_deploy()

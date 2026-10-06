@@ -234,14 +234,16 @@ def render_settings() -> None:
 
     st.markdown("<div style='height: 0.8rem;'></div>", unsafe_allow_html=True)
 
-    # Barra de herramientas superior: Revelar secretos y recarga rápida
+    # Barra de herramientas superior: Recarga rápida y estado seguro
     col_tools_left, col_tools_right = st.columns([3.8, 1.2])
     with col_tools_left:
-        reveal_secrets = st.toggle(
-            "👁️ Revelar campos sensibles / tokens",
-            value=st.session_state.get("reveal_secrets", False),
-            key="reveal_secrets",
-            help="Muestra u oculta todas las claves de API, secretos y tokens en texto claro sin enviar el formulario.",
+        st.markdown(
+            """
+            <div style="font-size:0.85rem; color:#64748B; padding:6px 0;">
+                🔒 <i>Protección activa: Las claves, tokens y secretos existentes nunca son revelados en el navegador por políticas de seguridad. Para actualizar una credencial, introduce el nuevo valor.</i>
+            </div>
+            """,
+            unsafe_allow_html=True,
         )
     with col_tools_right:
         if st.button("🔄 Recargar de disco", use_container_width=True, help="Vuelve a leer settings.json y .env del disco descartando cambios no guardados"):
@@ -262,7 +264,7 @@ def render_settings() -> None:
                     key = field["key"]
                     label = field["label"]
                     is_secret = field.get("secret", False) or any(
-                        s in key for s in ["KEY", "TOKEN", "SECRET", "PASSWORD", "AUTHTOKEN"]
+                        s in key for s in ["KEY", "TOKEN", "SECRET", "PASSWORD", "AUTHTOKEN", "OCID", "FINGERPRINT"]
                     )
 
                     if field.get("kind") == "toggle":
@@ -279,14 +281,30 @@ def render_settings() -> None:
                             key=key,
                         )
                     else:
-                        values[key] = st.text_input(
-                            label,
-                            type="default" if (reveal_secrets or not is_secret) else "password",
-                            placeholder=field.get("placeholder", ""),
-                            help=field.get("help", ""),
-                            key=key,
-                            label_visibility="visible",
-                        )
+                        if is_secret:
+                            stored_val = str(st.session_state.get(key, "")).strip()
+                            has_val = bool(stored_val and not stored_val.startswith("tu_"))
+                            placeholder_txt = "•••••••••••••••••••• (Configurado)" if has_val else (field.get("placeholder", "") or "No configurado")
+                            inp_val = st.text_input(
+                                label,
+                                value="",
+                                type="password",
+                                placeholder=placeholder_txt,
+                                help=f"{field.get('help', '')} (Deja en blanco para conservar el valor actual).",
+                                key=f"input_{key}",
+                                label_visibility="visible",
+                            )
+                            # Si no se ingresó nada nuevo, conservar el valor original de session_state/disco
+                            values[key] = inp_val if inp_val.strip() else stored_val
+                        else:
+                            values[key] = st.text_input(
+                                label,
+                                type="default",
+                                placeholder=field.get("placeholder", ""),
+                                help=field.get("help", ""),
+                                key=key,
+                                label_visibility="visible",
+                            )
 
                 st.markdown("")
 
@@ -323,9 +341,14 @@ def render_settings() -> None:
                 unsafe_allow_html=True,
             )
 
-    # Visor interactivo del JSON estructurado
+    # Visor interactivo seguro de la configuración (secretos siempre enmascarados)
     st.markdown("<div style='height: 0.8rem;'></div>", unsafe_allow_html=True)
     with st.expander("🔍 Explorar configuración estructurada (config/settings.json)", expanded=False):
-        st.caption("Esta es la representación JSON jerárquica por dominios que respalda la configuración:")
-        structured_preview = structure_config(load_settings())
-        st.json(structured_preview)
+        st.caption("Representación JSON jerárquica con secretos ofuscados para auditoría:")
+        raw_structured = structure_config(load_settings())
+        from config_manager import mask_secret_for_example
+        safe_preview = {
+            dom: {k: mask_secret_for_example(k, v) for k, v in flds.items()}
+            for dom, flds in raw_structured.items()
+        }
+        st.json(safe_preview)
