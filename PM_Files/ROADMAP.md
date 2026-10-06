@@ -193,7 +193,7 @@ gantt
     - Suite automatizada ampliada de 49 a **73 tests unitarios e integrales pasando al 100%** (`pytest tests/ -v`).
   - [x] **Despliegue y Validación en Servidor OCI (`147.15.9.116`):**
     - Apertura de reglas de red (puerto 8501 y 5678) y validación en vivo.
-  - [x] **Subworkflow de Generación e Iteración de Imágenes (`CommunityLab_Generador_Imagenes_Post` - José Medina):**
+  - [ ] **Subworkflow de Generación e Iteración de Imágenes (`CommunityLab_Generador_Imagenes_Post` - José Medina - Pendiente):**
     - Implementación de microservicio síncrono dedicado en n8n (`POST /webhook/generar-imagen-post`).
     - Cadena de 5 nodos: Webhook Trigger $\rightarrow$ Google Gemini (*Prompt Engineer* para traducción y estilo 3D isométrico) $\rightarrow$ Code Node (limpieza y URL encode) $\rightarrow$ Inferencia en Pollinations.ai (modelo FLUX con seed aleatoria por iteración) $\rightarrow$ Subida directa de binario a OCI Object Storage vía S3 (`/previews/preview_{id_post}.png`) $\rightarrow$ Respuesta `200 OK` con URL pública.
   - [ ] **Integración del Generador de Imágenes en Frontend (Streamlit):**
