@@ -91,8 +91,10 @@ def normalizar_item_si_es_necesario(item: dict, meta_paquete: dict) -> dict:
             "tipo_contenido": tipo_contenido,
             "sentimiento": sentimiento,
             "temas_clave": temas,
-            "post_linkedin": item.get("post_linkedin") or item.get("respuesta_asistente") or texto,
-            "tip_tecnico_faq": item.get("tip_tecnico_faq") or item.get("respuesta_asistente"),
+            # Solo contenido generado por IA; nunca el texto original del usuario
+            "post_linkedin": item.get("post_linkedin"),
+            "tip_tecnico_faq": item.get("tip_tecnico_faq"),
+            "respuesta_asistente": item.get("respuesta_asistente"),
         },
         "canal_origen_bot": canal_origen_bot,
         "motor_orquestacion": motor,
@@ -184,11 +186,19 @@ def transformar_item_a_post(item: dict, meta_paquete: dict, mapa_curaduria: dict
     canal_origen = interaccion.get("canal", "#general")
     texto_orig = interaccion.get("texto", "")
 
-    # Copy para edición
+    # Copy para edición: priorizar la respuesta generada por la IA según el tipo de contenido
+    post_ia = activo.get("post_linkedin")
+    tip_ia = activo.get("tip_tecnico_faq")
+    resp_ia = activo.get("respuesta_asistente")
+    if tipo in ("duda_tecnica", "feedback_general"):
+        copy_ia = tip_ia or resp_ia or post_ia
+    else:
+        copy_ia = post_ia or tip_ia or resp_ia
+
     copy_defecto = (
         cur_info.get("copy_aprobado")
         if (cur_info and cur_info.get("copy_aprobado"))
-        else (activo.get("post_linkedin") or activo.get("tip_tecnico_faq") or texto_orig)
+        else (copy_ia or texto_orig)
     )
 
     temas = activo.get("temas_clave") or ["CommunityLab"]
