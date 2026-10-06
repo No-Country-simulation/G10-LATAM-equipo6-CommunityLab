@@ -6,6 +6,8 @@
 .env.local
 *.env
 !.env.example
+config/settings.json
+!config/settings.example.json
 
 # --- Volúmenes locales y datos persistentes de Docker ---
 # Directorio donde n8n almacena flujos, credenciales cifradas y SQLite (si aplica)
@@ -56,4 +58,7 @@ data/curaduria_aprobados.json
 data/paquete_procesado*.json
 data/temp_*.json
 data/oci_local_storage/
+
+# --- Enlaces de desarrollo temporal ---
+_external_*
 

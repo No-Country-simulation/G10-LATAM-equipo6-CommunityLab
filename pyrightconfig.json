@@ -1,17 +1,9 @@
 {
-  "include": [
-    "src",
-    "tests"
-  ],
-  "extraPaths": [
-    "."
-  ],
-  "executionEnvironments": [
-    {
-      "root": ".",
-      "extraPaths": [
-        "."
-      ]
-    }
-  ]
+"venvPath": "D:/DevNoCountry/WORKSPACE-G10/G10-LATAM-equipo6-CommunityLab",
+"venv": "env3.11",
+"extraPaths": [
+"D:/DevNoCountry/WORKSPACE-G10/G10-LATAM-equipo6-CommunityLab",
+"D:/DevNoCountry/WORKSPACE-G10/G10-LATAM-equipo6-CommunityLab/src",
+"D:/DevNoCountry/WORKSPACE-G10/G10-LATAM-equipo6-CommunityLab/env3.11/Lib/site-packages"
+]
 }

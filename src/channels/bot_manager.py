@@ -14,6 +14,9 @@ from src.utils.config import (
     get_slack_app_token,
     get_slack_bot_token,
     get_telegram_token,
+    is_telegram_enabled,
+    is_discord_enabled,
+    is_slack_enabled,
 )
 from src.utils.logger import setup_logger
 
@@ -119,6 +122,9 @@ class OmnichannelBotManager:
 
     def start_telegram(self) -> Tuple[bool, str]:
         """Inicia el bot de Telegram en segundo plano."""
+        if not is_telegram_enabled():
+            return False, "Telegram Bot deshabilitado en configuración (TELEGRAM_ENABLED=false)."
+
         if self._status["telegram"]["running"]:
             return True, "Telegram Bot ya se encuentra en ejecución."
 
@@ -202,6 +208,9 @@ class OmnichannelBotManager:
 
     def start_discord(self) -> Tuple[bool, str]:
         """Inicia el bot de Discord en segundo plano."""
+        if not is_discord_enabled():
+            return False, "Discord Bot deshabilitado en configuración (DISCORD_ENABLED=false)."
+
         if self._status["discord"]["running"]:
             return True, "Discord Bot ya se encuentra en ejecución."
 
@@ -245,6 +254,9 @@ class OmnichannelBotManager:
     # --------------------------------------------------------------------------
     def start_slack(self) -> Tuple[bool, str]:
         """Inicia el bot de Slack vía Socket Mode."""
+        if not is_slack_enabled():
+            return False, "Slack Bot deshabilitado en configuración (SLACK_ENABLED=false)."
+
         if self._status["slack"]["running"]:
             return True, "Slack Bot ya se encuentra en ejecución."
 

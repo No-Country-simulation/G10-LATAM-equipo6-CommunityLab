@@ -84,13 +84,17 @@ class OCIStorageManager:
             raw_key_file = key_file or os.getenv("OCI_KEY_FILE", "~/.oci/oci_api_key.pem")
             self.key_file = os.path.expanduser(raw_key_file) if raw_key_file else None
 
-            self.oci_config = {
-                "user": self.user_ocid,
-                "fingerprint": self.fingerprint,
-                "key_file": self.key_file,
-                "tenancy": self.tenancy_ocid,
-                "region": self.region,
-            }
+            # Si se leyeron de entorno pero la clave no existe en disco, no armar config dict inválido
+            if self.user_ocid and self.tenancy_ocid and self.fingerprint and self.key_file and Path(self.key_file).is_file():
+                self.oci_config = {
+                    "user": self.user_ocid,
+                    "fingerprint": self.fingerprint,
+                    "key_file": self.key_file,
+                    "tenancy": self.tenancy_ocid,
+                    "region": self.region,
+                }
+            else:
+                self.oci_config = None
 
         self._inicializar_cliente(self.oci_config)
 
@@ -124,9 +128,13 @@ class OCIStorageManager:
 
         # Si no se pudo conectar y está permitido el fallback
         if self.allow_local_fallback:
-            self._activar_modo_local("Credenciales OCI no encontradas o inválidas. Usando almacenamiento local.")
+            self._activar_modo_local("Credenciales OCI no encontradas o clave .pem no existe. Usando almacenamiento local.")
         else:
             raise RuntimeError("No se pudo autenticar con OCI y allow_local_fallback está desactivado.")
+
+    def is_configured(self) -> bool:
+        """Indica si el cliente OCI está autenticado y conectado a la nube (no en modo fallback local)."""
+        return not self.is_local_mode and self.client is not None
 
     def _activar_modo_local(self, razon: str) -> None:
         """Activa el modo de persistencia local en disco."""
@@ -244,6 +252,17 @@ class OCIStorageManager:
 
         remote_name = f"activos/{date_folder}/{filename}"
         return self.upload_json_asset(data=data, object_name=remote_name)
+
+    def upload_asset(
+        self,
+        data: Union[Dict[str, Any], List[Any], str, bytes],
+        motor: Optional[str] = None,
+        object_name: Optional[str] = None,
+    ) -> str:
+        """Sube un paquete y retorna el nombre del objeto subido."""
+        res = self.upload_json_asset(data=data, object_name=object_name, object_name_suffix=motor)
+        return str(res.get("object_name", ""))
+
 
     def upload_file(
         self,

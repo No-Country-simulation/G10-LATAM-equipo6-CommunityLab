@@ -95,6 +95,14 @@ def get_n8n_webhook_url() -> str:
     )
 
 
+def get_n8n_local_webhook_url() -> str:
+    """Retorna la URL del Webhook de n8n para entorno local/túnel."""
+    return (
+        os.getenv("N8N_LOCAL_WEBHOOK_URL", "").strip()
+        or "http://localhost:5678/webhook/communitylab-ingesta"
+    )
+
+
 def get_n8n_webhook_base() -> str:
     """Retorna el origin base (ej: http://147.15.9.116:5678 o http://localhost:5678) de n8n."""
     from urllib.parse import urlparse
@@ -136,6 +144,21 @@ def get_channel_processing_engine() -> str:
 def should_autostart_bots() -> bool:
     """Retorna True si los bots deben iniciar automáticamente al arrancar la app."""
     return os.getenv("AUTOSTART_BOTS", "false").strip().lower() in ("true", "1", "yes")
+
+
+def is_telegram_enabled() -> bool:
+    """Verifica si el servicio de Telegram está habilitado (default True)."""
+    return os.getenv("TELEGRAM_ENABLED", "true").strip().lower() in ("true", "1", "yes", "on")
+
+
+def is_discord_enabled() -> bool:
+    """Verifica si el servicio de Discord está habilitado (default True)."""
+    return os.getenv("DISCORD_ENABLED", "true").strip().lower() in ("true", "1", "yes", "on")
+
+
+def is_slack_enabled() -> bool:
+    """Verifica si el servicio de Slack está habilitado (default True)."""
+    return os.getenv("SLACK_ENABLED", "true").strip().lower() in ("true", "1", "yes", "on")
 
 
 def get_n8n_channel_webhook_url(canal: str) -> str:
