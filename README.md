@@ -6,13 +6,16 @@
 ---
 
 ## 📌 Descripción del Proyecto
-listos para publicar**:
-- 💼 **Publicaciones inspiradoras para LinkedIn & X (Twitter)** a partir de contrataciones y logros de estudiantes.
-- 📰 **Resúmenes semanales (Community Highlights)** y secciones destacadas para Newsletters.
-- 💡 **Preguntas Frecuentes (FAQs) y Tips Técnicos** detectados automáticamente desde las dudas recurrentes.
-- 🤖 **Bots Omnicanal en Vivo:** Escucha activa y bidireccional en tiempo real para **Telegram** (`@G10_Latam_06_bot`), **Discord** (`G10-LATAM-06`) y **Slack** (Socket Mode), con conmutación dinámica de motor (Python puro o n8n).
-- ☁️ **Persistencia en la nube:** almacenamiento seguro y estructurado de los activos en **Oracle Cloud Infrastructure (OCI) Object Storage (Always Free)**.
-- 🎨 **Panel de Curaduría NovaEdu (Streamlit):** interfaz rediseñada con paleta profesional (Deep Navy / Electric Blue / Amber Gold) para que el equipo de Community Managers y Marketing apruebe, edite y gestione los copys antes de publicarlos.
+
+**CommunityLab** es una plataforma inteligente de escucha activa, transformación y curaduría automatizada de contenido para comunidades técnicas de aprendizaje (como Discord, Telegram, Slack o lotes de datos). 
+
+Extrae valor orgánico generado por estudiantes y lo convierte en activos listos para su distribución:
+- 💼 **Publicaciones inspiradoras para LinkedIn & X (Twitter):** Generadas a partir de contrataciones, certificaciones y logros de estudiantes.
+- 📰 **Resúmenes semanales (Community Highlights):** Secciones estructuradas para Newsletters.
+- 💡 **Preguntas Frecuentes (FAQs) y Tips Técnicos:** Detectados y resueltos automáticamente a partir de dudas recurrentes.
+- 🤖 **Bots Omnicanal en Vivo:** Escucha activa bidireccional en tiempo real para **Telegram** (`@G10_Latam_06_bot`), **Discord** (`G10-LATAM-06`) y **Slack** (Socket Mode), con conmutación dinámica entre motor Python puro y n8n.
+- ☁️ **Persistencia en la Nube:** Almacenamiento seguro, tipado y deduplicado en **Oracle Cloud Infrastructure (OCI) Object Storage (Tier Always Free)**.
+- 🎨 **Panel de Curaduría NovaEdu (Streamlit Modular):** Interfaz rediseñada en componentes desacoplados (`src/ui/components` y `src/ui/views`) con control de seguridad administrativa (`SETTINGS_ADMIN_KEY`), selección de fuentes (OCI vs Local) y panel de edición de copys.
 
 ---
 
@@ -80,7 +83,9 @@ flowchart TD
 
 ```text
 ├── docker-compose.yml                # Despliegue de n8n (Local & OCI Compute VM)
-├── .env.example                      # Plantilla de variables de entorno (Gemini, OCI, n8n, Bots)
+├── .env.example                      # Plantilla sanitizada de variables de entorno (Gemini, OCI, n8n, Bots, Admin Key)
+├── config/
+│   └── settings.example.json         # Plantilla estructurada de configuración del backend
 ├── README.md                         # Documentación general y arquitectura
 ├── backend-pipeline.md               # Guía técnica profunda del Backend y persistencia OCI
 ├── PM_Files/                         # Gestión del Proyecto y Metodología Ágil
@@ -99,7 +104,12 @@ flowchart TD
 │   ├── cloud_oci/                    # Conector con Oracle Cloud Infrastructure Object Storage
 │   ├── ingestion/                    # Lectura, validación, batching y deduplicación
 │   ├── pipeline.py                   # Pipeline Python E2E y CLI
-│   ├── ui/                           # Panel de curaduría NovaEdu y orquestador en Streamlit
+│   ├── ui/                           # Panel de curaduría NovaEdu modular en Streamlit
+│   │   ├── components/               # Componentes reusables (header, sidebar, editor, preview, post_list)
+│   │   ├── views/                    # Vistas aisladas (dashboard, curation, ingestion, storage, connections, settings, observability)
+│   │   ├── scripts/                  # Adaptadores de datos, servicios UI, estado y estilos
+│   │   ├── config_manager.py         # Gestor de doble persistencia (.env + JSON)
+│   │   └── app.py                    # Punto de entrada principal de la app Streamlit
 │   └── utils/                        # Logging y utilidades transversales
 └── tests/                            # Suite automatizada (73/73 pruebas pasando)
 ```

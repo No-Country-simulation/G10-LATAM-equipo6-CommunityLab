@@ -203,14 +203,16 @@ gantt
   - [x] **Pruebas de Publicación Directa en LinkedIn & X / Twitter (Investigación & POC - Max Ferrer):**
     - **LinkedIn:** Superación de la restricción de 60 días para páginas corporativas mediante creación de página suplementaria vinculada al perfil ([Hackathon ONE G10 Team 6](https://www.linkedin.com/company/hackaton-one-g10-team-6/)). Validación exitosa de publicación automatizada vía `cURL` lista para integrarse.
     - **X (Twitter):** Evaluación de costos y restricciones de planes de pago de la API oficial; investigación de vías alternativas para preservar el principio 100% Free de la Hackathon.
-  - [ ] **Adaptación del Nuevo Template UI Streamlit (Carol Huarancay & Max Ferrer):**
-    - En desarrollo activo como template Python/Streamlit basado en los mockups de diseño de Carol Arancay (`@Caroli2812`).
-    - Estructuración modular de navegación lateral:
-      - 📊 *Dashboard de la Comunidad:* Métricas globales, gráficos de volumen por canal y sentimiento LLM.
-      - 📡 *Fuentes Activas:* Monitoreo y control directo de bots omnicanal (Telegram, Discord, Slack) e ingesta en vivo.
-      - 📝 *Curaduría de Contenido:* Bandeja de pendientes, editor central y preview interactivo multidispositivo (LinkedIn, X, Discord, Slack).
-      - ☁️ *OCI & Activo Digital:* Explorador de almacenamiento OCI y paquetes generados.
-      - ⚙️ *Settings / Configuración:* Gestión unificada de variables de entorno (38 detectadas, 12 sensibles) por pestañas temáticas (Canales/Bots, LLMs, OCI, n8n, Infra).
+  - [x] **Adaptación del Nuevo Template UI Streamlit Modular (Carol Huarancay, Max Ferrer & César Cely):**
+    - Despliegue modular completado y unificado en la rama `main` (`src/ui/components` y `src/ui/views`).
+    - Navegación lateral estructurada en 7 secciones:
+      - 📊 *Dashboard de la Comunidad:* Métricas globales, gráficos por canal y sentimiento LLM.
+      - 📝 *Curaduría Humana Tri-Panel:* Bandeja de pendientes, editor central y preview interactivo con selector de fuente OCI vs Local y solución al cálculo de respuestas IA.
+      - 📥 *Procesamiento e Ingesta:* Carga por lotes y conmutación de motor Dual (Python / n8n).
+      - ☁️ *Almacenamiento OCI:* Explorador de objetos persistidos, volumen en nube y enlaces PAR.
+      - 📡 *Conexiones & Bots:* Monitoreo y control directo de bots omnicanal (Telegram, Discord, Slack).
+      - ⚙️ *Settings & Seguridad:* Gestión unificada de variables de entorno protegida con Clave de Verificación Administrativa (`SETTINGS_ADMIN_KEY`).
+      - 🩺 *Observabilidad & Logs:* Visor de logs del sistema en tiempo real.
 * **Jueves:** *Sprint Demo Meet S4*. Demostración omnicanal en vivo con Telegram, Discord, Slack y panel de curaduría NovaEdu en OCI.
 * **Fin de semana:** Subir entregables a No Country.
 

@@ -3,9 +3,9 @@
 **Proyecto:** CommunityLab — Hackathon ONE G10 (Oracle & Alura / No Country)  
 **Equipo:** Equipo 6 - LATAM  
 **Destinatarios:** Integrantes del Equipo (Célula Frontend, Célula Cloud, Célula IA & Mentores)  
-**Fecha:** 30 de septiembre de 2026  
+**Fecha:** 6 de octubre de 2026  
 **Rama Oficial:** `main`  
-**Estado:** 100% Funcional — 73/73 Tests Unitarios e Integrales Pasando (Bots Omnicanal & UI NovaEdu Integrados)
+**Estado:** 100% Funcional — 73/73 Tests Unitarios e Integrales Pasando (Bots Omnicanal, UI NovaEdu Modular & Control de Seguridad de Settings)
 
 ---
 
@@ -17,9 +17,9 @@
 2. **Showcase de Proyectos:** Casos de estudio y proyectos construidos por la comunidad (`marketing_showcase.json`).
 3. **Contenido Educativo y FAQs Dinámicas:** Tips técnicos paso a paso para resolver dudas recurrentes de los estudiantes (`faqs_soporte_tecnico.json`).
 4. **Métricas de Salud y Feedback:** Monitoreo de sentimiento, felicitaciones y áreas de mejora (`metricas_feedback_comunidad.json`).
-5. **Persistencia Cloud-Native en OCI:** Almacenamiento seguro en **Oracle Cloud Infrastructure (OCI) Object Storage** en la capa Always Free (`communitylab-activos-marketing`), eliminando la necesidad de persistir JSONs redundantes en el disco de la VM (Arquitectura Stateless).
+5. **Persistencia Cloud-Native en OCI:** Almacenamiento seguro y estructurado de los activos en **Oracle Cloud Infrastructure (OCI) Object Storage** en la capa Always Free (`communitylab-activos-marketing`), eliminando la necesidad de persistir JSONs redundantes en el disco de la VM (Arquitectura Stateless).
 6. **Bots Omnicanal en Vivo:** Escucha activa y bidireccional en segundo plano para Telegram (`@G10_Latam_06_bot`), Discord (`G10-LATAM-06`) y Slack (Socket Mode) con auto-arranque opcional (`AUTOSTART_BOTS=true`).
-7. **Panel de Curaduría Humana NovaEdu (Streamlit):** Interfaz interactiva donde los Community Managers pueden filtrar, editar, aprobar (`🟢 APROBADO`), descartar (`🔴 DESCARTADO`) o marcar como leídos (`🔵 LEÍDO`) los activos generados.
+7. **Panel de Curaduría Humana NovaEdu (Streamlit Modular):** Interfaz desacoplada en 7 vistas temáticas (`dashboard`, `curation`, `ingestion`, `storage`, `connections`, `settings`, `observability`) con selector de fuente OCI/Local, visualizador de logs y control de autorización administrativa (`SETTINGS_ADMIN_KEY`).
 
 ---
 
@@ -66,6 +66,9 @@ flowchart TD
 ## 📁 3. Estructura de Módulos del Backend
 
 ```text
+├── config/                               # Configuración estructurada del backend
+│   ├── settings.json                     # Persistencia JSON local
+│   └── settings.example.json             # Plantilla de configuración
 ├── data/                                 # Datasets y almacenamiento local
 │   ├── interacciones_ejemplo.json        # Dataset oficial con 15 casos de prueba
 │   ├── curaduria_aprobados.json          # Registro de decisiones de los Community Managers
@@ -75,32 +78,45 @@ flowchart TD
 │   └── communitylab-YYYY-MM-DD.log       # Archivo de auditoría generado por fecha
 ├── n8n/workflows/                        # Workflows de n8n
 │   ├── communitylab_ingesta_local_webhook.json # Flujo adaptado con Webhook HTTP
-│   ├── communitylab_ingesta_llm.json     # Flujo original del equipo (intacto)
-│   ├── jmedinag_WF_002.json              # Flujo de José Medina (intacto)
-│   └── ingestion_groq_subflow.json       # Subflujo de Groq (intacto)
+│   ├── communitylab_ingesta_llm.json     # Flujo original del equipo
+│   ├── jmedinag_WF_002.json              # Flujo de José Medina
+│   └── ingestion_groq_subflow.json       # Subflujo de Groq
 ├── src/                                  # Código fuente principal
 │   ├── ai_engine/                        # Modelos Pydantic e inferencia con Gemini
 │   │   ├── schemas.py                    # Modelos de datos tipados (Pydantic V2)
 │   │   ├── gemini_service.py             # Cliente oficial google-genai con fallback y backoff
 │   │   ├── prompt_templates.json         # Plantillas de System Prompt y User Prompt
 │   │   └── validator.py                  # Utilidades de limpieza de JSON/Markdown
+│   ├── channels/                         # Integración omnicanal en vivo
+│   │   ├── telegram_bot.py               # Bot de Telegram en hilo secundario
+│   │   ├── discord_bot.py                # Bot de Discord en WebSocket Gateway
+│   │   ├── slack_bot.py                  # Bot de Slack en Socket Mode
+│   │   └── bot_manager.py                # Gestor OmnichannelBotManager
 │   ├── cloud_oci/                        # Conector con Oracle Cloud Infrastructure
 │   │   └── storage_client.py             # OCIStorageManager (Cloud + Local Fallback)
 │   ├── ingestion/                        # Carga, batching y deduplicación
 │   │   └── data_loader.py                # Lectura, validación y filtros de exclusión
 │   ├── pipeline.py                       # Orquestador E2E y soporte para CLI
-│   ├── utils/                            # Utilidades compartidas
-│   │   └── logger.py                     # Logger rotativo diario (thread-safe)
-│   └── ui/                               # Capa de presentación y servicios
-│       ├── services.py                   # Lógica de negocio desacoplada de la UI
-│       └── app.py                        # Panel de Curaduría y Orquestador en Streamlit
-└── tests/                                # Suite completa de 44 pruebas unitarias
+│   ├── ui/                               # Capa de presentación y servicios modular
+│   │   ├── components/                   # Componentes visuales (header, sidebar, editor, preview, post_list)
+│   │   ├── views/                        # Vistas temáticas (dashboard, curation, ingestion, storage, connections, settings, observability)
+│   │   ├── scripts/                      # data_adapter.py (normalización OCI), services.py, state.py, styles.py
+│   │   ├── config_manager.py             # Gestor de doble persistencia (.env + settings.json)
+│   │   └── app.py                        # Punto de entrada Streamlit
+│   └── utils/                            # Utilidades compartidas
+│       ├── config.py                     # Helper de configuración y toggles de servicios
+│       └── logger.py                     # Logger rotativo diario (thread-safe)
+└── tests/                                # Suite completa de 73 pruebas unitarias e integrales
     ├── test_ai_engine.py                 # Validación de esquemas Pydantic
+    ├── test_bot_manager.py               # Pruebas del gestor omnicanal de bots
+    ├── test_channels.py                  # Pruebas de integración de Telegram, Discord y Slack
     ├── test_cloud_oci.py                 # Pruebas del gestor de OCI
+    ├── test_config.py                    # Pruebas de configuración y variables
     ├── test_gemini_service.py            # Pruebas de inferencia y resiliencia
     ├── test_ingestion.py                 # Pruebas de ingesta y deduplicación
+    ├── test_oci_storage.py               # Pruebas de almacenamiento en OCI
     ├── test_pipeline.py                  # Pruebas de ejecución E2E
-    └── test_ui_services.py               # Pruebas de acumulación, logs y n8n
+    └── test_ui_services.py               # Pruebas de servicios UI y persistencia
 ```
 
 ---
