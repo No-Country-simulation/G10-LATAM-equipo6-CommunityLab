@@ -1,0 +1,198 @@
+{
+  "name": "CommunityLab_Generador_Imagenes_Post",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "generar-imagen-post",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -1280,
+        -80
+      ],
+      "id": "14215146-1769-43f2-8505-6c1afa21c98e",
+      "name": "Webhook",
+      "webhookId": "317cf765-dc33-4e8e-b126-3e812a4a1a44"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-3.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-3.5-flash"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Eres un experto en generación de prompts para IA visual. Genera un prompt en inglés conciso y detallado para una ilustración 3D moderna e isométrica.\nContenido del post: \" + ({{ $json.body.solucion_tecnica }} || '') + \"Instrucción personalizada del usuario: \" + ({{ $json.body.instruccion_custom }} || 'Estilo corporativo limpio, colores azul y violeta, sin texto dentro de la imagen.')\nSolo debes devolver el prompt sin ningún texto adicional"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        -1120,
+        -80
+      ],
+      "id": "f7ee47c8-1170-478c-9b09-7ccf450cc353",
+      "name": "Message a model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "rfi139MvgCbV81pc",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "for (const item of $input.all()) {\n  // Se obtiene el prompt devuelto por Gemini\n  const rawPrompt = item.json.text || '';\n  \n  // Limpia saltos de línea y espacios dobles\n  const cleanPrompt = rawPrompt.replace(/[\\r\\n]+/g, ' ').trim();\n  \n  // Codifica la cadena para incluirla de forma segura en una URL\n  item.json.prompt_encoded = encodeURIComponent(cleanPrompt);\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -800,
+        -80
+      ],
+      "id": "8d8d8801-00e2-4ced-ad24-7aff30a2498b",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "operation": "upload",
+        "bucketName": "hackathon-data-bucket",
+        "fileName": "=previews/preview_{{ $('Webhook').item.json.body.id_post || 'temp' }}.png",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.s3",
+      "typeVersion": 1,
+      "position": [
+        -432,
+        -80
+      ],
+      "id": "49621eb8-2bc2-4d14-8d4c-0f4e843d5280",
+      "name": "Upload a file",
+      "credentials": {
+        "s3": {
+          "id": "wF0laNIEtgqr9a2D",
+          "name": "S3 account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"status\": \"success\",\n  \"id_post\": \"={{ $('Webhook').item.json.body.id_post || '' }}\",\n  \"image_url\": \"={{ 'https://objectstorage.sa-saopaulo-1.oraclecloud.com/n/tu_namespace_oci/b/communitylab-activos-marketing/o/' + $json.key }}\"\n}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        -224,
+        -80
+      ],
+      "id": "fb9f6ac4-5000-49e1-a290-7a9e962df7c1",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "url": "=https://image.pollinations.ai/prompt/{{ encodeURIComponent($('Message a model').item.json.text) }}?width=1024&height=1024&seed={{ Math.floor(Math.random() * 99999) }}&model=flux&nologo=true",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        -624,
+        -80
+      ],
+      "id": "91ff80c8-7db9-4ec6-bcb6-4319f9cb8b75",
+      "name": "HTTP Request"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload a file": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Upload a file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "9b1bc5b6-d5af-4e67-99ce-8f040b1a0f62",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "cb0b9a3b8b392f0b0fbc26be213326cbdfd285ed78e8eb9be9b7984b7130dd64"
+  },
+  "nodeGroups": [],
+  "id": "nmhDhDoFWzB9adP0",
+  "tags": []
+}
