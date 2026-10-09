@@ -1,0 +1,98 @@
+{
+  "metadata_paquete": {
+    "version": "1.0.0",
+    "generado_en": "2026-09-27T22:27:02.358656+00:00",
+    "archivo_origen": "interacciones_ejemplo.json",
+    "total_registros_origen": 15,
+    "total_procesados_exitosamente": 3,
+    "total_fallidos": 0
+  },
+  "metricas": {
+    "distribucion_sentimiento": {
+      "positivo": 2,
+      "neutro": 1,
+      "negativo": 0
+    },
+    "distribucion_tipo_contenido": {
+      "logro_contratacion": 2,
+      "duda_tecnica": 1,
+      "feedback_general": 0,
+      "showcase": 0
+    },
+    "total_posts_linkedin_generados": 2,
+    "total_tips_faq_generados": 1
+  },
+  "activos": [
+    {
+      "lote_id": "py_222702",
+      "procesado_en": "2026-09-27T22:27:02.358656+00:00",
+      "motor_orquestacion": "python_gemini",
+      "interaccion": {
+        "id": "msg_001",
+        "autor": "Mariana Souza",
+        "canal": "#logros-y-empleos",
+        "tipo": "testimonio",
+        "texto": "Comunidad, quede seleccionada para el puesto de Desarrolladora Junior de IA! El proyecto del curso de LangChain y OCI que construi en mi portfolio marco toda la diferencia en la entrevista tecnica. Muy agradecida con la comunidad por todo el apoyo!"
+      },
+      "activo": {
+        "sentimiento": "positivo",
+        "tipo_contenido": "logro_contratacion",
+        "temas_clave": [
+          "LangChain",
+          "OCI",
+          "Inteligencia Artificial",
+          "Desarrollo Web"
+        ],
+        "post_linkedin": "Hoy quiero celebrar un gran hito en mi carrera: ¡fui seleccionada como Desarrolladora Junior de IA! 🚀 Durante el proceso de entrevista técnica, me di cuenta de que la teoría no lo es todo; lo que realmente marca la diferencia es construir y demostrar. Mi proyecto integrando LangChain y OCI en el portfolio fue la clave para destacar. La lección de hoy: nunca dejes de construir proyectos reales. Gracias a todos los que me apoyaron en este camino. ¿Y tú, qué proyecto estás construyendo hoy para tu futuro? #OracleONE #AluraLATAM #TechTalent #AI",
+        "tip_tecnico_faq": null
+      }
+    },
+    {
+      "lote_id": "py_222702",
+      "procesado_en": "2026-09-27T22:27:02.358656+00:00",
+      "motor_orquestacion": "python_gemini",
+      "interaccion": {
+        "id": "msg_002",
+        "autor": "Lucas Albuquerque",
+        "canal": "#dudas-langgraph",
+        "tipo": "pregunta_tecnica",
+        "texto": "Tengo dudas sobre como estructurar los nodos condicionales en LangGraph cuando la respuesta del LLM necesita reintento. Alguien tiene un ejemplo practico de router?"
+      },
+      "activo": {
+        "sentimiento": "neutro",
+        "tipo_contenido": "duda_tecnica",
+        "temas_clave": [
+          "LangGraph",
+          "LLM",
+          "Python"
+        ],
+        "post_linkedin": null,
+        "tip_tecnico_faq": "Para estructurar nodos condicionales con reintentos en LangGraph, define una función router que evalúe el estado actual (por ejemplo, validando si la respuesta del LLM cumple con un criterio específico). Si la validación falla, el router debe retornar el nombre del nodo encargado de corregir o reintentar la llamada al LLM; si es exitosa, dirige al siguiente paso o finalización del grafo. Asegúrate de incluir un contador de intentos en el estado para evitar bucles infinitos."
+      }
+    },
+    {
+      "lote_id": "py_222702",
+      "procesado_en": "2026-09-27T22:27:02.358656+00:00",
+      "motor_orquestacion": "python_gemini",
+      "interaccion": {
+        "id": "msg_003",
+        "autor": "Carlos Mendoza",
+        "canal": "#logros-y-empleos",
+        "tipo": "testimonio",
+        "texto": "Ayer me confirmaron mi primer contrato como Data Analyst para una startup de Chile gracias a los proyectos que desarrollamos en las formaciones de Alura y Oracle ONE. No se rindan, el esfuerzo constante rinde frutos!"
+      },
+      "activo": {
+        "sentimiento": "positivo",
+        "tipo_contenido": "logro_contratacion",
+        "temas_clave": [
+          "Data Analyst",
+          "Alura",
+          "Oracle ONE"
+        ],
+        "post_linkedin": "¡Lo logré! Ayer me confirmaron mi primer contrato como Data Analyst para una startup en Chile. 🎉 Este gran paso es el resultado de horas de estudio, práctica y, sobre todo, de los proyectos prácticos que desarrollé en las formaciones de Alura y Oracle ONE. La lección que me llevo es que la consistencia le gana al talento natural cuando este último no trabaja duro. A todos los que siguen formándose y buscando su primera oportunidad en tecnología: no se rindan, el esfuerzo constante siempre rinde frutos. ¡Vamos por más! 🚀 #OracleONE #AluraLATAM #TechTalent #DataAnalytics",
+        "tip_tecnico_faq": null
+      }
+    }
+  ],
+  "fallidos": []
+}
