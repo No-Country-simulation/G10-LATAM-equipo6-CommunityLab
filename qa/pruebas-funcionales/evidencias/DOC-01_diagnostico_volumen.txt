@@ -1,0 +1,23 @@
+﻿DOC-01 - Diagnóstico: el volumen externo de n8n no existe
+Fecha: 2026-10-11 20:07:50 -03:00
+Commit probado: 36f8ca8
+
+> docker volume ls
+DRIVER    VOLUME NAME
+
+> findstr /n /i "external n8n_data" docker-compose.yml
+42:      - NODE_FUNCTION_ALLOW_EXTERNAL=*
+55:      - n8n_data:/home/node/.n8n
+59:  n8n_data:
+60:    external: true
+61:    name: n8n-hackathon_n8n_data
+
+> docker compose up -d
+docker : external volume "n8n-hackathon_n8n_data" not found
+En línea: 14 Carácter: 4
++ L (docker compose up -d 2>&1 | Out-String)
++    ~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (external volume...data" not found:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+

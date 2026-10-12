@@ -1,0 +1,16 @@
+﻿N8N-01 - Acceso y autenticación de n8n (puerto 5678)
+Fecha: 2026-10-11 20:58:13 -03:00
+Commit probado: 36f8ca8
+
+> GET / (código y redirección)
+HTTP 200 redirect=
+
+
+> GET /healthz
+{"status":"ok"}
+
+
+> GET /rest/workflows (sin credenciales)
+{"status":"error","message":"Unauthorized"}
+HTTP 401
+

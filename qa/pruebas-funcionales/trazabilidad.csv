@@ -1,0 +1,58 @@
+﻿"ID","Backlog","Prueba","Estado","Evidencias","Ultima","Nota"
+"INF-01","Infraestructura y setup base","Terraform fmt, init, validate y plan","No concluyente","-","-","validate corrió sin confirmar que existan archivos tf. Plan pendiente"
+"INF-02","Infraestructura y setup base","Aprovisionamiento de la VM","Pendiente","-","-",
+"INF-03","Infraestructura y setup base","Acceso SSH","Pendiente","-","-",
+"INF-04","Infraestructura y setup base","Recursos y SWAP","Pendiente","-","-",
+"INF-05","Infraestructura y setup base","Seguridad del repositorio (secretos)","Pendiente","-","-",
+"INF-06","Infraestructura y setup base","Exposición de puertos","Parcial","INF-06.txt","2026-10-11 19:18","22 5678 y 8501 abiertos y 5432 cerrado. Falta verificar login en N8N-01 y UI-07"
+"DOC-01","Contenedores Docker","Levantar entorno Docker","Parcial","DOC-01_diagnostico_volumen.txt, DOC-01_ps.txt, DOC-01_up.txt, DOC-01_volumen_creado.txt","2026-10-11 20:34","Falló al inicio por volumen externo inexistente. Con el volumen creado a mano n8n quedó Up. El compose solo define n8n"
+"DOC-02","Contenedores Docker","Logs limpios","Pendiente","-","-",
+"DOC-03","Contenedores Docker","Reproducibilidad desde cero","Pendiente","-","-","El primer intento falló por el volumen externo"
+"DOC-04","Contenedores Docker","Persistencia tras restart","Bloqueado","-","-","Sin servicio de base de datos en el compose actual (por confirmar)"
+"DB-01","PostgreSQL + pgvector","Conexión a PostgreSQL","Bloqueado","-","-","Sin servicio PostgreSQL en el compose actual (por confirmar)"
+"DB-02","PostgreSQL + pgvector","Extensión vector","Bloqueado","-","-","Depende de DB-01"
+"DB-03","PostgreSQL + pgvector","Esquema","Bloqueado","-","-","Depende de DB-01"
+"DB-04","PostgreSQL + pgvector","Búsqueda semántica","Bloqueado","-","-","Depende de DB-01"
+"DB-05","PostgreSQL + pgvector","Datos inválidos","Bloqueado","-","-","Depende de DB-01"
+"N8N-01","Orquestador n8n","Acceso y autenticación","Pendiente","N8N-01.txt","2026-10-11 20:58",
+"N8N-02","Orquestador n8n","Workflows importados y activos","En curso","N8N-02.txt, N8N-02_activacion.txt","2026-10-11 22:31","8 workflows en el repo con rutas duplicadas. Falta confirmar importación y activación"
+"N8N-03","Orquestador n8n","Webhook con mensaje válido","Falló","-","-","HTTP 500 Error in workflow en entorno local. Causa por determinar"
+"N8N-04","Orquestador n8n","Webhook con entradas inválidas","No concluyente","N8N-04.csv, N8N-04.txt, N8N-04_contenedor.txt, N8N-04_respuesta_control.txt","2026-10-11 22:58","El control dio 500. JSON malformado 422 y GET 404"
+"N8N-05","Orquestador n8n","Entrada y salida por nodo","Pendiente","-","-",
+"PY-01","Sistema dual: pipelines Python (fallback)","Entorno Python","Pendiente","-","-",
+"PY-02","Sistema dual: pipelines Python (fallback)","Ejecución aislada","Pendiente","-","-",
+"PY-03","Sistema dual: pipelines Python (fallback)","Paridad n8n vs Python","Pendiente","-","-",
+"PY-04","Sistema dual: pipelines Python (fallback)","Failover real","Pendiente","-","-",
+"PY-05","Sistema dual: pipelines Python (fallback)","Recuperación","Pendiente","-","-",
+"PY-06","Sistema dual: pipelines Python (fallback)","Sobrecarga","Pendiente","-","-",
+"PY-07","Sistema dual: pipelines Python (fallback)","Tests existentes","Pendiente","-","-",
+"IA-01","APIs de IA, prompts e imágenes","Conexión Gemini","Pendiente","-","-",
+"IA-02","APIs de IA, prompts e imágenes","Respaldo OpenAI","Pendiente","-","-",
+"IA-03","APIs de IA, prompts e imágenes","Análisis de sentimiento","Pendiente","-","-",
+"IA-04","APIs de IA, prompts e imágenes","Voz de marca","Pendiente","-","-",
+"IA-05","APIs de IA, prompts e imágenes","Respuesta al usuario","Pendiente","-","-",
+"IA-06","APIs de IA, prompts e imágenes","Chunking y lematización","Pendiente","-","-",
+"IA-07","APIs de IA, prompts e imágenes","Prompt injection","Pendiente","-","-",
+"IA-08","APIs de IA, prompts e imágenes","Límites de API","Pendiente","-","-",
+"IA-09","APIs de IA, prompts e imágenes","Imágenes Pollinations","Pendiente","-","-",
+"LOG-01","Lógica condicional","Pregunta frecuente a FAQ","Pendiente","-","-",
+"LOG-02","Lógica condicional","Elogio genera post","Pendiente","-","-",
+"LOG-03","Lógica condicional","Queja grave emite alerta","Pendiente","-","-",
+"LOG-04","Lógica condicional","Mensaje ambiguo","Pendiente","-","-",
+"LOG-05","Lógica condicional","Mensaje en dos categorías","Pendiente","-","-",
+"UI-01","Panel Streamlit","Carga de Streamlit","Pendiente","-","-",
+"UI-02","Panel Streamlit","Lista de publicaciones","Pendiente","-","-",
+"UI-03","Panel Streamlit","Aprobar, rechazar y editar","Pendiente","-","-",
+"UI-04","Panel Streamlit","Lista vacía","Pendiente","-","-",
+"UI-05","Panel Streamlit","Textos largos y acentos","Pendiente","-","-",
+"UI-06","Panel Streamlit","Responsive","Pendiente","-","-",
+"UI-07","Panel Streamlit","Acceso sin autenticación","Pendiente","-","-",
+"OBJ-01","JSON en OCI Object Storage","JSON en el bucket","Pendiente","-","-",
+"OBJ-02","JSON en OCI Object Storage","JSON válido","Pendiente","-","-",
+"OBJ-03","JSON en OCI Object Storage","Nombres sin colisión","Pendiente","-","-",
+"OBJ-04","JSON en OCI Object Storage","Bucket privado","Pendiente","-","-",
+"OBJ-05","JSON en OCI Object Storage","Fallo de conexión al bucket","Pendiente","-","-",
+"E2E-01","Flujo extremo a extremo","Flujo completo con mensaje positivo","Pendiente","-","-",
+"E2E-02","Flujo extremo a extremo","Flujo completo con queja","Pendiente","-","-",
+"E2E-03","Flujo extremo a extremo","Flujo completo con pregunta frecuente","Pendiente","-","-",
+"E2E-04","Flujo extremo a extremo","Flujo completo con n8n apagado","Pendiente","-","-",
