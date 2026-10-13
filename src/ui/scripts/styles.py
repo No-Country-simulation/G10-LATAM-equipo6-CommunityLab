@@ -181,10 +181,33 @@ section[data-testid="stSidebar"] a, section[data-testid="stSidebar"] a:visited {
 
 /* Botones */
 .stButton > button {{ border-radius:10px; font-weight:700; border:1px solid {palette['primary']}; color:{palette['primary']}; background:{palette['panel']}; transition: all 0.2s ease; }}
+.stButton > button[kind="secondary"],
+.stButton > button[data-testid="stBaseButton-secondary"] {{
+    background:{palette['panel']} !important;
+    color:{palette['primary']} !important;
+    border:1px solid {palette['primary']} !important;
+}}
+.stButton > button[kind="secondary"] p,
+.stButton > button[data-testid="stBaseButton-secondary"] p {{
+    color:{palette['primary']} !important;
+}}
 .stButton > button[kind="primary"], .stButton > button[data-testid="stBaseButton-primary"] {{
     background:{palette['primary']}; color:#fff; border:0; box-shadow: 0 4px 12px rgba(67, 75, 178, 0.2); }}
 .stButton > button:hover {{ border-color:{palette['primary']}; color:{palette['primary']}; transform: translateY(-1px); }}
+.stButton > button[kind="secondary"]:hover,
+.stButton > button[data-testid="stBaseButton-secondary"]:hover {{
+    border-color:{palette['primary']} !important;
+    color:{palette['primary']} !important;
+    background:{palette['primary_soft']} !important;
+}}
 .stButton > button[kind="primary"]:hover {{ color:#fff; filter:brightness(1.08); box-shadow: 0 6px 16px rgba(67, 75, 178, 0.3); }}
+[data-testid="stFileUploader"] button {{
+    background:{palette['panel']} !important;
+    color:{palette['primary']} !important;
+    border:1px solid {palette['primary']} !important;
+    border-radius:10px !important;
+    font-weight:700 !important;
+}}
 input, textarea, [data-baseweb="select"] > div {{ background:{palette['panel']} !important; color:{palette['ink']} !important; border-color:{palette['line']} !important; border-radius:10px !important; }}
 [data-testid="stMain"] [data-testid="stMarkdownContainer"] {{ color:{palette['ink']}; }}
 [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] {{ color:#E6E8FF; }}

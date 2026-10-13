@@ -10,6 +10,7 @@ import logging
 import os
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Set, Union
+from urllib.parse import quote, unquote, urlsplit, urlunsplit
 
 from src.ai_engine.schemas import CommunityInteraction, ProcessedCommunityAsset
 from src.cloud_oci.storage_client import OCIStorageManager
@@ -21,7 +22,7 @@ from src.ingestion.data_loader import (
 )
 from src.pipeline import CommunityLabPipeline
 from src.utils.logger import setup_logger
-from src.utils.config import get_n8n_webhook_url, is_production
+from src.utils.config import get_generar_imagen_webhook_url, get_n8n_webhook_url, is_production
 
 logger = setup_logger("CommunityLabUIServices")
 
@@ -484,6 +485,152 @@ def procesar_archivo_n8n_ui(
             paquete["metadata_paquete"]["persistencia_oci"] = {"status": "failed", "error": str(e)}
 
     return paquete
+
+
+def construir_payload_imagen_post(
+    id_post: str,
+    solucion_tecnica: str,
+    temas_clave: Optional[List[str]] = None,
+    instruccion_custom: str = "",
+) -> Dict[str, Any]:
+    """Arma el JSON que espera el webhook de generación de imagen."""
+    payload: Dict[str, Any] = {
+        "id_post": str(id_post).strip(),
+        "solucion_tecnica": solucion_tecnica.strip(),
+    }
+    temas = [str(t).strip() for t in (temas_clave or []) if str(t).strip()]
+    if temas:
+        payload["temas_clave"] = temas
+    instruccion = (instruccion_custom or "").strip()
+    if instruccion:
+        payload["instruccion_custom"] = instruccion
+    return payload
+
+
+def sanitizar_url_imagen(url: str) -> str:
+    """Quita el '=' inicial que a veces antepone n8n y espacios o comillas."""
+    limpia = str(url or "").strip().strip("'\"")
+    while limpia.startswith("="):
+        limpia = limpia[1:].strip()
+    return limpia
+
+
+def _codificar_objeto_oci(url: str) -> str:
+    """Codifica el nombre del objeto después de /o/, como hace la consola de OCI (`previews%2F...`)."""
+    partes = urlsplit(url)
+    marcador = "/o/"
+    indice = partes.path.find(marcador)
+    if indice == -1:
+        return url
+    prefijo = partes.path[: indice + len(marcador)]
+    objeto = quote(unquote(partes.path[indice + len(marcador) :]), safe="")
+    return urlunsplit((partes.scheme, partes.netloc, prefijo + objeto, partes.query, partes.fragment))
+
+
+def validar_url_imagen(url: str) -> str:
+    """Devuelve una URL http(s) usable en el editor, o explica por qué no se puede mostrar."""
+    limpia = _codificar_objeto_oci(sanitizar_url_imagen(url))
+    if not limpia.startswith(("http://", "https://")):
+        raise RuntimeError(
+            "n8n no devolvió una URL de imagen válida. "
+            f"Respuesta recibida: {url or '(vacía)'}"
+        )
+
+    problemas: List[str] = []
+    if "undefined" in limpia.rstrip("/").split("/")[-1]:
+        problemas.append(
+            "el archivo quedó como 'undefined' porque el flujo no usó id_post para nombrar preview_{id_post}.png"
+        )
+    if "tu_namespace" in limpia:
+        problemas.append("el namespace sigue siendo el ejemplo 'tu_namespace_oci'")
+    if problemas:
+        raise RuntimeError(
+            "n8n devolvió una URL que no se puede mostrar: "
+            + "; ".join(problemas)
+            + f". URL recibida: {limpia}"
+        )
+    return limpia
+
+
+def _normalizar_respuesta_imagen(resultado_raw: Any) -> Dict[str, Any]:
+    """Acepta el JSON directo de n8n o el envoltorio de items (`[{json: ...}]`)."""
+    data = resultado_raw
+    if isinstance(data, list):
+        data = data[0] if data else {}
+    if isinstance(data, dict) and isinstance(data.get("json"), dict):
+        data = data["json"]
+    if not isinstance(data, dict):
+        raise RuntimeError("El webhook de imagen no devolvió un objeto JSON.")
+    return data
+
+
+def generar_imagen_post(
+    id_post: str,
+    solucion_tecnica: str,
+    temas_clave: Optional[List[str]] = None,
+    instruccion_custom: str = "",
+    webhook_url: Optional[str] = None,
+    timeout_segundos: float = 180.0,
+) -> Dict[str, Any]:
+    """Pide a n8n una imagen para el post y devuelve la URL pública en OCI.
+
+    Args:
+        id_post: Identificador del activo. n8n lo usa como nombre `preview_{id_post}.png`.
+        solucion_tecnica: Copy del editor, contexto para el modelo.
+        temas_clave: Hashtags o categorías asociadas.
+        instruccion_custom: Ajuste visual opcional para regenerar.
+        webhook_url: URL del webhook. Si no se pasa, usa N8N_GENERAR_IMAGEN_WEBHOOK_URL.
+        timeout_segundos: Espera máxima. La generación de imagen puede tardar más de un minuto.
+
+    Returns:
+        Diccionario con `status`, `id_post` e `image_url`.
+    """
+    if not str(id_post).strip():
+        raise ValueError("El post no tiene id_post.")
+    if not solucion_tecnica or not solucion_tecnica.strip():
+        raise ValueError("El copy del editor está vacío. Escribe el texto antes de generar la imagen.")
+
+    url = (webhook_url or get_generar_imagen_webhook_url()).strip()
+    payload = construir_payload_imagen_post(
+        id_post=id_post,
+        solucion_tecnica=solucion_tecnica,
+        temas_clave=temas_clave,
+        instruccion_custom=instruccion_custom,
+    )
+
+    try:
+        import httpx
+
+        with httpx.Client(timeout=timeout_segundos) as client:
+            resp = client.post(url, json=payload, headers={"Content-Type": "application/json"})
+            if resp.status_code == 404:
+                raise RuntimeError(
+                    f"El webhook de imagen no está activo (404) en '{url}'. "
+                    "Si el flujo está abierto en el editor de n8n, usa la ruta /webhook-test/. "
+                    "Si ya está publicado, usa /webhook/generar-imagen-post."
+                )
+            resp.raise_for_status()
+            data = _normalizar_respuesta_imagen(resp.json())
+    except httpx.TimeoutException as exc:
+        raise TimeoutError(
+            "n8n no respondió a tiempo al generar la imagen. Vuelve a intentar en unos segundos."
+        ) from exc
+    except httpx.ConnectError as exc:
+        raise ConnectionError(
+            f"No fue posible conectar con n8n en '{url}'. Verifica que la VM (http://147.15.9.116:5678) esté en ejecución."
+        ) from exc
+
+    image_url = validar_url_imagen(str(data.get("image_url") or ""))
+    status = str(data.get("status") or "").strip().lower()
+    if status and status != "success":
+        detalle = data.get("message") or data.get("error") or data
+        raise RuntimeError(f"n8n no pudo generar la imagen: {detalle}")
+
+    return {
+        "status": "success",
+        "id_post": str(data.get("id_post") or id_post),
+        "image_url": image_url,
+    }
 
 
 def guardar_curaduria_humana(

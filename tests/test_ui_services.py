@@ -7,9 +7,13 @@ import pytest
 
 from src.ui.services import (
     cargar_paquete,
+    construir_payload_imagen_post,
+    generar_imagen_post,
     guardar_curaduria_humana,
     obtener_ultimos_paquetes,
     procesar_archivo_ui,
+    sanitizar_url_imagen,
+    validar_url_imagen,
 )
 
 
@@ -325,5 +329,83 @@ def test_obtener_ids_procesados_sesion(tmp_path: Path, monkeypatch):
         mock_path.side_effect = side_effect
         ids = obtener_ids_procesados_sesion(consultar_oci=False)
         assert ids == {"msg_001", "msg_002", "msg_003"}
+
+
+def test_construir_payload_imagen_post_omite_opcionales_vacios():
+    payload = construir_payload_imagen_post(
+        id_post="dc_1553172781007642635",
+        solucion_tecnica="  Copy del editor  ",
+        temas_clave=[" #LangChain ", "", "OCI"],
+        instruccion_custom="   ",
+    )
+    assert payload == {
+        "id_post": "dc_1553172781007642635",
+        "solucion_tecnica": "Copy del editor",
+        "temas_clave": ["#LangChain", "OCI"],
+    }
+
+
+def test_generar_imagen_post_devuelve_url(monkeypatch):
+    class FakeResponse:
+        status_code = 200
+
+        def raise_for_status(self):
+            return None
+
+        def json(self):
+            return {
+                "status": "success",
+                "id_post": "dc_155",
+                "image_url": "https://objectstorage.example/preview_dc_155.png",
+            }
+
+    class FakeClient:
+        def __init__(self, timeout):
+            self.timeout = timeout
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *args):
+            return False
+
+        def post(self, url, json, headers):
+            assert url.endswith("/webhook/generar-imagen-post")
+            assert json["id_post"] == "dc_155"
+            assert json["solucion_tecnica"] == "Texto del editor"
+            assert json["instruccion_custom"] == "estilo 3D"
+            assert headers["Content-Type"] == "application/json"
+            return FakeResponse()
+
+    monkeypatch.setattr("httpx.Client", FakeClient)
+    resultado = generar_imagen_post(
+        id_post="dc_155",
+        solucion_tecnica="Texto del editor",
+        temas_clave=["#OCI"],
+        instruccion_custom="estilo 3D",
+        webhook_url="http://147.15.9.116:5678/webhook/generar-imagen-post",
+    )
+    assert resultado["status"] == "success"
+    assert resultado["image_url"].endswith("preview_dc_155.png")
+
+
+def test_sanitizar_url_imagen_quita_igual_inicial():
+    cruda = "=https://objectstorage.example/n/ns/b/bucket/o/previews/preview_dc_155.png"
+    assert sanitizar_url_imagen(cruda).startswith("https://")
+    assert validar_url_imagen(cruda).endswith("preview_dc_155.png")
+
+
+def test_validar_url_imagen_codifica_barra_del_objeto_oci():
+    cruda = (
+        "https://objectstorage.sa-saopaulo-1.oraclecloud.com/n/gr8ogb5hbroe/"
+        "b/communitylab-activos-marketing/o/previews/preview_post_001.png"
+    )
+    assert validar_url_imagen(cruda).endswith("/o/previews%2Fpreview_post_001.png")
+
+
+def test_validar_url_imagen_rechaza_objeto_undefined():
+    cruda = "=https://objectstorage.sa-saopaulo-1.oraclecloud.com/n/tu_namespace_oci/b/communitylab-activos-marketing/o/undefined"
+    with pytest.raises(RuntimeError, match="undefined"):
+        validar_url_imagen(cruda)
 
 
