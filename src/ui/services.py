@@ -539,7 +539,10 @@ def _codificar_objeto_oci(url: str) -> str:
 
 def validar_url_imagen(url: str) -> str:
     """Devuelve una URL http(s) usable en el editor, o explica por qué no se puede mostrar."""
-    limpia = _codificar_objeto_oci(sanitizar_url_imagen(url))
+    cruda = sanitizar_url_imagen(url)
+    if cruda.startswith("data:image/"):
+        return cruda
+    limpia = _codificar_objeto_oci(cruda)
     if not limpia.startswith(("http://", "https://")):
         raise RuntimeError(
             "n8n no devolvió una URL de imagen válida. "
@@ -572,6 +575,32 @@ def _normalizar_respuesta_imagen(resultado_raw: Any) -> Dict[str, Any]:
     if not isinstance(data, dict):
         raise RuntimeError("El webhook de imagen no devolvió un objeto JSON.")
     return data
+
+
+def _url_visible_oci(url: str) -> str:
+    """Convierte una URL directa de OCI (bucket privado) en una PAR visible desde el navegador.
+
+    Si la URL ya es una PAR (`/p/`), no apunta al bucket configurado o falla la
+    generación, se devuelve sin cambios.
+    """
+    try:
+        partes = urlsplit(url)
+        if "objectstorage." not in partes.netloc or "/p/" in partes.path:
+            return url
+        from src.cloud_oci.storage_client import OCIStorageManager
+
+        sm = OCIStorageManager()
+        if sm.is_local_mode:
+            return url
+        marcador = f"/b/{sm.bucket_name}/o/"
+        indice = partes.path.find(marcador)
+        if indice == -1:
+            return url
+        objeto = unquote(partes.path[indice + len(marcador):])
+        return sm.get_display_url(objeto)
+    except Exception as exc:
+        logger.warning("No fue posible generar URL visible para %s: %s", url, exc)
+        return url
 
 
 def generar_imagen_post_python(
@@ -623,7 +652,8 @@ def generar_imagen_post_python(
     sm = OCIStorageManager()
     remote_path = f"previews/preview_{id_post}.png"
     sm.upload_bytes(image_bytes, remote_name=remote_path, content_type="image/png")
-    image_url = sm.get_public_url(remote_path)
+    # El bucket es privado: se entrega una PAR de solo lectura (o data URI en modo local)
+    image_url = sm.get_display_url(remote_path)
 
     return {
         "status": "success",
@@ -693,7 +723,7 @@ def generar_imagen_post(
             f"No fue posible conectar con n8n en '{url}'. Verifica que la VM (http://147.15.9.116:5678) esté en ejecución."
         ) from exc
 
-    image_url = validar_url_imagen(str(data.get("image_url") or ""))
+    image_url = _url_visible_oci(validar_url_imagen(str(data.get("image_url") or "")))
     status = str(data.get("status") or "").strip().lower()
     if status and status != "success":
         detalle = data.get("message") or data.get("error") or data

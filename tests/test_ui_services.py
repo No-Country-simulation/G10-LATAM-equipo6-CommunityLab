@@ -446,11 +446,11 @@ def test_generar_imagen_post_python_dual_engine(monkeypatch):
         assert remote_name == "previews/preview_post_python_01.png"
         return {"status": "success", "object_name": remote_name}
 
-    def mock_get_public_url(self, remote_name):
-        return f"https://objectstorage.us-ashburn-1.oraclecloud.com/n/ns/b/bucket/o/{remote_name}"
+    def mock_get_display_url(self, remote_name, expires_in_hours=None):
+        return f"https://objectstorage.us-ashburn-1.oraclecloud.com/p/tok/n/ns/b/bucket/o/{remote_name}"
 
     monkeypatch.setattr(OCIStorageManager, "upload_bytes", mock_upload_bytes)
-    monkeypatch.setattr(OCIStorageManager, "get_public_url", mock_get_public_url)
+    monkeypatch.setattr(OCIStorageManager, "get_display_url", mock_get_display_url)
 
     resultado = generar_imagen_post(
         id_post="post_python_01",
@@ -478,4 +478,43 @@ def test_storage_manager_upload_bytes_and_public_url(tmp_path, monkeypatch):
 
     url = sm.get_public_url("previews/preview_test.png")
     assert str(tmp_path) in url
+
+
+def test_get_display_url_local_devuelve_data_uri(tmp_path):
+    from src.cloud_oci.storage_client import OCIStorageManager
+
+    sm = OCIStorageManager(region="us-ashburn-1")
+    sm.LOCAL_FALLBACK_DIR = tmp_path
+    sm.is_local_mode = True
+    sm.upload_bytes(b"\x89PNGfake", "previews/preview_x.png", "image/png")
+
+    url = sm.get_display_url("previews/preview_x.png")
+    assert url.startswith("data:image/png;base64,")
+    assert validar_url_imagen(url) == url
+
+
+def test_url_visible_oci_convierte_url_privada_en_par(monkeypatch):
+    from src.cloud_oci.storage_client import OCIStorageManager
+    from src.ui.services import _url_visible_oci
+
+    capturado = {}
+
+    def fake_init(self, *args, **kwargs):
+        self.is_local_mode = False
+        self.bucket_name = "communitylab-activos-marketing"
+
+    def fake_display(self, remote_name, expires_in_hours=None):
+        capturado["obj"] = remote_name
+        return "https://objectstorage.us-ashburn-1.oraclecloud.com/p/TOKEN/n/ns/b/communitylab-activos-marketing/o/" + remote_name
+
+    monkeypatch.setattr(OCIStorageManager, "__init__", fake_init)
+    monkeypatch.setattr(OCIStorageManager, "get_display_url", fake_display)
+
+    privada = "https://objectstorage.us-ashburn-1.oraclecloud.com/n/ns/b/communitylab-activos-marketing/o/previews%2Fpreview_msg_006.png"
+    visible = _url_visible_oci(privada)
+    assert "/p/TOKEN/" in visible
+    assert capturado["obj"] == "previews/preview_msg_006.png"
+
+    # Una PAR existente no se modifica
+    assert _url_visible_oci(visible) == visible
 

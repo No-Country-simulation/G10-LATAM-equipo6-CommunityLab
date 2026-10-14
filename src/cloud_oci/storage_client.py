@@ -352,6 +352,35 @@ class OCIStorageManager:
         encoded_name = quote(remote_name, safe="")
         return f"https://objectstorage.{region}.oraclecloud.com/n/{ns}/b/{self.bucket_name}/o/{encoded_name}"
 
+    def get_display_url(self, remote_name: str, expires_in_hours: Optional[int] = None) -> str:
+        """URL visible desde el navegador para un objeto, aunque el bucket sea privado.
+
+        - Modo nube: genera una URL pre-autenticada (PAR) de solo lectura con expiración
+          configurable (OCI_PREVIEW_PAR_HOURS, por defecto 168 h = 7 días).
+        - Modo local: devuelve un data URI en base64 (el navegador no puede abrir file://).
+        Si la PAR falla, retorna la URL pública canónica como último recurso.
+        """
+        if self.is_local_mode:
+            import base64
+            import mimetypes
+
+            local_path = self.LOCAL_FALLBACK_DIR / remote_name
+            mime = mimetypes.guess_type(remote_name)[0] or "image/png"
+            encoded = base64.b64encode(local_path.read_bytes()).decode("ascii")
+            return f"data:{mime};base64,{encoded}"
+
+        horas = expires_in_hours or int(os.getenv("OCI_PREVIEW_PAR_HOURS", "168") or 168)
+        try:
+            par = self.create_preauthenticated_request(
+                object_name=remote_name,
+                expires_in_hours=horas,
+                access_type="ObjectRead",
+            )
+            return par["access_url"]
+        except Exception as exc:  # pragma: no cover - depende de permisos IAM
+            logger.warning("No fue posible crear PAR para %s: %s", remote_name, exc)
+            return self.get_public_url(remote_name)
+
     def get_asset(self, object_name: str) -> Any:
         """Descarga un objeto JSON y lo deserializa a objeto Python."""
         if self.is_local_mode:
