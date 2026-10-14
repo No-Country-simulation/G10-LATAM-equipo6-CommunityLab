@@ -1,0 +1,34 @@
+{
+    "origen_comunidad":  "Discord_Oracle_Next_Education_G10",
+    "periodo_referencia":  "Semana_04",
+    "interacciones":  [
+                          {
+                              "id":  "msg_015",
+                              "autor":  "Alejandro Ruiz",
+                              "canal":  "#dudas-cloud-oci",
+                              "tipo":  "pregunta_tecnica",
+                              "texto":  "¿Cómo se configura un ciclo de vida (Lifecycle Rule) en OCI Object Storage para archivar automáticamente objetos a Archive Tier después de 30 días sin costo extra?"
+                          },
+                          {
+                              "id":  "msg_016",
+                              "autor":  "QA",
+                              "canal":  "#qa",
+                              "tipo":  "testimonio",
+                              "texto":  "Con 52 años no se que hacer si emprender o buscar empleo"
+                          },
+                          {
+                              "id":  "msg_017",
+                              "autor":  "QA",
+                              "canal":  "#qa",
+                              "tipo":  "pregunta_tecnica",
+                              "texto":  "How can I delete a bucket in OCI?"
+                          },
+                          {
+                              "id":  "msg_018",
+                              "autor":  "QA",
+                              "canal":  "#qa",
+                              "tipo":  "feedback",
+                              "texto":  "Los alumnos me parece que son mejores que los mentores, creo que falta ética profesional\""
+                          }
+                      ]
+}

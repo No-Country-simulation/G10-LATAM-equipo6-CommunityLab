@@ -1,0 +1,50 @@
+﻿IA-04 - Voz de marca: 5 posts del mismo tema, 2 corridas
+Fecha: 2026-10-14 19:52:36 -03:00
+Commit probado: 68c7382
+Entrada: entrada_IA04.json (5 testimonios de logro laboral, textos inventados por QA)
+Referencia de marca: rúbrica propia de QA (pendiente la guía del equipo)
+
+--- Corrida a ---
+Resultados en el log: 5 | Con PostLinkedIn=True: 5
+  qa_ia04_01 | positivo | logro_contratacion | PostLinkedIn=True
+  qa_ia04_02 | positivo | logro_contratacion | PostLinkedIn=True
+  qa_ia04_03 | positivo | logro_contratacion | PostLinkedIn=True
+  qa_ia04_04 | positivo | logro_contratacion | PostLinkedIn=True
+  qa_ia04_05 | positivo | logro_contratacion | PostLinkedIn=True
+Posts extraídos de la salida: 5
+
+Ruta                             Caracteres Hashtags Emojis NumerosAjenosAlOriginal
+----                             ---------- -------- ------ -----------------------
+/activos[0]/activo/post_linkedin        708        5      2 1                      
+/activos[1]/activo/post_linkedin        571        5      2 2                      
+/activos[2]/activo/post_linkedin        542        5      1 3                      
+/activos[3]/activo/post_linkedin        456        4      2 4                      
+/activos[4]/activo/post_linkedin        588        5      2 5                      
+
+
+
+
+--- Corrida b ---
+Resultados en el log: 5 | Con PostLinkedIn=True: 5
+  qa_ia04_01 | positivo | logro_contratacion | PostLinkedIn=True
+  qa_ia04_02 | positivo | logro_contratacion | PostLinkedIn=True
+  qa_ia04_03 | positivo | logro_contratacion | PostLinkedIn=True
+  qa_ia04_04 | positivo | logro_contratacion | PostLinkedIn=True
+  qa_ia04_05 | positivo | logro_contratacion | PostLinkedIn=True
+Posts extraídos de la salida: 5
+
+Ruta                             Caracteres Hashtags Emojis NumerosAjenosAlOriginal
+----                             ---------- -------- ------ -----------------------
+/activos[0]/activo/post_linkedin        606        5      0 1                      
+/activos[1]/activo/post_linkedin        564        5      2                        
+/activos[2]/activo/post_linkedin        539        4      1 3                      
+/activos[3]/activo/post_linkedin        592        4      1 4                      
+/activos[4]/activo/post_linkedin        699        5      1 5                      
+
+
+
+
+--- Estabilidad entre corridas (sentimiento, tipo y bandera de post por registro) ---
+IGUAL en ambas corridas
+
+La puntuación de tono, estructura, fidelidad y marca está en IA-04_rubrica.csv (evaluación manual de QA).

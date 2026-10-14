@@ -1,0 +1,472 @@
+{
+  "metadata_paquete": {
+    "version": "1.0.0",
+    "generado_en": "2026-10-14T01:14:17.631124+00:00",
+    "archivo_origen": "entrada_IA03.json",
+    "total_registros_origen": 18,
+    "total_procesados_exitosamente": 18,
+    "total_fallidos": 0
+  },
+  "metricas": {
+    "distribucion_sentimiento": {
+      "positivo": 9,
+      "neutro": 7,
+      "negativo": 2
+    },
+    "distribucion_tipo_contenido": {
+      "logro_contratacion": 4,
+      "duda_tecnica": 7,
+      "feedback_general": 5,
+      "showcase": 2
+    },
+    "total_posts_linkedin_generados": 6,
+    "total_tips_faq_generados": 7
+  },
+  "activos": [
+    {
+      "lote_id": "py_011417",
+      "procesado_en": "2026-10-14T01:14:17.631124+00:00",
+      "motor_orquestacion": "python_gemini",
+      "interaccion": {
+        "id": "msg_001",
+        "autor": "Mariana Souza",
+        "canal": "#logros-y-empleos",
+        "tipo": "testimonio",
+        "texto": "Comunidad, quede seleccionada para el puesto de Desarrolladora Junior de IA! El proyecto del curso de LangChain y OCI que construi en mi portfolio marco toda la diferencia en la entrevista tecnica. Muy agradecida con la comunidad por todo el apoyo!"
+      },
+      "activo": {
+        "sentimiento": "positivo",
+        "tipo_contenido": "logro_contratacion",
+        "temas_clave": [
+          "LangChain",
+          "OCI",
+          "IA",
+          "Desarrollo Junior"
+        ],
+        "respuesta_chat": "¡Hola Mariana! Qué gran noticia, muchísimas felicidades por tu contratación como Desarrolladora Junior de IA. Es increíble ver cómo tu esfuerzo con el proyecto de LangChain y OCI dio frutos. ¡Mucho éxito en esta nueva etapa profesional!",
+        "post_linkedin": "¡Una gran historia de éxito en nuestra comunidad de Oracle ONE y Alura! 🚀 Mariana Souza acaba de ser seleccionada como Desarrolladora Junior de IA.\n\nDurante su proceso, destacó la importancia de construir un portfolio sólido con proyectos reales utilizando LangChain y Oracle Cloud Infrastructure (OCI), lo cual marcó la diferencia en su entrevista técnica. Esto demuestra que la práctica constante y el desarrollo de proyectos aplicados son la clave para abrir puertas en la industria tecnológica.\n\n¿Quieres dar el siguiente salto en tu carrera? Nunca dejes de construir y compartir lo que aprendes.\n\n#OracleONE #AluraLATAM #TechTalent #ArtificialIntelligence #DesarrolloJunior",
+        "tip_tecnico_faq": null
+      }
+    },
+    {
+      "lote_id": "py_011417",
+      "procesado_en": "2026-10-14T01:14:17.631124+00:00",
+      "motor_orquestacion": "python_gemini",
+      "interaccion": {
+        "id": "msg_002",
+        "autor": "Lucas Albuquerque",
+        "canal": "#dudas-langgraph",
+        "tipo": "pregunta_tecnica",
+        "texto": "Tengo dudas sobre como estructurar los nodos condicionales en LangGraph cuando la respuesta del LLM necesita reintento. Alguien tiene un ejemplo practico de router?"
+      },
+      "activo": {
+        "sentimiento": "neutro",
+        "tipo_contenido": "duda_tecnica",
+        "temas_clave": [
+          "LangGraph",
+          "LLM",
+          "Python",
+          "AI"
+        ],
+        "respuesta_chat": "¡Hola, Lucas Albuquerque! Entiendo perfectamente tu duda sobre cómo estructurar los nodos condicionales y el manejo de reintentos en LangGraph. En breve te comparto una guía detallada con un ejemplo práctico de router para que puedas implementarlo en tu flujo.",
+        "post_linkedin": null,
+        "tip_tecnico_faq": "Causa: En LangGraph, los nodos condicionales (routers) permiten dirigir el flujo de ejecución basándose en el estado actual. Cuando se requiere un reintento (retry) tras una respuesta insatisfactoria del LLM, el grafo debe evaluar una condición lógica que decida si vuelve al nodo de generación o avanza al siguiente paso.\n\nPasos para implementarlo:\n1. Define una clave en el State del grafo (por ejemplo, `intentos` o `estado_validacion`) para llevar el conteo o el estatus de la respuesta.\n2. Crea una función router que reciba el State y evalúe si la respuesta cumple con los criterios o si el límite de reintentos no se ha superado.\n3. Añade la arista condicional (`add_conditional_edges`) usando el nodo del LLM y un diccionario de mapeo hacia el nodo de reintento o el nodo de salida.\n\nEjemplo de código en Python:\n```python\nfrom typing import Literal\nfrom langgraph.graph import StateGraph, END\n\ndef should_retry(state) -> Literal[\"retry\", \"end\"]:\n    if state[\"error_count\"] < 3 and not state[\"is_valid\"]:\n        return \"retry\"\n    return \"end\"\n\nworkflow = StateGraph(MyState)\nworkflow.add_node(\"llm_node\", call_llm)\nworkflow.add_node(\"validation_node\", validate_output)\n\nworkflow.add_conditional_edges(\n    \"validation_node\",\n    should_retry,\n    {\n        \"retry\": \"llm_node\",\n        \"end\": END\n    }\n)\n```\nBuenas prácticas: Establece siempre un límite máximo de reintentos (max_retries) para evitar loops infinitos y costos excesivos de API con el LLM."
+      }
+    },
+    {
+      "lote_id": "py_011417",
+      "procesado_en": "2026-10-14T01:14:17.631124+00:00",
+      "motor_orquestacion": "python_gemini",
+      "interaccion": {
+        "id": "msg_003",
+        "autor": "Carlos Mendoza",
+        "canal": "#logros-y-empleos",
+        "tipo": "testimonio",
+        "texto": "Ayer me confirmaron mi primer contrato como Data Analyst para una startup de Chile gracias a los proyectos que desarrollamos en las formaciones de Alura y Oracle ONE. No se rindan, el esfuerzo constante rinde frutos!"
+      },
+      "activo": {
+        "sentimiento": "positivo",
+        "tipo_contenido": "logro_contratacion",
+        "temas_clave": [
+          "Data Analyst",
+          "Oracle ONE",
+          "Alura",
+          "Empleabilidad"
+        ],
+        "respuesta_chat": "¡Hola Carlos! Muchas felicidades por tu contratación como Data Analyst en esa startup de Chile. Es un orgullo ver cómo tu esfuerzo y los proyectos de Oracle ONE y Alura dan frutos. ¡A seguir creciendo con todo!",
+        "post_linkedin": "De alumno de Oracle ONE y Alura a Data Analyst en una startup de Chile. La historia de Carlos Mendoza nos demuestra que la constancia y la práctica con proyectos reales son el camino al éxito en la tecnología. ¡No te rindas, tu momento también llegará! \n\n#OracleONE #AluraLATAM #DataAnalyst #TechTalent #OrgulloCommunityLab",
+        "tip_tecnico_faq": null
+      }
+    },
+    {
+      "lote_id": "py_011417",
+      "procesado_en": "2026-10-14T01:14:17.631124+00:00",
+      "motor_orquestacion": "python_gemini",
+      "interaccion": {
+        "id": "msg_004",
+        "autor": "Andrea Gómez",
+        "canal": "#dudas-cloud-oci",
+        "tipo": "pregunta_tecnica",
+        "texto": "Hola a todos, estoy intentando subir archivos a OCI Object Storage usando el SDK de Python pero me arroja un error 401 NotAuthenticated. ¿Cómo debo configurar las claves API en el archivo ~/.oci/config para la instancia VM?"
+      },
+      "activo": {
+        "sentimiento": "neutro",
+        "tipo_contenido": "duda_tecnica",
+        "temas_clave": [
+          "OCI",
+          "Python",
+          "Cloud",
+          "SDK"
+        ],
+        "respuesta_chat": "¡Hola Andrea! Entiendo tu frustración con el error 401 NotAuthenticated al intentar conectar con OCI Object Storage. No te preocupes, este es un problema común de configuración de credenciales en el archivo ~/.oci/config o con las políticas de IAM. En un momento te comparto los pasos detallados y un ejemplo para solucionarlo.",
+        "post_linkedin": null,
+        "tip_tecnico_faq": "El error 401 NotAuthenticated en Oracle Cloud Infrastructure (OCI) ocurre cuando las credenciales proporcionadas por el SDK no pueden ser validadas por el servicio IAM, ya sea por una firma incorrecta, huella digital (fingerprint) errónea o permisos faltantes en el archivo de configuración.\n\nPasos para resolverlo:\n1. Genera un par de claves API (pública y privada) desde la consola de OCI en tu perfil de usuario.\n2. Sube la clave pública a tu perfil de OCI y copia la huella digital (fingerprint).\n3. Coloca tu archivo de clave privada (ej. oci_api_key.pem) en el directorio ~/.oci/.\n4. Configura correctamente el archivo ~/.oci/config asegurándote de que los OCID de tu usuario, arrendamiento (tenancy) y región sean correctos.\n\nEjemplo de configuración en ~/.oci/config:\n[DEFAULT]\nuser=ocid1.user.oc1..aaaaaaa...example\ntenancy=ocid1.tenancy.oc1..aaaaaaa...example\nregion=us-ashburn-1\nfingerprint=12:34:56:78:90:ab:cd:ef:12:34:56:78:90:ab:cd:ef\nkey_file=~/.oci/oci_api_key.pem\n\nSnippet de Python para probar la conexión:\nimport oci\n\nconfig = oci.config.from_file(\"~/.oci/config\", \"DEFAULT\")\nobject_storage_client = oci.object_storage.ObjectStorageClient(config)\nnamespace = object_storage_client.get_namespace().data\nprint(f\"Namespace conectado exitosamente: {namespace}\")\n\nBuenas prácticas:\n- Nunca subas tus archivos .pem a repositorios públicos como GitHub.\n- Asegúrate de que los permisos del archivo de llave privada sean estrictos (ej. chmod 600 ~/.oci/oci_api_key.pem)."
+      }
+    },
+    {
+      "lote_id": "py_011417",
+      "procesado_en": "2026-10-14T01:14:17.631124+00:00",
+      "motor_orquestacion": "python_gemini",
+      "interaccion": {
+        "id": "msg_005",
+        "autor": "Sebastián Ramos",
+        "canal": "#proyectos-showcase",
+        "tipo": "showcase",
+        "texto": "Acabo de desplegar mi bot de Telegram con IA usando Gemini Flash y OCI Compute Always Free. Pueden probarlo y darme feedback: https://t.me/sebas_oracle_bot. Todo el backend corre en un contenedor Docker con menos de 500MB de RAM!"
+      },
+      "activo": {
+        "sentimiento": "positivo",
+        "tipo_contenido": "showcase",
+        "temas_clave": [
+          "OCI",
+          "Docker",
+          "Gemini Flash",
+          "Telegram Bot"
+        ],
+        "respuesta_chat": "¡Hola Sebastián! Qué gran proyecto nos compartes. Es increíble cómo aprovechaste la capa gratuita de OCI Compute y Docker para optimizar los recursos de tu bot de Telegram con Gemini Flash. ¡Felicitaciones por este logro en el ecosistema de Oracle ONE!",
+        "post_linkedin": "¡La innovación no para en la comunidad Oracle ONE y Alura! 🚀 Sebastián Ramos acaba de desplegar su propio bot de Telegram impulsado por IA utilizando Gemini Flash, ejecutándose eficientemente en un contenedor Docker con menos de 500MB de RAM y aprovechando la infraestructura de OCI Compute Always Free.\n\nDemostrar lo que aprendemos es clave para destacar en el mundo tecnológico. ¡Prueba su bot y apoya el talento local!\n\n¿Y tú, qué proyecto estás construyendo hoy?\n\n#OracleONE #AluraLATAM #OCI #Docker #TechTalent",
+        "tip_tecnico_faq": null
+      }
+    },
+    {
+      "lote_id": "py_011417",
+      "procesado_en": "2026-10-14T01:14:17.631124+00:00",
+      "motor_orquestacion": "python_gemini",
+      "interaccion": {
+        "id": "msg_006",
+        "autor": "Valeria Silva",
+        "canal": "#feedback-cursos",
+        "tipo": "feedback",
+        "texto": "El módulo de Prompt Engineering y Few-Shot Learning estuvo genial. Me gustaría que agregaran una clase extra sobre cómo prevenir prompt injection en sistemas que leen entradas de usuarios en foros públicos."
+      },
+      "activo": {
+        "sentimiento": "positivo",
+        "tipo_contenido": "feedback_general",
+        "temas_clave": [
+          "Prompt Engineering",
+          "Few-Shot Learning",
+          "Prompt Injection",
+          "Ciberseguridad"
+        ],
+        "respuesta_chat": "¡Hola Valeria! Qué bueno que hayas disfrutado el módulo de Prompt Engineering y Few-Shot Learning. Es una excelente sugerencia la que haces sobre la prevención de prompt injection; se la haremos llegar al equipo de contenidos para evaluar la inclusión de esa clase extra. ¡Gracias por aportar a la comunidad de CommunityLab!",
+        "post_linkedin": null,
+        "tip_tecnico_faq": null
+      }
+    },
+    {
+      "lote_id": "py_011417",
+      "procesado_en": "2026-10-14T01:14:17.631124+00:00",
+      "motor_orquestacion": "python_gemini",
+      "interaccion": {
+        "id": "msg_007",
+        "autor": "Martín Peña",
+        "canal": "#dudas-gemini-api",
+        "tipo": "pregunta_tecnica",
+        "texto": "Alguien sabe cuál es el límite de tokens por minuto (TPM) en la capa gratuita de Google Gemini 1.5 Flash cuando enviamos peticiones por streaming?"
+      },
+      "activo": {
+        "sentimiento": "neutro",
+        "tipo_contenido": "duda_tecnica",
+        "temas_clave": [
+          "Gemini 1.5 Flash",
+          "API",
+          "Tokens",
+          "Streaming"
+        ],
+        "respuesta_chat": "¡Hola Martín! Entiendo tu duda sobre los límites de la API de Gemini 1.5 Flash en su capa gratuita. Enseguida te comparto los detalles exactos sobre los límites de TPM y las mejores prácticas para manejar el streaming.",
+        "post_linkedin": null,
+        "tip_tecnico_faq": "Causa o principio técnico:\nLa capa gratuita (Free Tier) de la API de Google Gemini 1.5 Flash está sujeta a cuotas estrictas de uso para garantizar la disponibilidad del servicio a todos los desarrolladores. Específicamente, para el modelo Gemini 1.5 Flash, el límite estándar en la capa gratuita suele ser de 15 solicitudes por minuto (RPM), 1 millón de tokens por minuto (TPM) y 1,500 solicitudes por día (RPD), aunque estos valores pueden variar ligeramente según las actualizaciones de Google AI Studio.\n\nPasos estructurados para verificar y gestionar los límites:\n1. Revisa tu panel en Google AI Studio (aistudio.google.com) en la sección de 'Plan y Cuotas' para ver los límites exactos vigentes de tu cuenta.\n2. Implementa manejo de errores (Exponential Backoff) en tu código para capturar y reintentar automáticamente cuando recibas un código de estado HTTP 429 (Too Many Requests).\n3. Utiliza la función de streaming asíncrono para liberar conexiones de red rápidamente mientras procesas los chunks.\n\nEjemplo práctico en Python (Manejo de rate limits con tenacity):\n```python\nimport google.generativeai as genai\nfrom tenacity import retry, wait_random_exponential, stop_after_attempt\n\ngenai.configure(api_key=\"TU_API_KEY\")\nmodel = genai.GenerativeModel(\"gemini-1.5-flash\")\n\n@retry(wait=wait_random_exponential(min=1, max=60), stop=stop_after_attempt(5))\ndef llamar_gemini_streaming(prompt):\n    try:\n        response = model.generate_content(prompt, stream=True)\n        for chunk in response:\n            print(chunk.text, end=\"\")\n    except Exception as e:\n        print(f\"Error detectado: {e}. Reintentando...\")\n        raise e\n\n# Llamada a la función\nllamar_gemini_streaming(\"Explícame qué son los límites de TPM en IA.\")\n```\n\nBuenas prácticas recomendadas:\n- Monitorea tu consumo de tokens antes de enviar payloads grandes usando bibliotecas auxiliares de conteo como `model.count_tokens(prompt)`.\n- Si tu aplicación supera la capa gratuita durante el desarrollo, considera migrar a la capa de pago (Pay-as-you-go) que ofrece límites significativamente mayores y menor latencia."
+      }
+    },
+    {
+      "lote_id": "py_011417",
+      "procesado_en": "2026-10-14T01:14:17.631124+00:00",
+      "motor_orquestacion": "python_gemini",
+      "interaccion": {
+        "id": "msg_008",
+        "autor": "Daniela Paredes",
+        "canal": "#logros-y-empleos",
+        "tipo": "testimonio",
+        "texto": "Presenté la demo de mi proyecto de Hackathon a mi jefe actual en el área de soporte y me ascendieron a Líder Técnico de Automatización de Procesos. ¡Este programa ONE realmente transforma vidas profesionales!"
+      },
+      "activo": {
+        "sentimiento": "positivo",
+        "tipo_contenido": "logro_contratacion",
+        "temas_clave": [
+          "Hackathon",
+          "Automatización",
+          "Desarrollo Profesional",
+          "Oracle ONE"
+        ],
+        "respuesta_chat": "¡Hola Daniela! Muchas felicidades por tu ascenso a Líder Técnico de Automatización de Procesos. Es un orgullo ver cómo aplicas lo aprendido en el programa en tu entorno laboral y alcanzas este gran éxito. ¡A seguir brillando!",
+        "post_linkedin": "¡El esfuerzo y la dedicación siempre dan frutos! 🚀 Daniela Paredes compartió cómo presentar la demo de su proyecto del Hackathon Oracle ONE ante su jefe la llevó a dar el gran salto: ¡fue ascendida a Líder Técnico de Automatización de Procesos en su área de soporte!\n\nEsta historia nos recuerda que la práctica constante, construir proyectos reales y demostrar iniciativa son las claves para transformar nuestra carrera profesional. La tecnología abre puertas, pero el impulso lo ponemos nosotros.\n\nFelicidades, Daniela, por este logro increíble. ¿Y tú, qué proyecto estás construyendo hoy para impulsar tu carrera?\n\n#OracleONE #AluraLATAM #TechTalent #Automatizacion #CrecimientoProfesional",
+        "tip_tecnico_faq": null
+      }
+    },
+    {
+      "lote_id": "py_011417",
+      "procesado_en": "2026-10-14T01:14:17.631124+00:00",
+      "motor_orquestacion": "python_gemini",
+      "interaccion": {
+        "id": "msg_009",
+        "autor": "Esteban Morales",
+        "canal": "#dudas-docker",
+        "tipo": "pregunta_tecnica",
+        "texto": "Cuando despliego Streamlit dentro de un contenedor Docker en Ubuntu Server de OCI, no puedo acceder desde el navegador en el puerto 8501. ¿Qué reglas de seguridad debo abrir en la VCN de Oracle Cloud?"
+      },
+      "activo": {
+        "sentimiento": "neutro",
+        "tipo_contenido": "duda_tecnica",
+        "temas_clave": [
+          "Docker",
+          "Streamlit",
+          "OCI",
+          "Redes"
+        ],
+        "respuesta_chat": "¡Hola Esteban! Entiendo tu problema con el acceso a Streamlit en OCI. El inconveniente suele estar en que Docker expone los puertos localmente y la VCN de Oracle Cloud requiere reglas de ingreso (Ingress Rules) explícitas además del firewall del sistema operativo. A continuación te detallo la solución paso a paso.",
+        "post_linkedin": null,
+        "tip_tecnico_faq": "a) Explicación de la causa: En Oracle Cloud Infrastructure (OCI), la conectividad hacia una instancia de cómputo está protegida por dos capas principales que bloquean el tráfico entrante por defecto: las Listas de Seguridad (Security Lists) o Grupos de Seguridad de Red (NSG) a nivel de la VCN, y el firewall local del sistema operativo (como uft o firewalld en Ubuntu). Al levantar Streamlit en Docker, el contenedor debe mapear correctamente el puerto y OCI debe permitir el tráfico TCP en el puerto 8501.\n\nb) Pasos para resolverlo:\n1. Configurar la VCN en la consola de OCI: Ir a Networking > Virtual Cloud Networks > tu VCN > Security Lists > Default Security List. Agregar una regla de ingreso (Ingress Rule) con origen 0.0.0.0/0, protocolo TCP, y puerto de destino 8501.\n2. Configurar el firewall en Ubuntu Server: Asegurarte de que el puerto esté abierto o inhabilitar temporalmente ufw si es necesario.\n3. Ejecutar el contenedor Docker asegurando el flag '-p' correctamente para enlazar todas las interfaces (0.0.0.0).\n\nc) Snippet de código / Comando:\ndocker run -d -p 8501:8501 --name streamlit-app mi-imagen-streamlit\n\nComando para abrir el puerto en UFW (Ubuntu):\nsudo ufw allow 8501/tcp\n\nd) Buenas prácticas: Evita exponer puertos críticos sin restricciones de IP en entornos de producción. Utiliza un reverse proxy como Nginx con SSL (HTTPS) o configura reglas de OCI limitadas a rangos de IP específicos de confianza."
+      }
+    },
+    {
+      "lote_id": "py_011417",
+      "procesado_en": "2026-10-14T01:14:17.631124+00:00",
+      "motor_orquestacion": "python_gemini",
+      "interaccion": {
+        "id": "msg_010",
+        "autor": "Camila Herrera",
+        "canal": "#feedback-cursos",
+        "tipo": "feedback",
+        "texto": "Los mentores de los sábados son increíbles. La sesión de ayer sobre cómo optimizar la memoria swap en máquinas virtuales de 1GB fue clave para que no se nos cayera el servidor."
+      },
+      "activo": {
+        "sentimiento": "positivo",
+        "tipo_contenido": "feedback_general",
+        "temas_clave": [
+          "Linux",
+          "Swap",
+          "Cloud Computing",
+          "DevOps"
+        ],
+        "respuesta_chat": "¡Hola Camila! Qué alegría leer tu mensaje. Es genial saber que las sesiones de los sábados con los mentores están siendo de tanta utilidad práctica para evitar caídas en el servidor. ¡A seguir así!",
+        "post_linkedin": null,
+        "tip_tecnico_faq": null
+      }
+    },
+    {
+      "lote_id": "py_011417",
+      "procesado_en": "2026-10-14T01:14:17.631124+00:00",
+      "motor_orquestacion": "python_gemini",
+      "interaccion": {
+        "id": "msg_011",
+        "autor": "Rodrigo Fuentes",
+        "canal": "#general",
+        "tipo": "felicitacion",
+        "texto": "Quiero agradecer al equipo 6 por el soporte en Discord a altas horas de la noche resolviendo dudas sobre Git y ramas. ¡Gran espíritu de compañerismo en esta comunidad!"
+      },
+      "activo": {
+        "sentimiento": "positivo",
+        "tipo_contenido": "feedback_general",
+        "temas_clave": [
+          "Git",
+          "Comunidad",
+          "Discord"
+        ],
+        "respuesta_chat": "¡Hola Rodrigo! Qué gran mensaje. Es maravilloso ver cómo el compañerismo y el apoyo mutuo en el equipo 6 brillan en Discord. ¡Gracias por compartirlo y seguir construyendo esta gran comunidad de Oracle ONE y Alura!",
+        "post_linkedin": null,
+        "tip_tecnico_faq": null
+      }
+    },
+    {
+      "lote_id": "py_011417",
+      "procesado_en": "2026-10-14T01:14:17.631124+00:00",
+      "motor_orquestacion": "python_gemini",
+      "interaccion": {
+        "id": "msg_012",
+        "autor": "Gabriela Castro",
+        "canal": "#dudas-langgraph",
+        "tipo": "pregunta_tecnica",
+        "texto": "¿Cuál es la mejor práctica para almacenar el estado del agente en LangGraph si queremos persistencia en PostgreSQL o Cloud Storage en lugar de solo memoria en RAM?"
+      },
+      "activo": {
+        "sentimiento": "neutro",
+        "tipo_contenido": "duda_tecnica",
+        "temas_clave": [
+          "LangGraph",
+          "PostgreSQL",
+          "Cloud Storage",
+          "Python"
+        ],
+        "respuesta_chat": "¡Hola Gabriela! Qué excelente pregunta sobre persistencia en LangGraph. Para salir de la memoria RAM y escalar tu agente, la mejor opción es utilizar un Checkpointer respaldado por PostgreSQL. En un momento te comparto la guía técnica detallada con los pasos y el código necesario.",
+        "post_linkedin": null,
+        "tip_tecnico_faq": "a) Explicación de la causa o principio técnico:\nPor defecto, LangGraph mantiene el estado (checkpoint) en memoria RAM mediante 'MemorySaver', lo cual es volátil y no apto para producción. Para lograr persistencia durable y tolerante a fallos, se debe implementar un 'Checkpointer' personalizado o utilizar integraciones nativas con bases de datos relacionales como PostgreSQL mediante la librería 'langgraph-checkpoint-postgres'. Esto permite guardar cada paso del grafo de ejecución y recuperar la sesión de los usuarios ante caídas del servidor.\n\nb) Pasos estructurados para resolverlo:\n1. Instalar la librería de persistencia para Postgres: pip install langgraph-checkpoint-postgres\n2. Configurar la conexión utilizando una URL de PostgreSQL (puedes usar un contenedor Docker o una base administrada en OCI).\n3. Inicializar la tabla de checkpoints usando el gestor de contextos.\n4. Compilar el grafo pasando el checkpointer configurado.\n\nc) Snippet de código práctico:\n```python\nimport psycopg\nfrom langgraph.checkpoint.postgres import PostgresSaver\nfrom langgraph.graph import StateGraph\n\n# 1. Definir la URL de conexión a PostgreSQL\nDB_URI = \"postgresql://postgres:password@localhost:5432/agent_db?sslmode=disable\"\n\n# 2. Configurar y usar el Checkpointer con context manager\nwith PostgresSaver.from_conn_string(DB_URI) as checkpointer:\n    # Asegurar que las tablas necesarias existan\n    checkpointer.setup()\n    \n    # 3. Definir tu grafo (ejemplo básico)\n    workflow = StateGraph(dict)\n    # ... agregar nodos y aristas ...\n    \n    # 4. Compilar el grafo inyectando el checkpointer\n    graph = workflow.compile(checkpointer=checkpointer)\n    \n    # Configuración de ejecución con ID de thread persistente\n    config = {\"configurable\": {\"thread_id\": \"usuario_123\"}}\n    result = graph.invoke({\"mensaje\": \"Hola agente\"}, config)\n    print(result)\n```\n\nd) Buenas prácticas recomendadas:\n- Utiliza 'thread_id' únicos por usuario o sesión para aislar los estados de las conversaciones.\n- Si requieres almacenar artefactos pesados (como imágenes o documentos grandes), guárdalos en Cloud Storage (ej. OCI Object Storage) y guarda únicamente la URL o referencia en el estado del agente de LangGraph para evitar sobrecargar PostgreSQL."
+      }
+    },
+    {
+      "lote_id": "py_011417",
+      "procesado_en": "2026-10-14T01:14:17.631124+00:00",
+      "motor_orquestacion": "python_gemini",
+      "interaccion": {
+        "id": "msg_013",
+        "autor": "Felipe Vargas",
+        "canal": "#logros-y-empleos",
+        "tipo": "testimonio",
+        "texto": "Con 42 años decidí reinventarme en tecnología sin experiencia previa. Hoy firmé mi contrato como Desarrollador Python Backend. ¡Gracias ONE y No Country por abrir estas oportunidades!"
+      },
+      "activo": {
+        "sentimiento": "positivo",
+        "tipo_contenido": "logro_contratacion",
+        "temas_clave": [
+          "Python",
+          "Backend",
+          "Carrera Tech"
+        ],
+        "respuesta_chat": "¡Hola Felipe! Qué gran noticia, muchas felicidades por tu contrato como Desarrollador Python Backend. Es una verdadera inspiración ver que con esfuerzo y determinación se logran estas metas. ¡Mucho éxito en esta nueva etapa profesional!",
+        "post_linkedin": "La edad y la falta de experiencia previa nunca son un límite cuando hay verdadera pasión por aprender. 🚀\n\nFelipe Vargas decidió reinventarse en el mundo tecnológico a los 42 años, apostando por su formación y constancia. Hoy nos comparte una noticia que nos llena de orgullo: ¡firmó su contrato como Desarrollador Python Backend!\n\nEste logro es la prueba de que los programas de formación como Oracle ONE y las experiencias prácticas como No Country transforman vidas y abren puertas en la industria tech.\n\n💡 Lección aprendida: Nunca es tarde para empezar de cero y construir el futuro que deseas.\n\n¿Estás pensando en dar el salto tecnológico pero tienes dudas? ¡Déjanos tu comentario y comparte tu historia!\n\n#OracleONE #AluraLATAM #TechTalent #PythonBackend #DesarrolloProfesional",
+        "tip_tecnico_faq": null
+      }
+    },
+    {
+      "lote_id": "py_011417",
+      "procesado_en": "2026-10-14T01:14:17.631124+00:00",
+      "motor_orquestacion": "python_gemini",
+      "interaccion": {
+        "id": "msg_014",
+        "autor": "Lorena Méndez",
+        "canal": "#proyectos-showcase",
+        "tipo": "showcase",
+        "texto": "Comparto el repositorio de nuestro clasificador automático de tickets de soporte con IA y visualización en Gradio: github.com/lorena/support-ai. ¡Esperamos sus pull requests y estrellas!"
+      },
+      "activo": {
+        "sentimiento": "positivo",
+        "tipo_contenido": "showcase",
+        "temas_clave": [
+          "Python",
+          "IA",
+          "Gradio",
+          "GitHub"
+        ],
+        "respuesta_chat": "¡Hola Lorena! Excelente iniciativa la de compartir tu clasificador de tickets de soporte con IA y Gradio. Es un proyecto fantástico para la comunidad de #proyectos-showcase. ¡Mucho éxito con las contribuciones!",
+        "post_linkedin": "¡La comunidad de Oracle ONE y Alura LATAM sigue imparable! 🚀\n\nLorena Méndez acaba de compartir su último proyecto: un clasificador automático de tickets de soporte impulsado por Inteligencia Artificial y con una interfaz visual increíble construida en Gradio.\n\nConstruir herramientas reales y abrir el código (open source) es una de las mejores formas de acelerar el aprendizaje y conectar con otros talentos tecnológicos.\n\n👇 Te invitamos a revisar el repositorio, dejar tu estrella y sumar tus pull requests:\ngithub.com/lorena/support-ai\n\n¿Y tú, qué proyecto estás construyendo esta semana? ¡Compártelo con nosotros!\n\n#OracleONE #AluraLATAM #TechTalent #OpenSource #ArtificialIntelligence",
+        "tip_tecnico_faq": null
+      }
+    },
+    {
+      "lote_id": "py_011417",
+      "procesado_en": "2026-10-14T01:14:17.631124+00:00",
+      "motor_orquestacion": "python_gemini",
+      "interaccion": {
+        "id": "msg_015",
+        "autor": "Alejandro Ruiz",
+        "canal": "#dudas-cloud-oci",
+        "tipo": "pregunta_tecnica",
+        "texto": "¿Cómo se configura un ciclo de vida (Lifecycle Rule) en OCI Object Storage para archivar automáticamente objetos a Archive Tier después de 30 días sin costo extra?"
+      },
+      "activo": {
+        "sentimiento": "neutro",
+        "tipo_contenido": "duda_tecnica",
+        "temas_clave": [
+          "OCI",
+          "Object Storage",
+          "Cloud Computing"
+        ],
+        "respuesta_chat": "¡Hola Alejandro! Qué excelente pregunta sobre Oracle Cloud Infrastructure. Entiendo que necesitas automatizar el cambio de tier en tus buckets para optimizar costos. En breve te comparto los pasos detallados y la configuración recomendada para aplicar tu Lifecycle Rule en OCI Object Storage.",
+        "post_linkedin": null,
+        "tip_tecnico_faq": "a) Explicación clara de la causa o principio técnico:\nLas reglas de ciclo de vida (Lifecycle Rules) en OCI Object Storage permiten automatizar la gestión de objetos a lo largo de su tiempo de vida sin intervención manual. Para mover objetos al nivel 'Archive Tier', es importante considerar que existe un período mínimo de retención (generalmente 90 días para Archive), por lo que definir la regla requiere alinear las políticas de costos y retención de tu organización.\n\nb) Pasos estructurados para resolverlo o implementarlo:\n1. Ingresa a la consola de OCI y navega a **Storage** > **Object Storage** > **Buckets**.\n2. Selecciona el compartimento y tu bucket específico.\n3. En la sección de recursos del bucket, haz clic en **Lifecycle Policy Rules** y luego en **Create Rule**.\n4. Asigna un nombre descriptivo a la regla.\n5. Configura el objeto objetivo (puedes aplicar la regla a todo el bucket o filtrar por un prefijo).\n6. Define la acción: selecciona **Archive** como el nivel de destino y establece el tiempo transcurrido (en días) desde la creación del objeto (ej. 30 días).\n7. Guarda y habilita la regla.\n\nc) Snippet de código o comando práctico y funcional:\nPuedes configurar esto mediante la CLI de OCI utilizando un archivo JSON de configuración de reglas:\n```json\n{\n  \"items\": [\n    {\n      \"name\": \"ArchiveAfter30Days\",\n      \"action\": \"ARCHIVE\",\n      \"isEnabled\": true,\n      \"objectNameFilter\": {\n        \"inclusionPrefixes\": [\"logs/\"]\n      },\n      \"timeAmount\": 30,\n      \"timeUnit\": \"DAYS\"\n    }\n  ]\n}\n```\nAplica la regla usando el siguiente comando de OCI CLI:\n```bash\noci os work-request put --namespace-name <tu_namespace> --bucket-name <tu_bucket> --lifecycle-policy file://lifecycle-rule.json\n```\n\nd) Buenas prácticas recomendadas:\n- Ten en cuenta los costos de recuperación y los tiempos de acceso si necesitas traer los datos de vuelta desde Archive.\n- Valida siempre los prefijos (`inclusionPrefixes`) para evitar mover datos críticos por error.\n- Revisa la documentación oficial de OCI sobre las políticas de retención mínima para evitar cargos por eliminación anticipada."
+      }
+    },
+    {
+      "lote_id": "py_011417",
+      "procesado_en": "2026-10-14T01:14:17.631124+00:00",
+      "motor_orquestacion": "python_gemini",
+      "interaccion": {
+        "id": "msg_016",
+        "autor": "QA",
+        "canal": "#qa",
+        "tipo": "testimonio",
+        "texto": "Con 52 años no se que hacer si emprender o buscar empleo"
+      },
+      "activo": {
+        "sentimiento": "negativo",
+        "tipo_contenido": "feedback_general",
+        "temas_clave": [
+          "empleabilidad",
+          "emprendimiento",
+          "carrera_profesional"
+        ],
+        "respuesta_chat": "Hola QA, entiendo perfectamente tu incertidumbre; nunca es tarde para reinventarse y tu experiencia acumulada es un valor incalculable. Vamos a analizar juntos tus fortalezas para decidir si el camino ideal es potenciar un emprendimiento o enfocar tu búsqueda laboral con estrategia.",
+        "post_linkedin": null,
+        "tip_tecnico_faq": null
+      }
+    },
+    {
+      "lote_id": "py_011417",
+      "procesado_en": "2026-10-14T01:14:17.631124+00:00",
+      "motor_orquestacion": "python_gemini",
+      "interaccion": {
+        "id": "msg_017",
+        "autor": "QA",
+        "canal": "#qa",
+        "tipo": "pregunta_tecnica",
+        "texto": "How can I delete a bucket in OCI?"
+      },
+      "activo": {
+        "sentimiento": "neutro",
+        "tipo_contenido": "duda_tecnica",
+        "temas_clave": [
+          "OCI",
+          "Object Storage",
+          "Cloud"
+        ],
+        "respuesta_chat": "¡Hola, QA! Entiendo que necesitas eliminar un bucket en Oracle Cloud Infrastructure (OCI). Para hacerlo de forma segura, primero debes asegurarte de que esté completamente vacío (eliminando todos sus objetos y versiones si el versionado está activo). A continuación, te comparto el procedimiento técnico y un comando rápido para lograrlo.",
+        "post_linkedin": null,
+        "tip_tecnico_faq": "Eliminar un bucket en Oracle Cloud Infrastructure (OCI) requiere que el contenedor esté completamente vacío, ya que OCI no permite eliminar buckets que contengan objetos o versiones activas. Pasos para la eliminación: 1. Vaciar el bucket: Debes eliminar todos los objetos contenidos en él. Si el versionado de objetos está habilitado, también debes eliminar las versiones anteriores de los archivos. 2. Eliminar el bucket: Una vez vacío, puedes proceder a borrar el bucket desde la consola web o mediante la OCI CLI. Ejemplo práctico usando OCI CLI en Bash: oci os bucket delete --namespace-name <nombre_namespace> --bucket-name <nombre_bucket> --empty. Buenas prácticas: Utiliza políticas de ciclo de vida (Lifecycle Management) para automatizar la limpieza de datos antiguos antes de intentar eliminar buckets en entornos de producción, y asegúrate de verificar que no existan dependencias o políticas IAM asociadas que sigan haciendo referencia al recurso."
+      }
+    },
+    {
+      "lote_id": "py_011417",
+      "procesado_en": "2026-10-14T01:14:17.631124+00:00",
+      "motor_orquestacion": "python_gemini",
+      "interaccion": {
+        "id": "msg_018",
+        "autor": "QA",
+        "canal": "#qa",
+        "tipo": "feedback",
+        "texto": "Los alumnos me parece que son mejores que los mentores, creo que falta ética profesional\""
+      },
+      "activo": {
+        "sentimiento": "negativo",
+        "tipo_contenido": "feedback_general",
+        "temas_clave": [
+          "comunidad",
+          "mentoria",
+          "etica"
+        ],
+        "respuesta_chat": "Hola QA, gracias por compartir tu perspectiva con nosotros. Entendemos que tienes preocupaciones sobre la calidad y la ética en las mentorías. Vamos a revisar este tema internamente para asegurar que los estándares de nuestra comunidad sean los adecuados. ¡Agradecemos tu honestidad!",
+        "post_linkedin": null,
+        "tip_tecnico_faq": null
+      }
+    }
+  ],
+  "fallidos": []
+}

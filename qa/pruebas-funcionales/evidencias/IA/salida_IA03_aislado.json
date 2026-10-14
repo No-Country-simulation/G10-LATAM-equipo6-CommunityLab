@@ -1,0 +1,125 @@
+{
+  "metadata_paquete": {
+    "version": "1.0.0",
+    "generado_en": "2026-10-14T01:07:42.594517+00:00",
+    "archivo_origen": "entrada_IA03_aislado.json",
+    "total_registros_origen": 4,
+    "total_procesados_exitosamente": 4,
+    "total_fallidos": 0
+  },
+  "metricas": {
+    "distribucion_sentimiento": {
+      "positivo": 0,
+      "neutro": 3,
+      "negativo": 1
+    },
+    "distribucion_tipo_contenido": {
+      "logro_contratacion": 0,
+      "duda_tecnica": 2,
+      "feedback_general": 2,
+      "showcase": 0
+    },
+    "total_posts_linkedin_generados": 0,
+    "total_tips_faq_generados": 2
+  },
+  "activos": [
+    {
+      "lote_id": "py_010742",
+      "procesado_en": "2026-10-14T01:07:42.594517+00:00",
+      "motor_orquestacion": "python_gemini",
+      "interaccion": {
+        "id": "msg_015",
+        "autor": "Alejandro Ruiz",
+        "canal": "#dudas-cloud-oci",
+        "tipo": "pregunta_tecnica",
+        "texto": "¿Cómo se configura un ciclo de vida (Lifecycle Rule) en OCI Object Storage para archivar automáticamente objetos a Archive Tier después de 30 días sin costo extra?"
+      },
+      "activo": {
+        "sentimiento": "neutro",
+        "tipo_contenido": "duda_tecnica",
+        "temas_clave": [
+          "OCI",
+          "Object Storage",
+          "Lifecycle Rule",
+          "Cloud"
+        ],
+        "respuesta_chat": "¡Hola Alejandro! Entiendo perfectamente tu duda sobre cómo optimizar costos en Oracle Cloud Infrastructure. Para configurar el ciclo de vida en OCI Object Storage y mover tus archivos a Archive Tier tras 30 días, te he preparado un tip técnico detallado justo aquí abajo con los pasos y ejemplos necesarios. ¡Mucho éxito con tu arquitectura en OCI!",
+        "post_linkedin": null,
+        "tip_tecnico_faq": "a) Explicación de la causa o principio técnico:\nEn Oracle Cloud Infrastructure (OCI) Object Storage, las reglas de gestión del ciclo de vida (Object Lifecycle Management) permiten automatizar la transición o eliminación de datos de manera eficiente. Para mover objetos a un nivel de almacenamiento más económico como 'Archive Storage' después de un periodo determinado (ej. 30 días), se define una política JSON que evalúa la última fecha de modificación o creación del objeto.\n\nb) Pasos estructurados para resolverlo o implementarlo:\n1. Accede a la consola de OCI y navega hasta **Storage** > **Object Storage** > **Buckets**.\n2. Selecciona el Bucket donde deseas aplicar la regla.\n3. En la sección de recursos, haz clic en **Lifecycle Policy Rules** y luego en **Create Rule**.\n4. Asigna un nombre descriptivo a la regla.\n5. Define el ámbito de aplicación (puede ser todo el bucket o un prefijo específico).\n6. Configura la acción: selecciona la transición a **Archive Storage** y establece el tiempo transcurrido en 30 días.\n7. Guarda la regla.\n\nc) Snippet de código o comando práctico y funcional:\nTambién puedes aplicar esta regla utilizando OCI CLI mediante un archivo JSON de configuración llamado `lifecycle-rule.json`:\n```json\n{\n  \"items\": [\n    {\n      \"name\": \"ArchiveAfter30Days\",\n      \"action\": \"ARCHIVE\",\n      \"isEnabled\": true,\n      \"objectNameFilter\": {\n        \"inclusionPrefixes\": [\"logs/\"]\n      },\n      \"timeAmount\": 30,\n      \"timeUnit\": \"DAYS\"\n    }\n  ]\n}\n```\nComando para aplicar la regla vía CLI:\n```bash\noci os work-request create --namespace-name <tu_namespace> --bucket-name <tu_bucket> --details file://lifecycle-rule.json\n```\n\nd) Buenas prácticas recomendadas:\n- Ten en cuenta que los objetos movidos a Archive Tier tienen un tiempo mínimo de retención (generalmente 90 días). Si los eliminas antes, se aplicarán cargos por el tiempo restante.\n- Utiliza prefijos (`inclusionPrefixes`) para aplicar la regla solo a carpetas específicas (como logs o backups) en lugar de todo el bucket si no es necesario."
+      }
+    },
+    {
+      "lote_id": "py_010742",
+      "procesado_en": "2026-10-14T01:07:42.594517+00:00",
+      "motor_orquestacion": "python_gemini",
+      "interaccion": {
+        "id": "msg_016",
+        "autor": "QA",
+        "canal": "#qa",
+        "tipo": "testimonio",
+        "texto": "Con 52 años no se que hacer si emprender o buscar empleo"
+      },
+      "activo": {
+        "sentimiento": "neutro",
+        "tipo_contenido": "feedback_general",
+        "temas_clave": [
+          "empleabilidad",
+          "emprendimiento",
+          "carrera_profesional"
+        ],
+        "respuesta_chat": "Hola QA, entiendo perfectamente tu duda. A los 52 años tienes una gran ventaja competitiva: tu experiencia y madurez profesional. Ambas opciones, emprender o buscar empleo, son totalmente viables en tecnología. Lo ideal es evaluar tus fortalezas actuales y qué te apasiona más. ¡Mucho éxito en esta nueva etapa!",
+        "post_linkedin": null,
+        "tip_tecnico_faq": null
+      }
+    },
+    {
+      "lote_id": "py_010742",
+      "procesado_en": "2026-10-14T01:07:42.594517+00:00",
+      "motor_orquestacion": "python_gemini",
+      "interaccion": {
+        "id": "msg_017",
+        "autor": "QA",
+        "canal": "#qa",
+        "tipo": "pregunta_tecnica",
+        "texto": "How can I delete a bucket in OCI?"
+      },
+      "activo": {
+        "sentimiento": "neutro",
+        "tipo_contenido": "duda_tecnica",
+        "temas_clave": [
+          "OCI",
+          "Object Storage",
+          "Cloud"
+        ],
+        "respuesta_chat": "¡Hola QA! Entiendo que tienes dudas sobre cómo eliminar un bucket en Oracle Cloud Infrastructure (OCI). Para hacerlo de forma segura, primero debes asegurarte de que el bucket esté completamente vacío (eliminando o archivando todos sus objetos). A continuación, te comparto los pasos detallados y un comando rápido para lograrlo.",
+        "post_linkedin": null,
+        "tip_tecnico_faq": "Para eliminar un bucket en Oracle Cloud Infrastructure (OCI), debes tener en cuenta que OCI requiere que el bucket esté completamente vacío antes de permitir su eliminación por razones de seguridad y prevención de pérdida de datos.\n\na) Explicación de la causa: Un bucket que contenga objetos o versiones de objetos activas no puede ser eliminado directamente desde la consola o la CLI para evitar borrados accidentales de información crítica.\n\nb) Pasos estructurados:\n1. Accede a la consola de OCI y navega hasta Object Storage.\n2. Selecciona el compartimento y haz clic en el nombre de tu bucket.\n3. Vacía el bucket: Elimina todos los objetos contenidos. Si el bucket tiene habilitado el versionado, debes asegurarte de eliminar también las versiones anteriores y los objetos marcados como eliminados (delete markers).\n4. Una vez vacío, haz clic en el botón 'Delete' (Eliminar) en la vista general del bucket y confirma la acción.\n\nc) Snippet de código (OCI CLI):\nPuedes vaciar y eliminar un bucket rápidamente usando la OCI CLI mediante un script de Bash o comandos directos:\n```bash\n# Listar y eliminar objetos de un bucket\noci os object bulk-delete --namespace-name <tu_namespace> --bucket-name <tu_bucket>\n\n# Una vez vacío, eliminar el bucket\noci os bucket delete --namespace-name <tu_namespace> --bucket-name <tu_bucket>\n```\n\nd) Buenas prácticas recomendadas:\n- Utiliza políticas de retención y Lifecycle Rules si necesitas automatizar la limpieza de objetos antiguos antes de eliminar un bucket.\n- Verifica siempre el entorno (Development, Staging, Production) antes de ejecutar comandos de eliminación masiva en la CLI."
+      }
+    },
+    {
+      "lote_id": "py_010742",
+      "procesado_en": "2026-10-14T01:07:42.594517+00:00",
+      "motor_orquestacion": "python_gemini",
+      "interaccion": {
+        "id": "msg_018",
+        "autor": "QA",
+        "canal": "#qa",
+        "tipo": "feedback",
+        "texto": "Los alumnos me parece que son mejores que los mentores, creo que falta ética profesional\""
+      },
+      "activo": {
+        "sentimiento": "negativo",
+        "tipo_contenido": "feedback_general",
+        "temas_clave": [
+          "mentoria",
+          "comunidad",
+          "etica_profesional"
+        ],
+        "respuesta_chat": "Hola QA, gracias por compartir tu perspectiva con la comunidad. Lamentamos que hayas tenido esta impresión; tomamos muy en serio la ética profesional y revisaremos nuestros procesos de mentoría para seguir mejorando. ¿Te gustaría detallarnos alguna situación en particular para poder abordarla mejor?",
+        "post_linkedin": null,
+        "tip_tecnico_faq": null
+      }
+    }
+  ],
+  "fallidos": []
+}
