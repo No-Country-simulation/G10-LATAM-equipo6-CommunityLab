@@ -1,7 +1,7 @@
 ﻿# Matriz de trazabilidad - CommunityLab (pruebas funcionales QA)
 
-- Fecha de generación: 2026-10-14 19:23 -03:00
-- Commit probado: 68c7382
+- Fecha de generación: 2026-10-14 20:32 -03:00
+- Commit probado: 57c92ec
 - Entorno: local (Windows y Docker Desktop), salvo INF-06 contra el servidor del equipo
 
 ## Resumen por estado
@@ -24,7 +24,7 @@
 | INF-05 | Infraestructura y setup base | Seguridad del repositorio (secretos) | Pendiente | - | - |  |
 | INF-06 | Infraestructura y setup base | Exposición de puertos | Parcial | INF-06.txt | 2026-10-13 19:48 | 22 5678 y 8501 abiertos y 5432 cerrado. Falta verificar login en N8N-01 y UI-07 |
 | DOC-01 | Contenedores Docker | Levantar entorno Docker | Parcial | DOC-01_diagnostico_volumen.txt, DOC-01_ps.txt, DOC-01_up.txt, DOC-01_volumen_creado.txt | 2026-10-13 19:48 | Falló al inicio por volumen externo inexistente. Con el volumen creado a mano n8n quedó Up. El compose solo define n8n |
-| DOC-02 | Contenedores Docker | Logs limpios | Pendiente | - | - |  |
+| DOC-02 | Contenedores Docker | Logs limpios | Pendiente | DOC-02.txt | 2026-10-14 20:19 |  |
 | DOC-03 | Contenedores Docker | Reproducibilidad desde cero | Pendiente | - | - | El primer intento falló por el volumen externo |
 | DOC-04 | Contenedores Docker | Persistencia tras restart | Bloqueado | - | - | Sin servicio de base de datos en el compose actual (por confirmar) |
 | DB-01 | PostgreSQL con pgvector | Conexión a PostgreSQL | Bloqueado | - | - | Sin servicio PostgreSQL en el compose actual (por confirmar) |
@@ -32,7 +32,7 @@
 | DB-03 | PostgreSQL con pgvector | Esquema | Bloqueado | - | - | Depende de DB-01 |
 | DB-04 | PostgreSQL con pgvector | Búsqueda semántica | Bloqueado | - | - | Depende de DB-01 |
 | DB-05 | PostgreSQL con pgvector | Datos inválidos | Bloqueado | - | - | Depende de DB-01 |
-| N8N-01 | Orquestador n8n | Acceso y autenticación | Pendiente | N8N-01.txt | 2026-10-13 19:48 |  |
+| N8N-01 | Orquestador n8n | Acceso y autenticación | Pendiente | N8N-01.txt | 2026-10-14 20:22 |  |
 | N8N-02 | Orquestador n8n | Workflows importados y activos | En curso | N8N-02.txt, N8N-02_activacion.txt | 2026-10-13 19:48 | 8 workflows en el repo con rutas de webhook repetidas. Falta confirmar importación y activación |
 | N8N-03 | Orquestador n8n | Webhook con mensaje válido | Falló | - | - | HTTP 500 en entorno local con mensaje de prueba y con lote real. Causa por determinar en Executions |
 | N8N-04 | Orquestador n8n | Webhook con entradas inválidas | No concluyente | N8N-04.csv, N8N-04.txt, N8N-04_contenedor.txt, N8N-04_respuesta_control.txt | 2026-10-13 19:48 | El control dio 500. JSON malformado 422 y GET 404 |
@@ -47,7 +47,7 @@
 | IA-01 | APIs de IA, prompts e imágenes | Conexión Gemini | Parcial | IA-01_02.txt | 2026-10-13 21:18 | Gemini responde a través del pipeline. Llamada mínima aislada pendiente |
 | IA-02 | APIs de IA, prompts e imágenes | Respaldo OpenAI | Parcial | - | - | Cambio automático entre modelos de Gemini observado. Groq u OpenAI por confirmar con el equipo |
 | IA-03 | APIs de IA, prompts e imágenes | Análisis de sentimiento | No concluyente | IA-03.txt, IA-03_comparacion.csv, IA-03_log.txt, IA-03_log_aislado.txt, IA-03_log_rerun.txt, IA-03_referencia.csv | 2026-10-14 19:15 | Referencia propia en etiquetado. Actualizar con el porcentaje cuando termine |
-| IA-04 | APIs de IA, prompts e imágenes | Voz de marca | Pendiente | - | - |  |
+| IA-04 | APIs de IA, prompts e imágenes | Voz de marca | Pendiente | IA-04.txt, IA-04_log_a.txt, IA-04_log_b.txt | 2026-10-14 19:52 |  |
 | IA-05 | APIs de IA, prompts e imágenes | Respuesta al usuario | Pendiente | - | - |  |
 | IA-06 | APIs de IA, prompts e imágenes | Chunking y lematización | Pendiente | - | - |  |
 | IA-07 | APIs de IA, prompts e imágenes | Prompt injection | Pendiente | - | - |  |
@@ -58,7 +58,7 @@
 | LOG-03 | Lógica condicional | Queja grave emite alerta | Pendiente | - | - |  |
 | LOG-04 | Lógica condicional | Mensaje ambiguo | Pendiente | - | - |  |
 | LOG-05 | Lógica condicional | Mensaje en dos categorías | Pendiente | - | - |  |
-| UI-01 | Panel Streamlit | Carga de Streamlit | Parcial | - | - | La app arranca y escucha en el puerto 8501. Falta evidencia de carga en el navegador |
+| UI-01 | Panel Streamlit | Carga de Streamlit | Parcial | UI-01.png | 2026-10-14 20:31 | La app arranca y escucha en el puerto 8501. Falta evidencia de carga en el navegador |
 | UI-02 | Panel Streamlit | Lista de publicaciones | Pendiente | - | - |  |
 | UI-03 | Panel Streamlit | Aprobar rechazar y editar | Pendiente | - | - |  |
 | UI-04 | Panel Streamlit | Lista vacía | Pendiente | - | - |  |
@@ -100,8 +100,9 @@
 | DOC-01_ps.txt | A1A836C8E89A | 2026-10-13 19:48 | 0.6 |
 | DOC-01_up.txt | DFF4FC1C98E1 | 2026-10-13 19:48 | 0.1 |
 | DOC-01_volumen_creado.txt | 123859220CC2 | 2026-10-13 19:48 | 0 |
+| DOC-02.txt | 873B2AAD3BB0 | 2026-10-14 20:19 | 2.4 |
 | INF-06.txt | 6A87F2E03BC5 | 2026-10-13 19:48 | 0.4 |
-| N8N-01.txt | 227CC9FF1888 | 2026-10-13 19:48 | 0.3 |
+| N8N-01.txt | 286894CB1EB7 | 2026-10-14 20:22 | 0.5 |
 | N8N-02.txt | 3B1056CA8AA4 | 2026-10-13 19:48 | 2.2 |
 | N8N-02_activacion.txt | 603198B52873 | 2026-10-13 19:48 | 0.6 |
 | N8N-04.csv | A8B235C8002A | 2026-10-13 19:48 | 0.7 |
@@ -114,8 +115,10 @@
 | PY-07.txt | ABD6362A1D1C | 2026-10-13 19:48 | 23.5 |
 | PY-07_diagnostico.txt | E6D0D1397481 | 2026-10-13 19:48 | 1.5 |
 | PY-07_junit.xml | 4B9017219834 | 2026-10-13 19:48 | 25.6 |
+| UI-01.png | 055334591FA8 | 2026-10-14 20:31 | 186.6 |
 | IA\entrada_IA03.json | 9B0AA35BBE0A | 2026-10-13 22:01 | 8.9 |
 | IA\entrada_IA03_aislado.json | 6A3968FFEDF1 | 2026-10-13 22:07 | 1.7 |
+| IA\entrada_IA04.json | 89621A50B80B | 2026-10-14 19:34 | 2.4 |
 | IA\IA-01_02.txt | ED8710229D28 | 2026-10-13 21:18 | 0.2 |
 | IA\IA-03.txt | C5DDBA1ACA4C | 2026-10-14 19:15 | 1.3 |
 | IA\IA-03_comparacion.csv | B079FA9A625D | 2026-10-14 19:15 | 1 |
@@ -123,9 +126,14 @@
 | IA\IA-03_log_aislado.txt | 34938D1B2AF3 | 2026-10-13 22:07 | 7.4 |
 | IA\IA-03_log_rerun.txt | BB32E495D249 | 2026-10-13 22:14 | 12.8 |
 | IA\IA-03_referencia.csv | 011D6205EB87 | 2026-10-14 19:15 | 3.8 |
+| IA\IA-04.txt | E5BE60C15AB3 | 2026-10-14 19:52 | 2.5 |
+| IA\IA-04_log_a.txt | F16C9E29E143 | 2026-10-14 19:34 | 4.6 |
+| IA\IA-04_log_b.txt | C4C79B7ABEDE | 2026-10-14 19:35 | 4.7 |
 | IA\IA-08_fallback_modelo.txt | 67FF8E202E31 | 2026-10-13 22:18 | 2.9 |
 | IA\salida_IA03.json | 16CB8B4BB6A8 | 2026-10-13 22:14 | 35.6 |
 | IA\salida_IA03_aislado.json | 91FE5A8C26B3 | 2026-10-13 22:07 | 8.5 |
+| IA\salida_IA04_a.json | DE8FC98F98D7 | 2026-10-14 19:34 | 8.5 |
+| IA\salida_IA04_b.json | 5A0F1643EC34 | 2026-10-14 19:35 | 8.7 |
 | PY-03\entrada_5.json | 8BAF97B8C8D8 | 2026-10-13 20:41 | 2.8 |
 
-Archivos de apoyo sin caso propio (entradas, salidas y logs): 5
+Archivos de apoyo sin caso propio (entradas, salidas y logs): 8
