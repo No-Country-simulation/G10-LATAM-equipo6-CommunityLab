@@ -190,16 +190,16 @@ gantt
     - Adaptación del webhook de n8n para Telegram para operar en HTTP directo evitando el bloqueo de certificados SSL en IP de OCI.
     - Sincronización dinámica de paquetes procesados hacia OCI Object Storage (`sm.upload_asset_package`).
   - [x] **Expansión y Automatización QA:**
-    - Suite automatizada ampliada de 49 a **73 tests unitarios e integrales pasando al 100%** (`pytest tests/ -v`).
+    - Suite automatizada ampliada de 49 a **80 tests unitarios e integrales pasando al 100%** (`pytest tests/ -v`).
   - [x] **Despliegue y Validación en Servidor OCI (`147.15.9.116`):**
     - Apertura de reglas de red (puerto 8501 y 5678) y validación en vivo.
-  - [ ] **Subworkflow de Generación e Iteración de Imágenes (`CommunityLab_Generador_Imagenes_Post` - José Medina - Pendiente):**
-    - Implementación de microservicio síncrono dedicado en n8n (`POST /webhook/generar-imagen-post`).
-    - Cadena de 5 nodos: Webhook Trigger $\rightarrow$ Google Gemini (*Prompt Engineer* para traducción y estilo 3D isométrico) $\rightarrow$ Code Node (limpieza y URL encode) $\rightarrow$ Inferencia en Pollinations.ai (modelo FLUX con seed aleatoria por iteración) $\rightarrow$ Subida directa de binario a OCI Object Storage vía S3 (`/previews/preview_{id_post}.png`) $\rightarrow$ Respuesta `200 OK` con URL pública.
-  - [ ] **Integración del Generador de Imágenes en Frontend (Streamlit):**
-    - Conectar el botón de "Generar / Regenerar Imagen" del Editor de Contenido al endpoint `/webhook/generar-imagen-post`.
-    - Input para `instruccion_custom` en la tarjeta de curaduría para ajuste de estilo visual por el Community Manager.
-    - Renderizado responsivo de la imagen generada (`preview_{id_post}.png`) en el mockup de LinkedIn con `st.image()`.
+  - [x] **Subworkflow de Generación e Iteración de Imágenes (`CommunityLab_Generador_Imagenes_Post` - José Medina & César Cely):**
+    - Implementación de microservicio síncrono dedicado en n8n (`POST /webhook/generar-imagen-post`) con soporte para variables desacopladas de OCI desde `.env`.
+    - Cadena de 5 nodos: Webhook Trigger $\rightarrow$ AI Agent con Groq + Memoria $\rightarrow$ Code Node (limpieza de prompt) $\rightarrow$ Inferencia en Pollinations.ai (modelo FLUX con seed aleatoria) $\rightarrow$ Subida directa de binario a OCI Object Storage vía S3 $\rightarrow$ Respuesta `200 OK` con URL pública.
+  - [x] **Integración Dual-Engine del Generador de Imágenes en Frontend (Streamlit):**
+    - Conmutador directo de motor en el editor de contenido: **🐍 Python Nativo (Gemini 2.5 + OCI SDK)** vs **⚡ n8n Workflow (Groq + S3 Node)**.
+    - Input de `instrucción visual` para personalización de prompts por el Community Manager y soporte de adjunto local (upload manual).
+    - Renderizado responsivo de la imagen generada o adjunta en el mockup de redes sociales.
   - [x] **Pruebas de Publicación Directa en LinkedIn & X / Twitter (Investigación & POC - Max Ferrer):**
     - **LinkedIn:** Superación de la restricción de 60 días para páginas corporativas mediante creación de página suplementaria vinculada al perfil ([Hackathon ONE G10 Team 6](https://www.linkedin.com/company/hackaton-one-g10-team-6/)). Validación exitosa de publicación automatizada vía `cURL` lista para integrarse.
     - **X (Twitter):** Evaluación de costos y restricciones de planes de pago de la API oficial; investigación de vías alternativas para preservar el principio 100% Free de la Hackathon.

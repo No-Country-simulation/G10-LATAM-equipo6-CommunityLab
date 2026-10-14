@@ -492,8 +492,11 @@ def construir_payload_imagen_post(
     solucion_tecnica: str,
     temas_clave: Optional[List[str]] = None,
     instruccion_custom: str = "",
+    region: Optional[str] = None,
+    namespace: Optional[str] = None,
+    bucket_name: Optional[str] = None,
 ) -> Dict[str, Any]:
-    """Arma el JSON que espera el webhook de generación de imagen."""
+    """Arma el JSON que espera el webhook de generación de imagen, desacoplado vía .env."""
     payload: Dict[str, Any] = {
         "id_post": str(id_post).strip(),
         "solucion_tecnica": solucion_tecnica.strip(),
@@ -504,6 +507,13 @@ def construir_payload_imagen_post(
     instruccion = (instruccion_custom or "").strip()
     if instruccion:
         payload["instruccion_custom"] = instruccion
+
+    # Inyectar variables de entorno de OCI para no depender de valores fijos en el flujo
+    payload["region"] = (region or os.getenv("OCI_REGION", "us-ashburn-1")).strip()
+    payload["bucket_name"] = (bucket_name or os.getenv("OCI_BUCKET_NAME", "communitylab-activos-marketing")).strip()
+    ns = (namespace or os.getenv("OCI_NAMESPACE", "")).strip()
+    if ns:
+        payload["namespace"] = ns
     return payload
 
 
@@ -564,6 +574,66 @@ def _normalizar_respuesta_imagen(resultado_raw: Any) -> Dict[str, Any]:
     return data
 
 
+def generar_imagen_post_python(
+    id_post: str,
+    solucion_tecnica: str,
+    temas_clave: Optional[List[str]] = None,
+    instruccion_custom: str = "",
+    timeout_segundos: float = 120.0,
+) -> Dict[str, Any]:
+    """Genera una imagen mediante el motor nativo de Python (Gemini + Pollinations + OCI SDK)."""
+    import random
+    from urllib.parse import quote
+    import httpx
+    from src.ai_engine.gemini_service import GeminiService
+    from src.cloud_oci.storage_client import OCIStorageManager
+
+    if not str(id_post).strip():
+        raise ValueError("El post no tiene id_post.")
+    if not solucion_tecnica or not solucion_tecnica.strip():
+        raise ValueError("El copy del editor está vacío. Escribe el texto antes de generar la imagen.")
+
+    # 1. Prompt Engineering con Gemini
+    gemini = GeminiService()
+    prompt_ingles = gemini.generate_image_prompt(
+        solucion_tecnica=solucion_tecnica,
+        instruccion_custom=instruccion_custom,
+        temas_clave=temas_clave,
+    )
+
+    # 2. Descarga de imagen en Pollinations (modelo FLUX)
+    clean_prompt = " ".join(prompt_ingles.split())
+    seed = random.randint(1, 99999)
+    pollinations_url = (
+        f"https://image.pollinations.ai/prompt/{quote(clean_prompt)}?"
+        f"width=1024&height=1024&seed={seed}&model=flux&nologo=true"
+    )
+
+    try:
+        with httpx.Client(timeout=timeout_segundos) as client:
+            resp = client.get(pollinations_url)
+            resp.raise_for_status()
+            image_bytes = resp.content
+            if not image_bytes:
+                raise RuntimeError("Pollinations devolvió un archivo binario vacío.")
+    except Exception as exc:
+        raise RuntimeError(f"Error al generar imagen con Pollinations.ai: {exc}") from exc
+
+    # 3. Subida directa a OCI Object Storage usando credenciales del .env
+    sm = OCIStorageManager()
+    remote_path = f"previews/preview_{id_post}.png"
+    sm.upload_bytes(image_bytes, remote_name=remote_path, content_type="image/png")
+    image_url = sm.get_public_url(remote_path)
+
+    return {
+        "status": "success",
+        "id_post": str(id_post),
+        "image_url": image_url,
+        "motor": "python_gemini",
+        "prompt": clean_prompt,
+    }
+
+
 def generar_imagen_post(
     id_post: str,
     solucion_tecnica: str,
@@ -571,20 +641,23 @@ def generar_imagen_post(
     instruccion_custom: str = "",
     webhook_url: Optional[str] = None,
     timeout_segundos: float = 180.0,
+    motor: str = "python",
 ) -> Dict[str, Any]:
-    """Pide a n8n una imagen para el post y devuelve la URL pública en OCI.
+    """Generador Dual-Engine de imágenes para posts.
 
-    Args:
-        id_post: Identificador del activo. n8n lo usa como nombre `preview_{id_post}.png`.
-        solucion_tecnica: Copy del editor, contexto para el modelo.
-        temas_clave: Hashtags o categorías asociadas.
-        instruccion_custom: Ajuste visual opcional para regenerar.
-        webhook_url: URL del webhook. Si no se pasa, usa N8N_GENERAR_IMAGEN_WEBHOOK_URL.
-        timeout_segundos: Espera máxima. La generación de imagen puede tardar más de un minuto.
-
-    Returns:
-        Diccionario con `status`, `id_post` e `image_url`.
+    Soporta motor='python' (Nativo Gemini + OCI) y motor='n8n' (Webhook n8n + Groq).
     """
+    es_n8n = bool(webhook_url) or str(motor).strip().lower() in ("n8n", "motor_n8n", "n8n_workflow")
+    if not es_n8n:
+        return generar_imagen_post_python(
+            id_post=id_post,
+            solucion_tecnica=solucion_tecnica,
+            temas_clave=temas_clave,
+            instruccion_custom=instruccion_custom,
+            timeout_segundos=timeout_segundos,
+        )
+
+    # Motor n8n (Webhooks)
     if not str(id_post).strip():
         raise ValueError("El post no tiene id_post.")
     if not solucion_tecnica or not solucion_tecnica.strip():
@@ -630,6 +703,7 @@ def generar_imagen_post(
         "status": "success",
         "id_post": str(data.get("id_post") or id_post),
         "image_url": image_url,
+        "motor": "n8n_groq",
     }
 
 

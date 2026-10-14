@@ -34,7 +34,7 @@
     {
       "parameters": {
         "operation": "upload",
-        "bucketName": "communitylab-activos-marketing",
+        "bucketName": "={{ $(\"Webhook\").item.json.body.bucket_name || \"communitylab-activos-marketing\" }}",
         "fileName": "=previews/preview_{{ $('Webhook').item.json.body.id_post || 'temp' }}.png",
         "additionalFields": {},
         "tagsUi": {
@@ -160,7 +160,7 @@
             {
               "id": "646c8784-cef1-4ad7-bb87-6c30611fe507",
               "name": "image_url",
-              "value": "={{ 'https://objectstorage.sa-saopaulo-1.oraclecloud.com/n/gr8ogb5hbroe/b/communitylab-activos-marketing/o/previews%2Fpreview_' + encodeURIComponent($('Webhook').item.json.body.id_post) + '.png' }}\n",
+              "value": "={{ \"https://objectstorage.\" + ($(\"Webhook\").item.json.body.region || \"us-ashburn-1\") + \".oraclecloud.com/n/\" + ($(\"Webhook\").item.json.body.namespace || \"gr8ogb5hbroe\") + \"/b/\" + ($(\"Webhook\").item.json.body.bucket_name || \"communitylab-activos-marketing\") + \"/o/previews%2Fpreview_\" + encodeURIComponent($(\"Webhook\").item.json.body.id_post) + \".png\" }}",
               "type": "string"
             }
           ]

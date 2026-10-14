@@ -304,6 +304,54 @@ class OCIStorageManager:
             "size_bytes": path.stat().st_size,
         }
 
+    def upload_bytes(
+        self,
+        data: bytes,
+        remote_name: str,
+        content_type: str = "application/octet-stream",
+    ) -> Dict[str, Any]:
+        """Sube bytes en memoria directamente al bucket OCI o a fallback local."""
+        if self.is_local_mode:
+            dest = self.LOCAL_FALLBACK_DIR / remote_name
+            dest.parent.mkdir(parents=True, exist_ok=True)
+            dest.write_bytes(data)
+            return {
+                "status": "success_local_fallback",
+                "object_name": remote_name,
+                "etag": "local_mock_etag",
+                "size_bytes": len(data),
+            }
+
+        import io
+        ns = self.get_namespace()
+        bio = io.BytesIO(data)
+        response = self.client.put_object(
+            namespace_name=ns,
+            bucket_name=self.bucket_name,
+            object_name=remote_name,
+            put_object_body=bio,
+            content_type=content_type,
+        )
+        etag = response.headers.get("etag") if hasattr(response, "headers") else None
+        return {
+            "status": "success",
+            "object_name": remote_name,
+            "etag": etag,
+            "size_bytes": len(data),
+        }
+
+    def get_public_url(self, remote_name: str) -> str:
+        """Retorna la URL pública directa para el objeto en OCI Object Storage o archivo local."""
+        if self.is_local_mode:
+            local_path = (self.LOCAL_FALLBACK_DIR / remote_name).resolve()
+            return f"file://{local_path}"
+
+        from urllib.parse import quote
+        region = self.region or "us-ashburn-1"
+        ns = self.get_namespace()
+        encoded_name = quote(remote_name, safe="")
+        return f"https://objectstorage.{region}.oraclecloud.com/n/{ns}/b/{self.bucket_name}/o/{encoded_name}"
+
     def get_asset(self, object_name: str) -> Any:
         """Descarga un objeto JSON y lo deserializa a objeto Python."""
         if self.is_local_mode:

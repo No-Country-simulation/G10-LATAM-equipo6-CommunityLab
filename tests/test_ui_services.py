@@ -338,11 +338,12 @@ def test_construir_payload_imagen_post_omite_opcionales_vacios():
         temas_clave=[" #LangChain ", "", "OCI"],
         instruccion_custom="   ",
     )
-    assert payload == {
-        "id_post": "dc_1553172781007642635",
-        "solucion_tecnica": "Copy del editor",
-        "temas_clave": ["#LangChain", "OCI"],
-    }
+    assert payload["id_post"] == "dc_1553172781007642635"
+    assert payload["solucion_tecnica"] == "Copy del editor"
+    assert payload["temas_clave"] == ["#LangChain", "OCI"]
+    assert "instruccion_custom" not in payload
+    assert payload["bucket_name"] == "communitylab-activos-marketing"
+    assert "region" in payload
 
 
 def test_generar_imagen_post_devuelve_url(monkeypatch):
@@ -408,4 +409,73 @@ def test_validar_url_imagen_rechaza_objeto_undefined():
     with pytest.raises(RuntimeError, match="undefined"):
         validar_url_imagen(cruda)
 
+def test_generar_imagen_post_python_dual_engine(monkeypatch):
+    from src.ai_engine.gemini_service import GeminiService
+    from src.cloud_oci.storage_client import OCIStorageManager
+
+    def mock_prompt(self, solucion_tecnica, instruccion_custom="", temas_clave=None):
+        return "3D isometric tech concept in blue and purple"
+
+    monkeypatch.setattr(GeminiService, "generate_image_prompt", mock_prompt)
+
+    class FakeResponse:
+        status_code = 200
+        content = b"fake_png_binary_data"
+
+        def raise_for_status(self):
+            return None
+
+    class FakeClient:
+        def __init__(self, timeout):
+            self.timeout = timeout
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *args):
+            return False
+
+        def get(self, url):
+            assert "image.pollinations.ai" in url
+            return FakeResponse()
+
+    monkeypatch.setattr("httpx.Client", FakeClient)
+
+    def mock_upload_bytes(self, data, remote_name, content_type="image/png"):
+        assert data == b"fake_png_binary_data"
+        assert remote_name == "previews/preview_post_python_01.png"
+        return {"status": "success", "object_name": remote_name}
+
+    def mock_get_public_url(self, remote_name):
+        return f"https://objectstorage.us-ashburn-1.oraclecloud.com/n/ns/b/bucket/o/{remote_name}"
+
+    monkeypatch.setattr(OCIStorageManager, "upload_bytes", mock_upload_bytes)
+    monkeypatch.setattr(OCIStorageManager, "get_public_url", mock_get_public_url)
+
+    resultado = generar_imagen_post(
+        id_post="post_python_01",
+        solucion_tecnica="Solución para comunidad",
+        temas_clave=["Python", "Cloud"],
+        motor="python",
+    )
+
+    assert resultado["status"] == "success"
+    assert resultado["motor"] == "python_gemini"
+    assert resultado["id_post"] == "post_python_01"
+    assert resultado["image_url"].endswith("previews/preview_post_python_01.png")
+
+
+def test_storage_manager_upload_bytes_and_public_url(tmp_path, monkeypatch):
+    from src.cloud_oci.storage_client import OCIStorageManager
+
+    sm = OCIStorageManager(region="us-ashburn-1")
+    sm.LOCAL_FALLBACK_DIR = tmp_path
+    sm.is_local_mode = True
+
+    res = sm.upload_bytes(b"hello image bytes", "previews/preview_test.png", "image/png")
+    assert res["status"] == "success_local_fallback"
+    assert (tmp_path / "previews" / "preview_test.png").read_bytes() == b"hello image bytes"
+
+    url = sm.get_public_url("previews/preview_test.png")
+    assert str(tmp_path) in url
 

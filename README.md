@@ -111,7 +111,7 @@ flowchart TD
 │   │   ├── config_manager.py         # Gestor de doble persistencia (.env + JSON)
 │   │   └── app.py                    # Punto de entrada principal de la app Streamlit
 │   └── utils/                        # Logging y utilidades transversales
-└── tests/                            # Suite automatizada (73/73 pruebas pasando)
+└── tests/                            # Suite automatizada (80/80 pruebas pasando)
 ```
 
 ---
@@ -154,7 +154,7 @@ Si tienes `AUTOSTART_BOTS=true` en tu `.env`, los bots de Telegram, Discord y Sl
 ```bash
 pytest tests/ -v
 ```
-*Total:* **73 tests unitarios e integrales (100% aprobados)** cubriendo ingesta, validación Pydantic, cliente OCI, bots omnicanal, pipeline y servicios UI.  
+*Total:* **80 tests unitarios e integrales (100% aprobados)** cubriendo ingesta, validación Pydantic, cliente OCI, bots omnicanal, pipeline y servicios UI.  
 *Estrategia QA (Semana Ganada de Ventaja):* Gracias a un desarrollo acelerado, el equipo cuenta con 1 semana de ventaja antes del Demo Day dedicada exclusivamente al aseguramiento de calidad (QA), resiliencia de bots, pruebas de carga en OCI Object Storage y refinamiento continuo de UX/UI.
 
 ---

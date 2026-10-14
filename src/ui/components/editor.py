@@ -40,21 +40,30 @@ def _render_generador_imagen(post: dict, copy_actual: str) -> None:
     clave_nombre = f"imagen_local_nombre_{post_id}"
     clave_firma = f"imagen_local_firma_{post_id}"
 
-    c_prompt, c_btn, c_adj = st.columns([2.2, 1.15, 1.15], vertical_alignment="bottom")
+    c_motor, c_prompt, c_btn, c_adj = st.columns([1.1, 1.8, 1.05, 1.05], vertical_alignment="bottom")
+    with c_motor:
+        motor_opcion = st.selectbox(
+            "Motor",
+            ["🐍 Python (Gemini)", "⚡ n8n (Groq)"],
+            key=f"motor_gen_img_{post_id}",
+            help="Selecciona el motor para generar la imagen: Python Nativo con Gemini o Webhook síncrono n8n.",
+            label_visibility="collapsed",
+        )
     with c_prompt:
         instruccion = st.text_input(
             "Instrucción visual (opcional)",
             placeholder="Instrucción visual opcional. Ej: estilo 3D isométrico",
             key=f"img_prompt_{post_id}",
             label_visibility="collapsed",
-            help="Ajuste de estilo para Gemini. Si lo dejas vacío, la imagen se arma solo con el copy y los temas.",
+            help="Ajuste de estilo visual. Si lo dejas vacío, se arma con el copy y los temas clave.",
         )
     with c_btn:
         generar = st.button(
-            "Generar imagen",
+            "Generar",
             key=f"btn_img_{post_id}",
             type="secondary",
             use_container_width=True,
+            help="Generar imagen con el motor seleccionado",
         )
     with c_adj:
         adjuntar = st.button(
@@ -80,19 +89,21 @@ def _render_generador_imagen(post: dict, copy_actual: str) -> None:
         st.session_state.pop(clave, None)
         st.session_state.pop(clave_local, None)
         st.session_state.pop(clave_nombre, None)
-        with st.spinner("Generando imagen en n8n y subiéndola a OCI..."):
+        motor_sel = "python" if "Python" in motor_opcion else "n8n"
+        with st.spinner(f"Generando imagen vía {motor_opcion} y guardando en OCI..."):
             try:
                 resultado = generar_imagen_post(
                     id_post=post_id,
                     solucion_tecnica=copy_actual,
                     temas_clave=_temas_del_post(post),
                     instruccion_custom=instruccion,
+                    motor=motor_sel,
                 )
             except Exception as exc:
                 st.error(str(exc))
             else:
                 st.session_state[clave] = resultado["image_url"]
-                st.toast("Imagen generada y guardada en OCI.", icon="🖼️")
+                st.toast(f"Imagen generada con éxito ({motor_opcion}) y guardada en OCI.", icon="🖼️")
     elif archivo is not None:
         firma = f"{archivo.name}:{archivo.size}"
         if firma != st.session_state.get(clave_firma):
