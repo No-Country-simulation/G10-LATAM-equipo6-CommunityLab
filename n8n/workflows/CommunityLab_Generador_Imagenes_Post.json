@@ -4,7 +4,7 @@
     {
       "parameters": {
         "httpMethod": "POST",
-        "path": "generar-imagen-post",
+        "path": "generar-imagen-post2",
         "responseMode": "responseNode",
         "options": {}
       },

@@ -24,7 +24,7 @@ Para optimizar la colaboración y garantizar aprendizaje transversal, el equipo 
   * Diseño de *system prompts* con *few-shot learning* para distintos canales y tonos.
   * Extracción estructurada de métricas de sentimiento y temas clave.
   * Implementación y modelado de flujos en **n8n** (nodos de webhook, Gemini AI, bifurcación switch y exportación JSON a `n8n/workflows/`).
-  * Subflujo síncrono de generación e iteración de imágenes para posts (`POST /webhook/generar-imagen-post` con Gemini Prompt Engineer + Pollinations.ai / FLUX + persistencia OCI S3).
+  * Subflujo síncrono de generación e iteración de imágenes para posts (`POST /webhook/generar-imagen-post2` con Gemini Prompt Engineer + Pollinations.ai / FLUX + persistencia OCI S3).
   * Investigación e integración de conectores de publicación externa a **LinkedIn & X (Twitter)** (análisis de restricciones de API y alternativas 100% free - Max Ferrer).
   * Integración híbrida con scripts de Python auxiliares si son requeridos.
 
@@ -194,7 +194,7 @@ gantt
   - [x] **Despliegue y Validación en Servidor OCI (`147.15.9.116`):**
     - Apertura de reglas de red (puerto 8501 y 5678) y validación en vivo.
   - [x] **Subworkflow de Generación e Iteración de Imágenes (`CommunityLab_Generador_Imagenes_Post` - José Medina & César Cely):**
-    - Implementación de microservicio síncrono dedicado en n8n (`POST /webhook/generar-imagen-post`) con soporte para variables desacopladas de OCI desde `.env`.
+    - Implementación de microservicio síncrono dedicado en n8n (`POST /webhook/generar-imagen-post2`) con soporte para variables desacopladas de OCI desde `.env`.
     - Cadena de 5 nodos: Webhook Trigger $\rightarrow$ AI Agent con Groq + Memoria $\rightarrow$ Code Node (limpieza de prompt) $\rightarrow$ Inferencia en Pollinations.ai (modelo FLUX con seed aleatoria) $\rightarrow$ Subida directa de binario a OCI Object Storage vía S3 $\rightarrow$ Respuesta `200 OK` con URL pública.
   - [x] **Integración Dual-Engine del Generador de Imágenes en Frontend (Streamlit):**
     - Conmutador directo de motor en el editor de contenido: **🐍 Python Nativo (Gemini 2.5 + OCI SDK)** vs **⚡ n8n Workflow (Groq + S3 Node)**.

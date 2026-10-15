@@ -371,7 +371,7 @@ def test_generar_imagen_post_devuelve_url(monkeypatch):
             return False
 
         def post(self, url, json, headers):
-            assert url.endswith("/webhook/generar-imagen-post")
+            assert url.endswith("/webhook/generar-imagen-post2")
             assert json["id_post"] == "dc_155"
             assert json["solucion_tecnica"] == "Texto del editor"
             assert json["instruccion_custom"] == "estilo 3D"
@@ -384,7 +384,7 @@ def test_generar_imagen_post_devuelve_url(monkeypatch):
         solucion_tecnica="Texto del editor",
         temas_clave=["#OCI"],
         instruccion_custom="estilo 3D",
-        webhook_url="http://147.15.9.116:5678/webhook/generar-imagen-post",
+        webhook_url="http://147.15.9.116:5678/webhook/generar-imagen-post2",
     )
     assert resultado["status"] == "success"
     assert resultado["image_url"].endswith("preview_dc_155.png")

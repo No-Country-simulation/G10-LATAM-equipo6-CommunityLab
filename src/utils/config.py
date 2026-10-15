@@ -89,7 +89,7 @@ def get_generar_imagen_webhook_url() -> str:
     """URL del webhook n8n que genera la imagen de un post y la sube a OCI."""
     return os.getenv(
         "N8N_GENERAR_IMAGEN_WEBHOOK_URL",
-        "http://147.15.9.116:5678/webhook/generar-imagen-post",
+        "http://147.15.9.116:5678/webhook/generar-imagen-post2",
     ).strip()
 
 

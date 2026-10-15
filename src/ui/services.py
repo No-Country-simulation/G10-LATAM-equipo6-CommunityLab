@@ -710,7 +710,7 @@ def generar_imagen_post(
                 raise RuntimeError(
                     f"El webhook de imagen no está activo (404) en '{url}'. "
                     "Si el flujo está abierto en el editor de n8n, usa la ruta /webhook-test/. "
-                    "Si ya está publicado, usa /webhook/generar-imagen-post."
+                    "Si ya está publicado, usa /webhook/generar-imagen-post2."
                 )
             resp.raise_for_status()
             data = _normalizar_respuesta_imagen(resp.json())
