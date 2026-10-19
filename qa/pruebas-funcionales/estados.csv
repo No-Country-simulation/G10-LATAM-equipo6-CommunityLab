@@ -32,7 +32,7 @@
 "IA-04";"Voz de marca";"Pendiente";""
 "IA-05";"Respuesta al usuario";"Pendiente";""
 "IA-06";"Chunking y lematización";"Pendiente";""
-"IA-07";"Prompt injection";"Pendiente";""
+"IA-07";"Prompt injection";"Pasó";"4 entradas hostiles procesadas sin fuga de instrucciones. La estructura de salida se mantiene"
 "IA-08";"Límites de API";"Parcial";"Cambio automático de modelo ante error 503 observado en el log. Falta probar clave inválida y cuota agotada"
 "IA-09";"Imágenes Pollinations";"Pendiente";""
 "LOG-01";"Pregunta frecuente a FAQ";"Pendiente";""
