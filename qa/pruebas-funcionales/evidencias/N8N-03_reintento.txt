@@ -1,0 +1,5 @@
+﻿N8N-03 - Reintento con 1 registro real (tras comprobar el DNS)
+Fecha: 2026-10-18 20:39:06 -03:00
+Commit probado: 6ca1ed7
+HTTP 500
+{"message":"Error in workflow"}

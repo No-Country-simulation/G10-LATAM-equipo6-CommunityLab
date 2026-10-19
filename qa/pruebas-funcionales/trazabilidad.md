@@ -1,18 +1,19 @@
 ﻿# Matriz de trazabilidad - CommunityLab (pruebas funcionales QA)
 
-- Fecha de generación: 2026-10-14 20:32 -03:00
-- Commit probado: 57c92ec
+- Fecha de generación: 2026-10-18 20:58 -03:00
+- Commit probado: 6ca1ed7
 - Entorno: local (Windows y Docker Desktop), salvo INF-06 contra el servidor del equipo
 
 ## Resumen por estado
 | Estado | Casos |
 |---|---|
-| Pendiente | 31 |
+| Pendiente | 29 |
 | Bloqueado | 12 |
-| Parcial | 9 |
+| Parcial | 10 |
 | No concluyente | 3 |
 | Falló | 1 |
 | En curso | 1 |
+| Pasó | 1 |
 
 ## Matriz: backlog, caso, evidencia
 | ID | Historia del backlog | Prueba | Estado | Evidencias | Última evidencia | Nota |
@@ -21,10 +22,10 @@
 | INF-02 | Infraestructura y setup base | Aprovisionamiento de la VM | Pendiente | - | - |  |
 | INF-03 | Infraestructura y setup base | Acceso SSH | Pendiente | - | - |  |
 | INF-04 | Infraestructura y setup base | Recursos y SWAP | Pendiente | - | - |  |
-| INF-05 | Infraestructura y setup base | Seguridad del repositorio (secretos) | Pendiente | - | - |  |
+| INF-05 | Infraestructura y setup base | Seguridad del repositorio (secretos) | Pendiente | INF-05.txt | 2026-10-18 20:29 |  |
 | INF-06 | Infraestructura y setup base | Exposición de puertos | Parcial | INF-06.txt | 2026-10-13 19:48 | 22 5678 y 8501 abiertos y 5432 cerrado. Falta verificar login en N8N-01 y UI-07 |
 | DOC-01 | Contenedores Docker | Levantar entorno Docker | Parcial | DOC-01_diagnostico_volumen.txt, DOC-01_ps.txt, DOC-01_up.txt, DOC-01_volumen_creado.txt | 2026-10-13 19:48 | Falló al inicio por volumen externo inexistente. Con el volumen creado a mano n8n quedó Up. El compose solo define n8n |
-| DOC-02 | Contenedores Docker | Logs limpios | Pendiente | DOC-02.txt | 2026-10-14 20:19 |  |
+| DOC-02 | Contenedores Docker | Logs limpios | Parcial | DOC-02.txt | 2026-10-14 20:19 | Sin reinicios en bucle. Advertencia al arrancar por el runner de Python. Errores de Groq por fallo de DNS puntual no reproducido |
 | DOC-03 | Contenedores Docker | Reproducibilidad desde cero | Pendiente | - | - | El primer intento falló por el volumen externo |
 | DOC-04 | Contenedores Docker | Persistencia tras restart | Bloqueado | - | - | Sin servicio de base de datos en el compose actual (por confirmar) |
 | DB-01 | PostgreSQL con pgvector | Conexión a PostgreSQL | Bloqueado | - | - | Sin servicio PostgreSQL en el compose actual (por confirmar) |
@@ -32,9 +33,9 @@
 | DB-03 | PostgreSQL con pgvector | Esquema | Bloqueado | - | - | Depende de DB-01 |
 | DB-04 | PostgreSQL con pgvector | Búsqueda semántica | Bloqueado | - | - | Depende de DB-01 |
 | DB-05 | PostgreSQL con pgvector | Datos inválidos | Bloqueado | - | - | Depende de DB-01 |
-| N8N-01 | Orquestador n8n | Acceso y autenticación | Pendiente | N8N-01.txt | 2026-10-14 20:22 |  |
+| N8N-01 | Orquestador n8n | Acceso y autenticación | Pasó | N8N-01.txt | 2026-10-14 20:22 | n8n 2.42.5 local. La API devuelve 401 sin credenciales. Falta captura de la pantalla de login. Servidor del equipo no probado |
 | N8N-02 | Orquestador n8n | Workflows importados y activos | En curso | N8N-02.txt, N8N-02_activacion.txt | 2026-10-13 19:48 | 8 workflows en el repo con rutas de webhook repetidas. Falta confirmar importación y activación |
-| N8N-03 | Orquestador n8n | Webhook con mensaje válido | Falló | - | - | HTTP 500 en entorno local con mensaje de prueba y con lote real. Causa por determinar en Executions |
+| N8N-03 | Orquestador n8n | Webhook con mensaje válido | Falló | N8N-03_reintento.txt | 2026-10-18 20:39 | HTTP 500 en entorno local con mensaje de prueba y con lote real. Causa por determinar en Executions |
 | N8N-04 | Orquestador n8n | Webhook con entradas inválidas | No concluyente | N8N-04.csv, N8N-04.txt, N8N-04_contenedor.txt, N8N-04_respuesta_control.txt | 2026-10-13 19:48 | El control dio 500. JSON malformado 422 y GET 404 |
 | N8N-05 | Orquestador n8n | Entrada y salida por nodo | Pendiente | - | - |  |
 | PY-01 | Sistema dual con pipelines Python | Entorno Python | Parcial | - | - | El entorno virtual existente ejecuta el pipeline. Instalación desde cero no probada |
@@ -43,7 +44,7 @@
 | PY-04 | Sistema dual con pipelines Python | Failover real | Pendiente | - | - |  |
 | PY-05 | Sistema dual con pipelines Python | Recuperación | Pendiente | - | - |  |
 | PY-06 | Sistema dual con pipelines Python | Sobrecarga | Pendiente | PY-06.csv, PY-06.txt, PY-06_stats.txt | 2026-10-13 19:48 |  |
-| PY-07 | Sistema dual con pipelines Python | Tests existentes | Parcial | PY-07.txt, PY-07_diagnostico.txt, PY-07_junit.xml | 2026-10-13 19:48 | 77 passed 2 failed (Selenium) 2 skipped. El README indica 73 al 100 por ciento |
+| PY-07 | Sistema dual con pipelines Python | Tests existentes | Parcial | PY-07.txt, PY-07b.txt, PY-07_diagnostico.txt, PY-07_junit.xml | 2026-10-18 20:48 | 77 passed 2 failed (Selenium) 2 skipped. El README indica 73 al 100 por ciento |
 | IA-01 | APIs de IA, prompts e imágenes | Conexión Gemini | Parcial | IA-01_02.txt | 2026-10-13 21:18 | Gemini responde a través del pipeline. Llamada mínima aislada pendiente |
 | IA-02 | APIs de IA, prompts e imágenes | Respaldo OpenAI | Parcial | - | - | Cambio automático entre modelos de Gemini observado. Groq u OpenAI por confirmar con el equipo |
 | IA-03 | APIs de IA, prompts e imágenes | Análisis de sentimiento | No concluyente | IA-03.txt, IA-03_comparacion.csv, IA-03_log.txt, IA-03_log_aislado.txt, IA-03_log_rerun.txt, IA-03_referencia.csv | 2026-10-14 19:15 | Referencia propia en etiquetado. Actualizar con el porcentaje cuando termine |
@@ -101,10 +102,12 @@
 | DOC-01_up.txt | DFF4FC1C98E1 | 2026-10-13 19:48 | 0.1 |
 | DOC-01_volumen_creado.txt | 123859220CC2 | 2026-10-13 19:48 | 0 |
 | DOC-02.txt | 873B2AAD3BB0 | 2026-10-14 20:19 | 2.4 |
+| INF-05.txt | F8059E85388C | 2026-10-18 20:29 | 1 |
 | INF-06.txt | 6A87F2E03BC5 | 2026-10-13 19:48 | 0.4 |
 | N8N-01.txt | 286894CB1EB7 | 2026-10-14 20:22 | 0.5 |
 | N8N-02.txt | 3B1056CA8AA4 | 2026-10-13 19:48 | 2.2 |
 | N8N-02_activacion.txt | 603198B52873 | 2026-10-13 19:48 | 0.6 |
+| N8N-03_reintento.txt | E459DA926289 | 2026-10-18 20:39 | 0.2 |
 | N8N-04.csv | A8B235C8002A | 2026-10-13 19:48 | 0.7 |
 | N8N-04.txt | 5E9665027ACC | 2026-10-13 19:48 | 1.3 |
 | N8N-04_contenedor.txt | 09EA5BE42EFE | 2026-10-13 19:48 | 6.9 |
@@ -113,6 +116,7 @@
 | PY-06.txt | 0F642DA3482D | 2026-10-13 19:48 | 1.2 |
 | PY-06_stats.txt | 39F593AB753F | 2026-10-13 19:48 | 5.7 |
 | PY-07.txt | ABD6362A1D1C | 2026-10-13 19:48 | 23.5 |
+| PY-07b.txt | C8919D48E79B | 2026-10-18 20:48 | 28.2 |
 | PY-07_diagnostico.txt | E6D0D1397481 | 2026-10-13 19:48 | 1.5 |
 | PY-07_junit.xml | 4B9017219834 | 2026-10-13 19:48 | 25.6 |
 | UI-01.png | 055334591FA8 | 2026-10-14 20:31 | 186.6 |
