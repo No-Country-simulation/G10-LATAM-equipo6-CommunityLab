@@ -1,8 +1,7 @@
-﻿INF-05 - Búsqueda de secretos en el historial de Git (todas las ramas)
-Fecha: 2026-10-18 20:29:29 -03:00
-Commit probado: 6ca1ed7
+﻿INF-05 - Busqueda de secretos en el historial de Git (todas las ramas)
+Fecha: 2026-10-20 19:38:53 -03:00
+Commit probado: 8aa20ee
 
-Commits y archivos con coincidencias (sin mostrar valores):
 9111e9b Cesar Cely fix(security): blindaje de secretos en Settings UI, sanitizacion de settings.example y sincronizacion de bots
 config/settings.example.json
 
@@ -18,7 +17,5 @@ n8n/workflows/communitylab_discord_dinamico.json
 12221f4 mcabanillassalas feat(channels): implement dynamic bots for Telegram, Discord and Slack with Gemini Python and N8N
 .env.example
 n8n/workflows/communitylab_discord_dinamico.json
-
-Archivos sensibles versionados:
-Ninguno
-.env ignorado por Git: sí
+Archivos sensibles versionados: ninguno
+.env ignorado por Git: si

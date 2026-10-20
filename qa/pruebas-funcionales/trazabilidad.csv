@@ -3,7 +3,7 @@
 "INF-02","Infraestructura y setup base","Aprovisionamiento de la VM","Pendiente","-","-",""
 "INF-03","Infraestructura y setup base","Acceso SSH","Parcial","INF-03_04_servidor.txt","2026-10-19 22:35","Acceso SSH logrado en el servidor. Falta documentar con qué llave y acordar una llave personal de QA autorizada por el equipo"
 "INF-04","Infraestructura y setup base","Recursos y SWAP","Pasó","-","-","Servidor: Ubuntu 22.04, 956 MiB de RAM, SWAP de 6 GiB y disco al 42 por ciento. Coincide con lo documentado. Unos 325 MiB de RAM disponibles"
-"INF-05","Infraestructura y setup base","Seguridad del repositorio (secretos)","Pendiente","INF-05.txt","2026-10-18 20:29",""
+"INF-05","Infraestructura y setup base","Seguridad del repositorio (secretos)","Pendiente","INF-05.txt","2026-10-20 19:38",""
 "INF-06","Infraestructura y setup base","Exposición de puertos","Parcial","INF-06.txt","2026-10-13 19:48","22 5678 y 8501 abiertos y 5432 cerrado. Falta verificar login en N8N-01 y UI-07"
 "DOC-01","Contenedores Docker","Levantar entorno Docker","Parcial","DOC-01_diagnostico_volumen.txt, DOC-01_ps.txt, DOC-01_servidor.txt, DOC-01_up.txt, DOC-01_volumen_creado.txt","2026-10-19 22:37","Local: falló por volumen externo inexistente. Servidor: n8n arriba hace 4 semanas y el volumen existe. Falta comparar el contenedor con el compose actual"
 "DOC-02","Contenedores Docker","Logs limpios","Parcial","DOC-02.txt, DOC-02_servidor.txt","2026-10-19 22:37","Sin reinicios en bucle. Advertencia al arrancar por el runner de Python. Errores de Groq por fallo de DNS puntual no reproducido"

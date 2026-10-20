@@ -1,7 +1,7 @@
 ﻿# Matriz de trazabilidad - CommunityLab (pruebas funcionales QA)
 
-- Fecha de generación: 2026-10-19 22:54 -03:00
-- Commit probado: 73a1fa5
+- Fecha de generación: 2026-10-20 19:47 -03:00
+- Commit probado: 8aa20ee
 - Entorno: local (Windows y Docker Desktop), salvo INF-06 contra el servidor del equipo
 
 ## Resumen por estado
@@ -22,7 +22,7 @@
 | INF-02 | Infraestructura y setup base | Aprovisionamiento de la VM | Pendiente | - | - |  |
 | INF-03 | Infraestructura y setup base | Acceso SSH | Parcial | INF-03_04_servidor.txt | 2026-10-19 22:35 | Acceso SSH logrado en el servidor. Falta documentar con qué llave y acordar una llave personal de QA autorizada por el equipo |
 | INF-04 | Infraestructura y setup base | Recursos y SWAP | Pasó | - | - | Servidor: Ubuntu 22.04, 956 MiB de RAM, SWAP de 6 GiB y disco al 42 por ciento. Coincide con lo documentado. Unos 325 MiB de RAM disponibles |
-| INF-05 | Infraestructura y setup base | Seguridad del repositorio (secretos) | Pendiente | INF-05.txt | 2026-10-18 20:29 |  |
+| INF-05 | Infraestructura y setup base | Seguridad del repositorio (secretos) | Pendiente | INF-05.txt | 2026-10-20 19:38 |  |
 | INF-06 | Infraestructura y setup base | Exposición de puertos | Parcial | INF-06.txt | 2026-10-13 19:48 | 22 5678 y 8501 abiertos y 5432 cerrado. Falta verificar login en N8N-01 y UI-07 |
 | DOC-01 | Contenedores Docker | Levantar entorno Docker | Parcial | DOC-01_diagnostico_volumen.txt, DOC-01_ps.txt, DOC-01_servidor.txt, DOC-01_up.txt, DOC-01_volumen_creado.txt | 2026-10-19 22:37 | Local: falló por volumen externo inexistente. Servidor: n8n arriba hace 4 semanas y el volumen existe. Falta comparar el contenedor con el compose actual |
 | DOC-02 | Contenedores Docker | Logs limpios | Parcial | DOC-02.txt, DOC-02_servidor.txt | 2026-10-19 22:37 | Sin reinicios en bucle. Advertencia al arrancar por el runner de Python. Errores de Groq por fallo de DNS puntual no reproducido |
@@ -86,7 +86,7 @@
 | H-05 | Baja | DOC-03 | La imagen de n8n usa la etiqueta latest y la versión puede cambiar entre despliegues | Por confirmar con el equipo |
 | H-06 | Baja | INF-06 | n8n se sirve por HTTP sin cifrado | Por confirmar con el equipo |
 | H-07 | Baja | N8N-02 | El backlog menciona Gemini y OpenAI pero el repo trae un subflujo de Groq y el .env usa Groq y no OpenAI | Por confirmar con el equipo |
-| H-08 | Media | E2E-01 | paquete_procesado.json indica 15 registros de origen y 3 procesados. Quedan 12 sin contabilizar | Por confirmar con el equipo |
+| H-08 | Media | E2E-01 | paquete_procesado.json del repo indica 15 registros de origen y 3 procesados. En una corrida local el pipeline proceso 18 de 18 sin fallos, lo que sugiere que ese archivo viene de una corrida parcial | Por confirmar con el equipo |
 | H-09 | Media | DB-01 | El compose solo levanta n8n. El backlog menciona PostgreSQL y Streamlit | Por confirmar con el equipo |
 | H-10 | Informativo | INF-06 | PostgreSQL (puerto 5432) no es accesible desde internet | Conforme |
 | H-11 | Baja | PY-07 | El README indica 73 tests aprobados y se recolectaron 81 con 2 fallos de Selenium en el equipo de QA | Por confirmar con el equipo |
@@ -111,7 +111,7 @@
 | DOC-02.txt | 873B2AAD3BB0 | 2026-10-14 20:19 | 2.4 |
 | DOC-02_servidor.txt | 5E8FDC3C4B48 | 2026-10-19 22:37 | 0.9 |
 | INF-03_04_servidor.txt | 6EE995F5D094 | 2026-10-19 22:35 | 2.5 |
-| INF-05.txt | F8059E85388C | 2026-10-18 20:29 | 1 |
+| INF-05.txt | 894481290CA1 | 2026-10-20 19:38 | 0.9 |
 | INF-06.txt | 6A87F2E03BC5 | 2026-10-13 19:48 | 0.4 |
 | N8N-01.txt | 286894CB1EB7 | 2026-10-14 20:22 | 0.5 |
 | N8N-02.txt | 3B1056CA8AA4 | 2026-10-13 19:48 | 2.2 |

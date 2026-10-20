@@ -6,7 +6,7 @@
 "H-05";"Baja";"DOC-03";"La imagen de n8n usa la etiqueta latest y la versión puede cambiar entre despliegues";"Por confirmar con el equipo"
 "H-06";"Baja";"INF-06";"n8n se sirve por HTTP sin cifrado";"Por confirmar con el equipo"
 "H-07";"Baja";"N8N-02";"El backlog menciona Gemini y OpenAI pero el repo trae un subflujo de Groq y el .env usa Groq y no OpenAI";"Por confirmar con el equipo"
-"H-08";"Media";"E2E-01";"paquete_procesado.json indica 15 registros de origen y 3 procesados. Quedan 12 sin contabilizar";"Por confirmar con el equipo"
+"H-08";"Media";"E2E-01";"paquete_procesado.json del repo indica 15 registros de origen y 3 procesados. En una corrida local el pipeline proceso 18 de 18 sin fallos, lo que sugiere que ese archivo viene de una corrida parcial";"Por confirmar con el equipo"
 "H-09";"Media";"DB-01";"El compose solo levanta n8n. El backlog menciona PostgreSQL y Streamlit";"Por confirmar con el equipo"
 "H-10";"Informativo";"INF-06";"PostgreSQL (puerto 5432) no es accesible desde internet";"Conforme"
 "H-11";"Baja";"PY-07";"El README indica 73 tests aprobados y se recolectaron 81 con 2 fallos de Selenium en el equipo de QA";"Por confirmar con el equipo"
@@ -19,4 +19,3 @@
 "H-18";"Media";"DB-01";"En el servidor no hay PostgreSQL ni puerto 5432. Solo corre n8n en Docker y Streamlit fuera de Docker";"Por confirmar con el equipo"
 "H-19";"Media";"DOC-03";"El contenedor de n8n del servidor se creó el 16 de septiembre y es anterior a cambios posteriores del compose. Podría no reflejar el compose actual hasta recrearse";"Por confirmar con el equipo"
 "H-20";"Media";"UI-07";"Streamlit corre fuera de Docker y escucha en todas las interfaces del puerto 8501 desde un proceso iniciado el 17 de octubre. Por confirmar si exige login y si se reinicia solo";"Por confirmar con el equipo"
-
