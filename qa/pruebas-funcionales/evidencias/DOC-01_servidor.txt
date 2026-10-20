@@ -1,0 +1,29 @@
+﻿DOC-01 - Estado en el servidor (solo lectura)
+Fecha: 2026-10-19 22:37:30 -03:00
+Commit local probado: 73a1fa5
+
+commit 829cabc 2026-10-14 fix(n8n): actualizar endpoint del webhook de generacion de imagenes a generar-imagen-post2
+creado=2026-09-16T21:44:22.845093109Z reinicios=0 estado=running imagen=docker.n8n.io/n8nio/n8n:latest
+Variables de entorno del contenedor (solo nombres):
+
+EXECUTIONS_DATA_MAX_AGE
+EXECUTIONS_DATA_PRUNE
+GENERIC_TIMEZONE
+N8N_ALLOWED_FILE_PATHS
+N8N_DEFAULT_BINARY_DATA_MODE
+N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS
+N8N_HOST
+N8N_PORT
+N8N_PROTOCOL
+N8N_RELEASE_TYPE
+N8N_SECURE_COOKIE
+NODE_ENV
+NODE_OPTIONS
+NODE_PATH
+NODE_VERSION
+NPM_CONFIG_UPDATE_NOTIFIER
+PATH
+SHELL
+WEBHOOK_URL
+Versión de n8n:
+2.39.5

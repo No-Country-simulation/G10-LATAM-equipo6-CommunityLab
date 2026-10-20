@@ -1,0 +1,6 @@
+﻿UI-07 - Estado en el servidor (solo lectura)
+Fecha: 2026-10-19 22:37:30 -03:00
+Commit local probado: 73a1fa5
+
+ubuntu   Sat Oct 17 12:04:55 2026 .venv/bin/python -m streamlit run src/ui/app.py --server.port 8501 --server.headless true
+Sin servicio systemd con ese nombre

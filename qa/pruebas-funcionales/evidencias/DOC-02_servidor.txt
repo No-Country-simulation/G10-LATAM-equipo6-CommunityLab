@@ -1,0 +1,16 @@
+﻿DOC-02 - Estado en el servidor (solo lectura)
+Fecha: 2026-10-19 22:37:30 -03:00
+Commit local probado: 73a1fa5
+
+Webhook execution failed before a response was sent
+[license SDK] license renewal failed: Connection Error: The operation was aborted due to timeout
+[license SDK] license renewal failed (cause=auto): Connection Error: The operation was aborted due to timeout
+AxiosError: Request failed with status code 402
+Webhook execution failed before a response was sent
+Blocked GET /assets/useActivationError-BUZAGzY8.js for "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/136.0.0.0 Safari/537.36 App
+Authorization failed - please check your credentials
+Request failed with status code 401
+AxiosError: Request failed with status code 401
+Authorization failed - please check your credentials
+Request failed with status code 401
+AxiosError: Request failed with status code 401

@@ -1,15 +1,22 @@
-﻿ID;Severidad;Caso;Detalle;Seguimiento
-H-01;Media;DOC-01;El volumen externo n8n-hackathon_n8n_data debe crearse a mano antes del primer arranque. Por confirmar si el README lo indica;Por confirmar con el equipo
-H-02;Media;N8N-02;La misma ruta POST se repite en varios workflows (communitylab-ingesta en 3 discord en 2 y slack en 2) y normalmente no pueden estar activos a la vez;Por confirmar con el equipo
-H-03;Media;N8N-03;El webhook devuelve 500 en el entorno local. Causa por determinar en Executions;Por investigar
-H-04;Baja;DOC-01;docker-compose.yml define NODE_FUNCTION_ALLOW_EXTERNAL=* y permite importar cualquier módulo externo en nodos de código;Por confirmar con el equipo
-H-05;Baja;DOC-03;La imagen de n8n usa la etiqueta latest y la versión puede cambiar entre despliegues;Por confirmar con el equipo
-H-06;Baja;INF-06;n8n se sirve por HTTP sin cifrado;Por confirmar con el equipo
-H-07;Baja;N8N-02;El backlog menciona Gemini y OpenAI pero el repo trae un subflujo de Groq y el .env usa Groq y no OpenAI;Por confirmar con el equipo
-H-08;Media;E2E-01;paquete_procesado.json indica 15 registros de origen y 3 procesados. Quedan 12 sin contabilizar;Por confirmar con el equipo
-H-09;Media;DB-01;El compose solo levanta n8n. El backlog menciona PostgreSQL y Streamlit;Por confirmar con el equipo
-H-10;Informativo;INF-06;PostgreSQL (puerto 5432) no es accesible desde internet;Conforme
-H-11;Baja;PY-07;El README indica 73 tests aprobados y se recolectaron 81 con 2 fallos de Selenium en el equipo de QA;Por confirmar con el equipo
-H-12;Media;IA-03;Una corrida completa del pipeline se detuvo en el registro 15 sin mensaje de error. La repetición terminó bien con 18 de 18. Incidencia no reproducida;Por confirmar con el equipo
-H-13;Informativo;IA-08;El pipeline cambió automáticamente de modelo ante un error 503 de alta demanda y siguió procesando;Conforme
-H-14;Media;INF-05;El .env local trae credenciales reales de IA OCI y un webhook de Discord. Se recomienda un entorno de pruebas aislado;Por confirmar con el equipo
+﻿"ID";"Severidad";"Caso";"Detalle";"Seguimiento"
+"H-01";"Media";"DOC-01";"El volumen externo n8n-hackathon_n8n_data debe crearse a mano antes del primer arranque. Por confirmar si el README lo indica";"Por confirmar con el equipo"
+"H-02";"Media";"N8N-02";"La misma ruta POST se repite en varios workflows (communitylab-ingesta en 3 discord en 2 y slack en 2) y normalmente no pueden estar activos a la vez";"Por confirmar con el equipo"
+"H-03";"Media";"N8N-03";"El webhook devuelve 500 en el entorno local. Causa por determinar en Executions";"Por investigar"
+"H-04";"Baja";"DOC-01";"docker-compose.yml define NODE_FUNCTION_ALLOW_EXTERNAL=* y permite importar cualquier módulo externo en nodos de código";"Por confirmar con el equipo"
+"H-05";"Baja";"DOC-03";"La imagen de n8n usa la etiqueta latest y la versión puede cambiar entre despliegues";"Por confirmar con el equipo"
+"H-06";"Baja";"INF-06";"n8n se sirve por HTTP sin cifrado";"Por confirmar con el equipo"
+"H-07";"Baja";"N8N-02";"El backlog menciona Gemini y OpenAI pero el repo trae un subflujo de Groq y el .env usa Groq y no OpenAI";"Por confirmar con el equipo"
+"H-08";"Media";"E2E-01";"paquete_procesado.json indica 15 registros de origen y 3 procesados. Quedan 12 sin contabilizar";"Por confirmar con el equipo"
+"H-09";"Media";"DB-01";"El compose solo levanta n8n. El backlog menciona PostgreSQL y Streamlit";"Por confirmar con el equipo"
+"H-10";"Informativo";"INF-06";"PostgreSQL (puerto 5432) no es accesible desde internet";"Conforme"
+"H-11";"Baja";"PY-07";"El README indica 73 tests aprobados y se recolectaron 81 con 2 fallos de Selenium en el equipo de QA";"Por confirmar con el equipo"
+"H-12";"Media";"IA-03";"Una corrida completa del pipeline se detuvo en el registro 15 sin mensaje de error. La repetición terminó bien con 18 de 18. Incidencia no reproducida";"Por confirmar con el equipo"
+"H-13";"Informativo";"IA-08";"El pipeline cambió automáticamente de modelo ante un error 503 de alta demanda y siguió procesando";"Conforme"
+"H-14";"Media";"INF-05";"El .env local trae credenciales reales de IA OCI y un webhook de Discord. Se recomienda un entorno de pruebas aislado";"Por confirmar con el equipo"
+"H-15";"Baja";"DOC-02";"El runner de tareas de Python de n8n no inicia en modo interno porque falta Python 3 en la imagen. n8n recomienda el modo externo en produccion";"Por confirmar con el equipo"
+"H-16";"Media";"N8N-03";"Los logs de n8n registraron ENOTFOUND api.groq.com durante las pruebas. Una comprobacion posterior resolvio el nombre sin problema. Causa del error 500 por determinar";"Por investigar"
+"H-17";"Baja";"DOC-01";"El servidor usa Docker 29.1.3 con docker-compose 1.29.2 (v1 obsoleta) y sin el plugin docker compose. La documentación y el entorno local usan docker compose";"Por confirmar con el equipo"
+"H-18";"Media";"DB-01";"En el servidor no hay PostgreSQL ni puerto 5432. Solo corre n8n en Docker y Streamlit fuera de Docker";"Por confirmar con el equipo"
+"H-19";"Media";"DOC-03";"El contenedor de n8n del servidor se creó el 16 de septiembre y es anterior a cambios posteriores del compose. Podría no reflejar el compose actual hasta recrearse";"Por confirmar con el equipo"
+"H-20";"Media";"UI-07";"Streamlit corre fuera de Docker y escucha en todas las interfaces del puerto 8501 desde un proceso iniciado el 17 de octubre. Por confirmar si exige login y si se reinicia solo";"Por confirmar con el equipo"
+
