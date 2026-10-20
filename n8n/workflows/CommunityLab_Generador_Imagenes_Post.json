@@ -1,0 +1,284 @@
+{
+  "name": "CommunityLab_Generador_Imagenes_Post",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "generar-imagen-post2",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -1568,
+        -80
+      ],
+      "id": "14215146-1769-43f2-8505-6c1afa21c98e",
+      "name": "Webhook",
+      "webhookId": "317cf765-dc33-4e8e-b126-3e812a4a1a44"
+    },
+    {
+      "parameters": {
+        "jsCode": "for (const item of $input.all()) {\n  // Se obtiene el prompt devuelto por Gemini\n  const rawPrompt = item.json.text || '';\n  \n  // Limpia saltos de línea y espacios dobles\n  const cleanPrompt = rawPrompt.replace(/[\\r\\n]+/g, ' ').trim();\n  \n  // Codifica la cadena para incluirla de forma segura en una URL\n  item.json.prompt_encoded = encodeURIComponent(cleanPrompt);\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -992,
+        -80
+      ],
+      "id": "8d8d8801-00e2-4ced-ad24-7aff30a2498b",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "operation": "upload",
+        "bucketName": "={{ $(\"Webhook\").item.json.body.bucket_name || \"communitylab-activos-marketing\" }}",
+        "fileName": "=previews/preview_{{ $('Webhook').item.json.body.id_post || 'temp' }}.png",
+        "additionalFields": {},
+        "tagsUi": {
+          "tagsValues": []
+        }
+      },
+      "type": "n8n-nodes-base.s3",
+      "typeVersion": 1,
+      "position": [
+        -624,
+        -80
+      ],
+      "id": "49621eb8-2bc2-4d14-8d4c-0f4e843d5280",
+      "name": "Upload a file",
+      "credentials": {
+        "s3": {
+          "id": "wF0laNIEtgqr9a2D",
+          "name": "S3 account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "allIncomingItems",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        -176,
+        -80
+      ],
+      "id": "fb9f6ac4-5000-49e1-a290-7a9e962df7c1",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "url": "=https://image.pollinations.ai/prompt/{{ $json.output }}?width=1024&height=1024&seed={{ Math.floor(Math.random() * 99999) }}&model=flux&nologo=true",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        -816,
+        -80
+      ],
+      "id": "91ff80c8-7db9-4ec6-bcb6-4319f9cb8b75",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-20b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        -1360,
+        112
+      ],
+      "id": "574702d3-7d7c-44f7-83b3-ed9fdbe5fe3e",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "dYH7OO8GOD58Q2lm",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Eres un experto en generación de prompts para IA visual. Genera un prompt en inglés conciso y detallado para una ilustración 3D moderna e isométrica.\nContenido del post: \" + ({{ $json.body.solucion_tecnica }} || '') + \"Instrucción personalizada del usuario: \" + ({{ $json.body.instruccion_custom }} || 'Estilo corporativo limpio, colores azul y violeta, sin texto dentro de la imagen.')\nSolo debes devolver el prompt sin ningún texto adicional",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -1328,
+        -80
+      ],
+      "id": "571d8c1b-42ec-47c2-95ee-b785c5bf6479",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.body.id_post }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        -1216,
+        128
+      ],
+      "id": "18a83ab3-7c60-4539-bece-530b430767d6",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "9645dfdc-2c99-40e8-9bc4-2ad2dd823f96",
+              "name": "status",
+              "value": "success",
+              "type": "string"
+            },
+            {
+              "id": "b0240d04-ee48-4108-90a8-1d7b12740c08",
+              "name": "id_post",
+              "value": "={{ $('Webhook').item.json.body.id_post }}",
+              "type": "string"
+            },
+            {
+              "id": "646c8784-cef1-4ad7-bb87-6c30611fe507",
+              "name": "image_url",
+              "value": "={{ \"https://objectstorage.\" + ($(\"Webhook\").item.json.body.region || \"us-ashburn-1\") + \".oraclecloud.com/n/\" + ($(\"Webhook\").item.json.body.namespace || \"gr8ogb5hbroe\") + \"/b/\" + ($(\"Webhook\").item.json.body.bucket_name || \"communitylab-activos-marketing\") + \"/o/previews%2Fpreview_\" + encodeURIComponent($(\"Webhook\").item.json.body.id_post) + \".png\" }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        -400,
+        -80
+      ],
+      "id": "0299f135-d9a7-4c1c-8cb2-6274ee1aaf70",
+      "name": "Edit Fields"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload a file": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Upload a file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "e59babe9-b274-4aba-a186-8fb110ca65d9",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "cb0b9a3b8b392f0b0fbc26be213326cbdfd285ed78e8eb9be9b7984b7130dd64"
+  },
+  "nodeGroups": [],
+  "id": "nmhDhDoFWzB9adP0",
+  "tags": []
+}

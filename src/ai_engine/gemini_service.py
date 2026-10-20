@@ -218,3 +218,52 @@ class GeminiService:
         """Procesa una interacción y devuelve el modelo enriquecido consolidado."""
         asset = self.generate_asset(interaction, max_retries=max_retries)
         return ProcessedCommunityAsset(interaccion=interaction, activo=asset)
+
+    def generate_image_prompt(
+        self,
+        solucion_tecnica: str,
+        instruccion_custom: str = "",
+        temas_clave: Optional[Any] = None,
+    ) -> str:
+        """Genera un prompt en inglés optimizado para modelos de difusión (FLUX / Pollinations)."""
+        custom_inst = (instruccion_custom or "").strip() or "Estilo corporativo limpio, colores azul y violeta, sin texto dentro de la imagen."
+        temas_list = temas_clave if isinstance(temas_clave, list) else ([str(temas_clave)] if temas_clave else [])
+        temas_str = ", ".join(str(t).strip() for t in temas_list if str(t).strip())
+
+        system_inst = (
+            "Eres un experto en generación de prompts para IA visual. "
+            "Genera un prompt en inglés conciso y detallado para una ilustración 3D moderna e isométrica. "
+            "Solo debes devolver el prompt en inglés sin ningún texto adicional, sin introducciones ni comillas."
+        )
+        user_content = (
+            f"Contenido del post: {solucion_tecnica.strip()}\n"
+            f"Temas clave: {temas_str or 'desarrollo de software y comunidad'}\n"
+            f"Instrucción personalizada del usuario: {custom_inst}\n"
+        )
+
+        try:
+            from google.genai import types
+
+            config = types.GenerateContentConfig(
+                system_instruction=system_inst,
+                temperature=0.3,
+            )
+            response = self.client.models.generate_content(
+                model=self.model_name,
+                contents=user_content,
+                config=config,
+            )
+            raw = (response.text or "").strip().strip('"').strip("'")
+            if raw:
+                return " ".join(raw.split())
+        except Exception as e:
+            logger.warning("Inferencia Gemini para imagen no disponible (%s). Usando fallback heurístico.", e)
+
+        # Fallback heurístico en inglés
+        clean_text = " ".join(solucion_tecnica[:120].replace('"', '').split())
+        tags = f"focusing on {temas_str}" if temas_str else "modern tech concept"
+        return (
+            f"Modern 3D isometric illustration representing {clean_text}, {tags}, "
+            f"clean corporate tech style, blue and purple lighting, octane render, 8k resolution, "
+            f"{custom_inst}, no text"
+        )

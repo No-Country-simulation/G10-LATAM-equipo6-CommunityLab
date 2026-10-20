@@ -7,9 +7,13 @@ import pytest
 
 from src.ui.services import (
     cargar_paquete,
+    construir_payload_imagen_post,
+    generar_imagen_post,
     guardar_curaduria_humana,
     obtener_ultimos_paquetes,
     procesar_archivo_ui,
+    sanitizar_url_imagen,
+    validar_url_imagen,
 )
 
 
@@ -326,4 +330,191 @@ def test_obtener_ids_procesados_sesion(tmp_path: Path, monkeypatch):
         ids = obtener_ids_procesados_sesion(consultar_oci=False)
         assert ids == {"msg_001", "msg_002", "msg_003"}
 
+
+def test_construir_payload_imagen_post_omite_opcionales_vacios():
+    payload = construir_payload_imagen_post(
+        id_post="dc_1553172781007642635",
+        solucion_tecnica="  Copy del editor  ",
+        temas_clave=[" #LangChain ", "", "OCI"],
+        instruccion_custom="   ",
+    )
+    assert payload["id_post"] == "dc_1553172781007642635"
+    assert payload["solucion_tecnica"] == "Copy del editor"
+    assert payload["temas_clave"] == ["#LangChain", "OCI"]
+    assert "instruccion_custom" not in payload
+    assert payload["bucket_name"] == "communitylab-activos-marketing"
+    assert "region" in payload
+
+
+def test_generar_imagen_post_devuelve_url(monkeypatch):
+    class FakeResponse:
+        status_code = 200
+
+        def raise_for_status(self):
+            return None
+
+        def json(self):
+            return {
+                "status": "success",
+                "id_post": "dc_155",
+                "image_url": "https://objectstorage.example/preview_dc_155.png",
+            }
+
+    class FakeClient:
+        def __init__(self, timeout):
+            self.timeout = timeout
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *args):
+            return False
+
+        def post(self, url, json, headers):
+            assert url.endswith("/webhook/generar-imagen-post2")
+            assert json["id_post"] == "dc_155"
+            assert json["solucion_tecnica"] == "Texto del editor"
+            assert json["instruccion_custom"] == "estilo 3D"
+            assert headers["Content-Type"] == "application/json"
+            return FakeResponse()
+
+    monkeypatch.setattr("httpx.Client", FakeClient)
+    resultado = generar_imagen_post(
+        id_post="dc_155",
+        solucion_tecnica="Texto del editor",
+        temas_clave=["#OCI"],
+        instruccion_custom="estilo 3D",
+        webhook_url="http://147.15.9.116:5678/webhook/generar-imagen-post2",
+    )
+    assert resultado["status"] == "success"
+    assert resultado["image_url"].endswith("preview_dc_155.png")
+
+
+def test_sanitizar_url_imagen_quita_igual_inicial():
+    cruda = "=https://objectstorage.example/n/ns/b/bucket/o/previews/preview_dc_155.png"
+    assert sanitizar_url_imagen(cruda).startswith("https://")
+    assert validar_url_imagen(cruda).endswith("preview_dc_155.png")
+
+
+def test_validar_url_imagen_codifica_barra_del_objeto_oci():
+    cruda = (
+        "https://objectstorage.sa-saopaulo-1.oraclecloud.com/n/gr8ogb5hbroe/"
+        "b/communitylab-activos-marketing/o/previews/preview_post_001.png"
+    )
+    assert validar_url_imagen(cruda).endswith("/o/previews%2Fpreview_post_001.png")
+
+
+def test_validar_url_imagen_rechaza_objeto_undefined():
+    cruda = "=https://objectstorage.sa-saopaulo-1.oraclecloud.com/n/tu_namespace_oci/b/communitylab-activos-marketing/o/undefined"
+    with pytest.raises(RuntimeError, match="undefined"):
+        validar_url_imagen(cruda)
+
+def test_generar_imagen_post_python_dual_engine(monkeypatch):
+    from src.ai_engine.gemini_service import GeminiService
+    from src.cloud_oci.storage_client import OCIStorageManager
+
+    def mock_prompt(self, solucion_tecnica, instruccion_custom="", temas_clave=None):
+        return "3D isometric tech concept in blue and purple"
+
+    monkeypatch.setattr(GeminiService, "generate_image_prompt", mock_prompt)
+
+    class FakeResponse:
+        status_code = 200
+        content = b"fake_png_binary_data"
+
+        def raise_for_status(self):
+            return None
+
+    class FakeClient:
+        def __init__(self, timeout):
+            self.timeout = timeout
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *args):
+            return False
+
+        def get(self, url):
+            assert "image.pollinations.ai" in url
+            return FakeResponse()
+
+    monkeypatch.setattr("httpx.Client", FakeClient)
+
+    def mock_upload_bytes(self, data, remote_name, content_type="image/png"):
+        assert data == b"fake_png_binary_data"
+        assert remote_name == "previews/preview_post_python_01.png"
+        return {"status": "success", "object_name": remote_name}
+
+    def mock_get_display_url(self, remote_name, expires_in_hours=None):
+        return f"https://objectstorage.us-ashburn-1.oraclecloud.com/p/tok/n/ns/b/bucket/o/{remote_name}"
+
+    monkeypatch.setattr(OCIStorageManager, "upload_bytes", mock_upload_bytes)
+    monkeypatch.setattr(OCIStorageManager, "get_display_url", mock_get_display_url)
+
+    resultado = generar_imagen_post(
+        id_post="post_python_01",
+        solucion_tecnica="Solución para comunidad",
+        temas_clave=["Python", "Cloud"],
+        motor="python",
+    )
+
+    assert resultado["status"] == "success"
+    assert resultado["motor"] == "python_gemini"
+    assert resultado["id_post"] == "post_python_01"
+    assert resultado["image_url"].endswith("previews/preview_post_python_01.png")
+
+
+def test_storage_manager_upload_bytes_and_public_url(tmp_path, monkeypatch):
+    from src.cloud_oci.storage_client import OCIStorageManager
+
+    sm = OCIStorageManager(region="us-ashburn-1")
+    sm.LOCAL_FALLBACK_DIR = tmp_path
+    sm.is_local_mode = True
+
+    res = sm.upload_bytes(b"hello image bytes", "previews/preview_test.png", "image/png")
+    assert res["status"] == "success_local_fallback"
+    assert (tmp_path / "previews" / "preview_test.png").read_bytes() == b"hello image bytes"
+
+    url = sm.get_public_url("previews/preview_test.png")
+    assert str(tmp_path) in url
+
+
+def test_get_display_url_local_devuelve_data_uri(tmp_path):
+    from src.cloud_oci.storage_client import OCIStorageManager
+
+    sm = OCIStorageManager(region="us-ashburn-1")
+    sm.LOCAL_FALLBACK_DIR = tmp_path
+    sm.is_local_mode = True
+    sm.upload_bytes(b"\x89PNGfake", "previews/preview_x.png", "image/png")
+
+    url = sm.get_display_url("previews/preview_x.png")
+    assert url.startswith("data:image/png;base64,")
+    assert validar_url_imagen(url) == url
+
+
+def test_url_visible_oci_convierte_url_privada_en_par(monkeypatch):
+    from src.cloud_oci.storage_client import OCIStorageManager
+    from src.ui.services import _url_visible_oci
+
+    capturado = {}
+
+    def fake_init(self, *args, **kwargs):
+        self.is_local_mode = False
+        self.bucket_name = "communitylab-activos-marketing"
+
+    def fake_display(self, remote_name, expires_in_hours=None):
+        capturado["obj"] = remote_name
+        return "https://objectstorage.us-ashburn-1.oraclecloud.com/p/TOKEN/n/ns/b/communitylab-activos-marketing/o/" + remote_name
+
+    monkeypatch.setattr(OCIStorageManager, "__init__", fake_init)
+    monkeypatch.setattr(OCIStorageManager, "get_display_url", fake_display)
+
+    privada = "https://objectstorage.us-ashburn-1.oraclecloud.com/n/ns/b/communitylab-activos-marketing/o/previews%2Fpreview_msg_006.png"
+    visible = _url_visible_oci(privada)
+    assert "/p/TOKEN/" in visible
+    assert capturado["obj"] == "previews/preview_msg_006.png"
+
+    # Una PAR existente no se modifica
+    assert _url_visible_oci(visible) == visible
 
