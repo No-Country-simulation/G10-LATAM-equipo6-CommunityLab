@@ -1,7 +1,7 @@
 ﻿# Matriz de trazabilidad - CommunityLab (pruebas funcionales QA)
 
-- Fecha de generación: 2026-10-20 21:03 -03:00
-- Commit probado: eb0ba2b
+- Fecha de generación: 2026-10-20 21:15 -03:00
+- Commit probado: 19b609d
 - Entorno: local (Windows y Docker Desktop), salvo INF-06 contra el servidor del equipo
 
 ## Resumen por estado
