@@ -1,15 +1,15 @@
 ﻿INF-06 - Exposición de puertos (22, 5432, 5678, 8501)
 Fecha: 2026-10-11 19:18:55 -03:00
 Commit probado: 0d4c94f
-Comando: Test-NetConnection 147.15.9.116 -Port <puerto>
+Comando: Test-NetConnection 147.15.x.x -Port <puerto>
 
 
 ComputerName RemotePort TcpTestSucceeded
 ------------ ---------- ----------------
-147.15.9.116         22             True
-147.15.9.116       5432            False
-147.15.9.116       5678             True
-147.15.9.116       8501             True
+147.15.x.x         22             True
+147.15.x.x       5432            False
+147.15.x.x       5678             True
+147.15.x.x       8501             True
 
 
 

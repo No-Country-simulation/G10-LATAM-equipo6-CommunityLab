@@ -1,7 +1,7 @@
 ﻿# Matriz de trazabilidad - CommunityLab (pruebas funcionales QA)
 
-- Fecha de generación: 2026-10-20 21:37 -03:00
-- Commit probado: 9ac4947
+- Fecha de generación: 2026-10-20 21:45 -03:00
+- Commit probado: 60817fd
 - Entorno: local (Windows y Docker Desktop), salvo INF-06 contra el servidor del equipo
 
 ## Resumen por estado
@@ -23,7 +23,7 @@
 | INF-03 | Infraestructura y setup base | Acceso SSH | Parcial | INF-03_04_servidor.txt | 2026-10-19 22:35 | Acceso SSH logrado en el servidor. Falta documentar con qué llave y acordar una llave personal de QA autorizada por el equipo |
 | INF-04 | Infraestructura y setup base | Recursos y SWAP | Pasó | - | - | Servidor: Ubuntu 22.04, 956 MiB de RAM, SWAP de 6 GiB y disco al 42 por ciento. Coincide con lo documentado. Unos 325 MiB de RAM disponibles |
 | INF-05 | Infraestructura y setup base | Seguridad del repositorio (secretos) | Pendiente | INF-05.txt | 2026-10-20 19:38 |  |
-| INF-06 | Infraestructura y setup base | Exposición de puertos | Parcial | INF-06.txt | 2026-10-13 19:48 | 22 5678 y 8501 abiertos y 5432 cerrado. Falta verificar login en N8N-01 y UI-07 |
+| INF-06 | Infraestructura y setup base | Exposición de puertos | Parcial | INF-06.txt | 2026-10-20 21:43 | 22 5678 y 8501 abiertos y 5432 cerrado. Falta verificar login en N8N-01 y UI-07 |
 | DOC-01 | Contenedores Docker | Levantar entorno Docker | Parcial | DOC-01_diagnostico_volumen.txt, DOC-01_ps.txt, DOC-01_servidor.txt, DOC-01_sincronizacion_main.txt, DOC-01_up.txt, DOC-01_volumen_creado.txt | 2026-10-20 20:03 | Local: falló por volumen externo inexistente. Servidor: n8n arriba hace 4 semanas y el volumen existe. Falta comparar el contenedor con el compose actual |
 | DOC-02 | Contenedores Docker | Logs limpios | Parcial | DOC-02.txt, DOC-02_servidor.txt | 2026-10-19 22:37 | Sin reinicios en bucle. Advertencia al arrancar por el runner de Python. Errores de Groq por fallo de DNS puntual no reproducido |
 | DOC-03 | Contenedores Docker | Reproducibilidad desde cero | Pendiente | - | - | El primer intento falló por el volumen externo |
@@ -44,7 +44,7 @@
 | PY-04 | Sistema dual con pipelines Python | Failover real | Pendiente | - | - |  |
 | PY-05 | Sistema dual con pipelines Python | Recuperación | Pendiente | - | - |  |
 | PY-06 | Sistema dual con pipelines Python | Sobrecarga | Pendiente | PY-06.csv, PY-06.txt, PY-06_stats.txt | 2026-10-13 19:48 |  |
-| PY-07 | Sistema dual con pipelines Python | Tests existentes | Parcial | PY-07.txt, PY-07b.txt, PY-07_diagnostico.txt, PY-07_junit.xml, PY-07_main.txt | 2026-10-20 21:28 | 77 passed 2 failed (Selenium) 2 skipped. El README indica 73 al 100 por ciento |
+| PY-07 | Sistema dual con pipelines Python | Tests existentes | Parcial | PY-07.txt, PY-07b.txt, PY-07_diagnostico.txt, PY-07_junit.xml, PY-07_main.txt | 2026-10-20 21:45 | 77 passed 2 failed (Selenium) 2 skipped. El README indica 73 al 100 por ciento |
 | IA-01 | APIs de IA, prompts e imágenes | Conexión Gemini | Parcial | IA-01_02.txt | 2026-10-13 21:18 | Gemini responde a través del pipeline. Llamada mínima aislada pendiente |
 | IA-02 | APIs de IA, prompts e imágenes | Respaldo OpenAI | Parcial | - | - | Cambio automático entre modelos de Gemini observado. Groq u OpenAI por confirmar con el equipo |
 | IA-03 | APIs de IA, prompts e imágenes | Análisis de sentimiento | No concluyente | IA-03.txt, IA-03_comparacion.csv, IA-03_log.txt, IA-03_log_aislado.txt, IA-03_log_rerun.txt, IA-03_referencia.csv | 2026-10-20 20:57 | Referencia propia en etiquetado. Actualizar con el porcentaje cuando termine |
@@ -115,7 +115,7 @@
 | DOC-02_servidor.txt | 5E8FDC3C4B48 | 2026-10-19 22:37 | 0.9 |
 | INF-03_04_servidor.txt | 6EE995F5D094 | 2026-10-19 22:35 | 2.5 |
 | INF-05.txt | 894481290CA1 | 2026-10-20 19:38 | 0.9 |
-| INF-06.txt | 6A87F2E03BC5 | 2026-10-13 19:48 | 0.4 |
+| INF-06.txt | 11619510D0EF | 2026-10-20 21:43 | 0.4 |
 | N8N-01.txt | 286894CB1EB7 | 2026-10-14 20:22 | 0.5 |
 | N8N-02.txt | 3B1056CA8AA4 | 2026-10-13 19:48 | 2.2 |
 | N8N-02_activacion.txt | 603198B52873 | 2026-10-13 19:48 | 0.6 |
@@ -129,7 +129,7 @@
 | PY-06.txt | 0F642DA3482D | 2026-10-13 19:48 | 1.2 |
 | PY-06_stats.txt | 39F593AB753F | 2026-10-13 19:48 | 5.7 |
 | PY-07.txt | 0FD5B72462DD | 2026-10-20 20:57 | 23.5 |
-| PY-07b.txt | 2CCD344FE344 | 2026-10-20 21:28 | 15.3 |
+| PY-07b.txt | CD7E0906E625 | 2026-10-20 21:45 | 7.7 |
 | PY-07_diagnostico.txt | E6D0D1397481 | 2026-10-13 19:48 | 1.5 |
 | PY-07_junit.xml | 4B9017219834 | 2026-10-13 19:48 | 25.6 |
 | PY-07_main.txt | 9C9ACE59BCB5 | 2026-10-20 21:17 | 1.2 |
