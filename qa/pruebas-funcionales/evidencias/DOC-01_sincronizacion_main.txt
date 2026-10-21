@@ -1,0 +1,20 @@
+﻿DOC-01 - Version probada frente a main y al servidor (solo lectura)
+Fecha: 2026-10-20 20:03:09 -03:00
+Rama: qa/pruebas-funcionales | HEAD: 5c64493
+Commits (main sin ti / tuyos sin main): 5	8
+main: 829cabc 2026-10-14 fix(n8n): actualizar endpoint del webhook de generacion de imagenes a generar-imagen-post2
+servidor: 829cabc 2026-10-14 fix(n8n): actualizar endpoint del webhook de generacion de imagenes a generar-imagen-post2
+Commits de main posteriores al del servidor: 0
+
+Cambios en main desde la separacion (src, n8n, compose, tests):
+ .env.example                                       |   4 +
+ .../CommunityLab_Generador_Imagenes_Post.json      | 284 +++++++++++++++++++++
+ src/ai_engine/gemini_service.py                    |  49 ++++
+ src/cloud_oci/storage_client.py                    |  77 ++++++
+ src/ui/components/editor.py                        | 129 +++++++++-
+ src/ui/components/preview.py                       |  21 +-
+ src/ui/scripts/styles.py                           |  23 ++
+ src/ui/services.py                                 | 253 +++++++++++++++++-
+ src/utils/config.py                                |   8 +
+ tests/test_ui_services.py                          | 191 ++++++++++++++
+ 10 files changed, 1035 insertions(+), 4 deletions(-)

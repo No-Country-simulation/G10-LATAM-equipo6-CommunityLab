@@ -22,7 +22,7 @@ Modelo 'gemini-3.6-flash' con error (503 Alta Demanda). Cambiando automáticamen
 2026-10-14 19:35:05 [DEBUG] [CommunityLabPipeline:124] Texto interacción [118 chars]: 'Acabo de aceptar una oferta como QA junior en una empresa de software. El apoyo del equipo en Discord fue fundamental.'
 2026-10-14 19:35:06 [DEBUG] [CommunityLabPipeline:127] Resultado ID='qa_ia04_05' -> Sentimiento=positivo, Tipo=logro_contratacion, Temas=['QA', 'empleo', 'comunidad', 'discord'], PostLinkedIn=True
 2026-10-14 19:35:06 [INFO] [CommunityLabPipeline:153] Pipeline completado: 5 exitosos, 0 fallidos.
-2026-10-14 19:35:06 [INFO] [CommunityLabPipeline:242] Paquete guardado exitosamente en: C:\Users\Raul y Thiago\Desktop\Proyecto G10\G10-LATAM-equipo6-CommunityLab\qa\pruebas-funcionales\evidencias\IA\salida_IA04_b.json
+2026-10-14 19:35:06 [INFO] [CommunityLabPipeline:242] Paquete guardado exitosamente en: C:\Users\<usuario>\Desktop\Proyecto G10\G10-LATAM-equipo6-CommunityLab\qa\pruebas-funcionales\evidencias\IA\salida_IA04_b.json
 
 ============================================================
   [OK] RESUMEN DE EJECUCION DEL PIPELINE COMMUNITYLAB
@@ -33,6 +33,6 @@ Fallidos:             0
 Posts LinkedIn:       5
 Tips Técnicos / FAQ:  0
 Sentimiento:          {'positivo': 5, 'neutro': 0, 'negativo': 0}
-Archivo guardado en:  C:\Users\Raul y Thiago\Desktop\Proyecto G10\G10-LATAM-equipo6-CommunityLab\qa\pruebas-funcionales\evidencias\IA\salida_IA04_b.json
+Archivo guardado en:  C:\Users\<usuario>\Desktop\Proyecto G10\G10-LATAM-equipo6-CommunityLab\qa\pruebas-funcionales\evidencias\IA\salida_IA04_b.json
 ============================================================
 

@@ -1,7 +1,7 @@
 ﻿# Matriz de trazabilidad - CommunityLab (pruebas funcionales QA)
 
-- Fecha de generación: 2026-10-20 19:47 -03:00
-- Commit probado: 8aa20ee
+- Fecha de generación: 2026-10-20 21:03 -03:00
+- Commit probado: eb0ba2b
 - Entorno: local (Windows y Docker Desktop), salvo INF-06 contra el servidor del equipo
 
 ## Resumen por estado
@@ -24,7 +24,7 @@
 | INF-04 | Infraestructura y setup base | Recursos y SWAP | Pasó | - | - | Servidor: Ubuntu 22.04, 956 MiB de RAM, SWAP de 6 GiB y disco al 42 por ciento. Coincide con lo documentado. Unos 325 MiB de RAM disponibles |
 | INF-05 | Infraestructura y setup base | Seguridad del repositorio (secretos) | Pendiente | INF-05.txt | 2026-10-20 19:38 |  |
 | INF-06 | Infraestructura y setup base | Exposición de puertos | Parcial | INF-06.txt | 2026-10-13 19:48 | 22 5678 y 8501 abiertos y 5432 cerrado. Falta verificar login en N8N-01 y UI-07 |
-| DOC-01 | Contenedores Docker | Levantar entorno Docker | Parcial | DOC-01_diagnostico_volumen.txt, DOC-01_ps.txt, DOC-01_servidor.txt, DOC-01_up.txt, DOC-01_volumen_creado.txt | 2026-10-19 22:37 | Local: falló por volumen externo inexistente. Servidor: n8n arriba hace 4 semanas y el volumen existe. Falta comparar el contenedor con el compose actual |
+| DOC-01 | Contenedores Docker | Levantar entorno Docker | Parcial | DOC-01_diagnostico_volumen.txt, DOC-01_ps.txt, DOC-01_servidor.txt, DOC-01_sincronizacion_main.txt, DOC-01_up.txt, DOC-01_volumen_creado.txt | 2026-10-20 20:03 | Local: falló por volumen externo inexistente. Servidor: n8n arriba hace 4 semanas y el volumen existe. Falta comparar el contenedor con el compose actual |
 | DOC-02 | Contenedores Docker | Logs limpios | Parcial | DOC-02.txt, DOC-02_servidor.txt | 2026-10-19 22:37 | Sin reinicios en bucle. Advertencia al arrancar por el runner de Python. Errores de Groq por fallo de DNS puntual no reproducido |
 | DOC-03 | Contenedores Docker | Reproducibilidad desde cero | Pendiente | - | - | El primer intento falló por el volumen externo |
 | DOC-04 | Contenedores Docker | Persistencia tras restart | Bloqueado | - | - | Sin servicio de base de datos en el compose actual (por confirmar) |
@@ -44,11 +44,11 @@
 | PY-04 | Sistema dual con pipelines Python | Failover real | Pendiente | - | - |  |
 | PY-05 | Sistema dual con pipelines Python | Recuperación | Pendiente | - | - |  |
 | PY-06 | Sistema dual con pipelines Python | Sobrecarga | Pendiente | PY-06.csv, PY-06.txt, PY-06_stats.txt | 2026-10-13 19:48 |  |
-| PY-07 | Sistema dual con pipelines Python | Tests existentes | Parcial | PY-07.txt, PY-07b.txt, PY-07_diagnostico.txt, PY-07_junit.xml | 2026-10-18 20:48 | 77 passed 2 failed (Selenium) 2 skipped. El README indica 73 al 100 por ciento |
+| PY-07 | Sistema dual con pipelines Python | Tests existentes | Parcial | PY-07.txt, PY-07b.txt, PY-07_diagnostico.txt, PY-07_junit.xml | 2026-10-20 20:57 | 77 passed 2 failed (Selenium) 2 skipped. El README indica 73 al 100 por ciento |
 | IA-01 | APIs de IA, prompts e imágenes | Conexión Gemini | Parcial | IA-01_02.txt | 2026-10-13 21:18 | Gemini responde a través del pipeline. Llamada mínima aislada pendiente |
 | IA-02 | APIs de IA, prompts e imágenes | Respaldo OpenAI | Parcial | - | - | Cambio automático entre modelos de Gemini observado. Groq u OpenAI por confirmar con el equipo |
-| IA-03 | APIs de IA, prompts e imágenes | Análisis de sentimiento | No concluyente | IA-03.txt, IA-03_comparacion.csv, IA-03_log.txt, IA-03_log_aislado.txt, IA-03_log_rerun.txt, IA-03_referencia.csv | 2026-10-14 19:15 | Referencia propia en etiquetado. Actualizar con el porcentaje cuando termine |
-| IA-04 | APIs de IA, prompts e imágenes | Voz de marca | Pendiente | IA-04.txt, IA-04_log_a.txt, IA-04_log_b.txt | 2026-10-14 19:52 |  |
+| IA-03 | APIs de IA, prompts e imágenes | Análisis de sentimiento | No concluyente | IA-03.txt, IA-03_comparacion.csv, IA-03_log.txt, IA-03_log_aislado.txt, IA-03_log_rerun.txt, IA-03_referencia.csv | 2026-10-20 20:57 | Referencia propia en etiquetado. Actualizar con el porcentaje cuando termine |
+| IA-04 | APIs de IA, prompts e imágenes | Voz de marca | Pendiente | IA-04.txt, IA-04_log_a.txt, IA-04_log_b.txt | 2026-10-20 20:57 |  |
 | IA-05 | APIs de IA, prompts e imágenes | Respuesta al usuario | Pendiente | - | - |  |
 | IA-06 | APIs de IA, prompts e imágenes | Chunking y lematización | Pendiente | - | - |  |
 | IA-07 | APIs de IA, prompts e imágenes | Prompt injection | Pasó | - | - | 4 entradas hostiles procesadas sin fuga de instrucciones. La estructura de salida se mantiene |
@@ -80,7 +80,7 @@
 | ID | Severidad | Caso | Detalle | Seguimiento |
 |---|---|---|---|---|
 | H-01 | Media | DOC-01 | El volumen externo n8n-hackathon_n8n_data debe crearse a mano antes del primer arranque. Por confirmar si el README lo indica | Por confirmar con el equipo |
-| H-02 | Media | N8N-02 | La misma ruta POST se repite en varios workflows (communitylab-ingesta en 3 discord en 2 y slack en 2) y normalmente no pueden estar activos a la vez | Por confirmar con el equipo |
+| H-02 | Media | N8N-02 | La misma ruta POST se repite en varios workflows del repo (communitylab-ingesta en 3, discord en 2 y slack en 2). En el servidor solo hay 2 workflows activos (Generador_Imagenes_Post) y ese conflicto no se da alli. Por confirmar cual es el conjunto vigente | Por confirmar con el equipo |
 | H-03 | Media | N8N-03 | El webhook devuelve 500 en el entorno local. Causa por determinar en Executions | Por investigar |
 | H-04 | Baja | DOC-01 | docker-compose.yml define NODE_FUNCTION_ALLOW_EXTERNAL=* y permite importar cualquier módulo externo en nodos de código | Por confirmar con el equipo |
 | H-05 | Baja | DOC-03 | La imagen de n8n usa la etiqueta latest y la versión puede cambiar entre despliegues | Por confirmar con el equipo |
@@ -89,7 +89,7 @@
 | H-08 | Media | E2E-01 | paquete_procesado.json del repo indica 15 registros de origen y 3 procesados. En una corrida local el pipeline proceso 18 de 18 sin fallos, lo que sugiere que ese archivo viene de una corrida parcial | Por confirmar con el equipo |
 | H-09 | Media | DB-01 | El compose solo levanta n8n. El backlog menciona PostgreSQL y Streamlit | Por confirmar con el equipo |
 | H-10 | Informativo | INF-06 | PostgreSQL (puerto 5432) no es accesible desde internet | Conforme |
-| H-11 | Baja | PY-07 | El README indica 73 tests aprobados y se recolectaron 81 con 2 fallos de Selenium en el equipo de QA | Por confirmar con el equipo |
+| H-11 | Baja | PY-07 | El README indica 73 tests aprobados. Tras integrar main, pytest recolecta 86 tests de la suite del equipo, ademas de 4 de archivos agregados por la rama de QA. El README parece desactualizado. Por confirmar | Por confirmar con el equipo |
 | H-12 | Media | IA-03 | Una corrida completa del pipeline se detuvo en el registro 15 sin mensaje de error. La repetición terminó bien con 18 de 18. Incidencia no reproducida | Por confirmar con el equipo |
 | H-13 | Informativo | IA-08 | El pipeline cambió automáticamente de modelo ante un error 503 de alta demanda y siguió procesando | Conforme |
 | H-14 | Media | INF-05 | El .env local trae credenciales reales de IA OCI y un webhook de Discord. Se recomienda un entorno de pruebas aislado | Por confirmar con el equipo |
@@ -97,8 +97,10 @@
 | H-16 | Media | N8N-03 | Los logs de n8n registraron ENOTFOUND api.groq.com durante las pruebas. Una comprobacion posterior resolvio el nombre sin problema. Causa del error 500 por determinar | Por investigar |
 | H-17 | Baja | DOC-01 | El servidor usa Docker 29.1.3 con docker-compose 1.29.2 (v1 obsoleta) y sin el plugin docker compose. La documentación y el entorno local usan docker compose | Por confirmar con el equipo |
 | H-18 | Media | DB-01 | En el servidor no hay PostgreSQL ni puerto 5432. Solo corre n8n en Docker y Streamlit fuera de Docker | Por confirmar con el equipo |
-| H-19 | Media | DOC-03 | El contenedor de n8n del servidor se creó el 16 de septiembre y es anterior a cambios posteriores del compose. Podría no reflejar el compose actual hasta recrearse | Por confirmar con el equipo |
+| H-19 | Media | DOC-03 | El contenedor de n8n del servidor se creo el 16 de septiembre y es anterior a cambios posteriores del compose. El servidor corre el commit 829cabc, ya integrado en main. Pruebas locales hechas sobre una version de la rama del QA. Ver DOC-01_sincronizacion_main.txt | Por confirmar con el equipo |
 | H-20 | Media | UI-07 | Streamlit corre fuera de Docker y escucha en todas las interfaces del puerto 8501 desde un proceso iniciado el 17 de octubre. Por confirmar si exige login y si se reinicia solo | Por confirmar con el equipo |
+| H-21 | Media | N8N-02 | El n8n del servidor tiene 27 workflows cargados y solo 2 activos. Hay duplicados por nombre (4 copias de jmedinag_WF_002 y 3 de CCely_WF_003) y copias personales de prueba. Los workflows de ingesta y el master estan cargados pero inactivos, por lo que el webhook de ingesta no responderia alli | Por confirmar con el equipo |
+| H-22 | Baja | N8N-02 | Hay dos workflows activos con el mismo nombre (Generador_Imagenes_Post) en el servidor. Por confirmar si usan rutas distintas o si una es una version anterior. El workflow CommunityLab_Slack_Dinamico del repo no aparece en el servidor | Por confirmar con el equipo |
 
 ## Integridad de evidencias (SHA-256, primeros 12 caracteres)
 | Archivo | Hash | Fecha | KB |
@@ -106,6 +108,7 @@
 | DOC-01_diagnostico_volumen.txt | C1C5B72C472D | 2026-10-13 19:48 | 0.7 |
 | DOC-01_ps.txt | A1A836C8E89A | 2026-10-13 19:48 | 0.6 |
 | DOC-01_servidor.txt | 0477E001AEBC | 2026-10-19 22:37 | 0.7 |
+| DOC-01_sincronizacion_main.txt | 07683D609FBD | 2026-10-20 20:03 | 1.3 |
 | DOC-01_up.txt | DFF4FC1C98E1 | 2026-10-13 19:48 | 0.1 |
 | DOC-01_volumen_creado.txt | 123859220CC2 | 2026-10-13 19:48 | 0 |
 | DOC-02.txt | 873B2AAD3BB0 | 2026-10-14 20:19 | 2.4 |
@@ -125,8 +128,8 @@
 | PY-06.csv | 85F21A1AD1B1 | 2026-10-13 19:48 | 0.6 |
 | PY-06.txt | 0F642DA3482D | 2026-10-13 19:48 | 1.2 |
 | PY-06_stats.txt | 39F593AB753F | 2026-10-13 19:48 | 5.7 |
-| PY-07.txt | ABD6362A1D1C | 2026-10-13 19:48 | 23.5 |
-| PY-07b.txt | C8919D48E79B | 2026-10-18 20:48 | 28.2 |
+| PY-07.txt | 0FD5B72462DD | 2026-10-20 20:57 | 23.5 |
+| PY-07b.txt | AB0944FF8EA6 | 2026-10-20 20:57 | 14.1 |
 | PY-07_diagnostico.txt | E6D0D1397481 | 2026-10-13 19:48 | 1.5 |
 | PY-07_junit.xml | 4B9017219834 | 2026-10-13 19:48 | 25.6 |
 | UI-01.png | 055334591FA8 | 2026-10-14 20:31 | 186.6 |
@@ -140,18 +143,18 @@
 | IA\IA-03.txt | C5DDBA1ACA4C | 2026-10-14 19:15 | 1.3 |
 | IA\IA-03_comparacion.csv | B079FA9A625D | 2026-10-14 19:15 | 1 |
 | IA\IA-03_log.txt | B5B8517BB2F2 | 2026-10-13 21:43 | 10.2 |
-| IA\IA-03_log_aislado.txt | 34938D1B2AF3 | 2026-10-13 22:07 | 7.4 |
-| IA\IA-03_log_rerun.txt | BB32E495D249 | 2026-10-13 22:14 | 12.8 |
+| IA\IA-03_log_aislado.txt | 895F8D8E5A8F | 2026-10-20 20:57 | 3.7 |
+| IA\IA-03_log_rerun.txt | CC8773151328 | 2026-10-20 20:57 | 12.8 |
 | IA\IA-03_referencia.csv | 011D6205EB87 | 2026-10-14 19:15 | 3.8 |
 | IA\IA-04.txt | E5BE60C15AB3 | 2026-10-14 19:52 | 2.5 |
-| IA\IA-04_log_a.txt | F16C9E29E143 | 2026-10-14 19:34 | 4.6 |
-| IA\IA-04_log_b.txt | C4C79B7ABEDE | 2026-10-14 19:35 | 4.7 |
+| IA\IA-04_log_a.txt | 8A474D81305F | 2026-10-20 20:57 | 4.6 |
+| IA\IA-04_log_b.txt | 07BE36362480 | 2026-10-20 20:57 | 4.7 |
 | IA\IA-08_fallback_modelo.txt | 67FF8E202E31 | 2026-10-13 22:18 | 2.9 |
 | IA\IA-09_1.jpg | 8B025928C37D | 2026-10-18 21:10 | 58.6 |
 | IA\IA-09_2.img | CDFEB6030F49 | 2026-10-18 21:10 | 0.3 |
 | IA\IA-09_3.img | 6DADE2E64B79 | 2026-10-18 21:10 | 0.3 |
-| IA\IA06_log.txt | 287E5ACACFC7 | 2026-10-18 21:06 | 2 |
-| IA\IA07_log.txt | 261F42AAD3EF | 2026-10-18 21:08 | 3.7 |
+| IA\IA06_log.txt | 94A7AFD494FF | 2026-10-20 20:57 | 2 |
+| IA\IA07_log.txt | 3C8695D3B63B | 2026-10-20 20:57 | 3.7 |
 | IA\salida_IA03.json | 16CB8B4BB6A8 | 2026-10-13 22:14 | 35.6 |
 | IA\salida_IA03_aislado.json | 91FE5A8C26B3 | 2026-10-13 22:07 | 8.5 |
 | IA\salida_IA04_a.json | DE8FC98F98D7 | 2026-10-14 19:34 | 8.5 |

@@ -74,7 +74,7 @@ Modelo 'gemini-3.6-flash' con error (503 Alta Demanda). Cambiando automáticamen
 2026-10-13 22:14:16 [DEBUG] [CommunityLabPipeline:124] Texto interacción [89 chars]: 'Los alumnos me parece que son mejores que los mentores, creo que falta ética profesional"'
 2026-10-13 22:14:17 [DEBUG] [CommunityLabPipeline:127] Resultado ID='msg_018' -> Sentimiento=negativo, Tipo=feedback_general, Temas=['comunidad', 'mentoria', 'etica'], PostLinkedIn=False
 2026-10-13 22:14:17 [INFO] [CommunityLabPipeline:153] Pipeline completado: 18 exitosos, 0 fallidos.
-2026-10-13 22:14:17 [INFO] [CommunityLabPipeline:242] Paquete guardado exitosamente en: C:\Users\Raul y Thiago\Desktop\Proyecto G10\G10-LATAM-equipo6-CommunityLab\qa\pruebas-funcionales\evidencias\IA\salida_IA03.json
+2026-10-13 22:14:17 [INFO] [CommunityLabPipeline:242] Paquete guardado exitosamente en: C:\Users\<usuario>\Desktop\Proyecto G10\G10-LATAM-equipo6-CommunityLab\qa\pruebas-funcionales\evidencias\IA\salida_IA03.json
 
 ============================================================
   [OK] RESUMEN DE EJECUCION DEL PIPELINE COMMUNITYLAB
@@ -85,7 +85,7 @@ Fallidos:             0
 Posts LinkedIn:       6
 Tips Técnicos / FAQ:  7
 Sentimiento:          {'positivo': 9, 'neutro': 7, 'negativo': 2}
-Archivo guardado en:  C:\Users\Raul y Thiago\Desktop\Proyecto G10\G10-LATAM-equipo6-CommunityLab\qa\pruebas-funcionales\evidencias\IA\salida_IA03.json
+Archivo guardado en:  C:\Users\<usuario>\Desktop\Proyecto G10\G10-LATAM-equipo6-CommunityLab\qa\pruebas-funcionales\evidencias\IA\salida_IA03.json
 ============================================================
 
 Código de salida: 0 | Duración: 80 s

@@ -23,9 +23,9 @@ tests/test_ui_streamlit.py::test_elementos_interactivos_ui
 
 --- 2. Ejecución completa ---
 ============================= test session starts =============================
-platform win32 -- Python 3.14.6, pytest-9.1.1, pluggy-1.6.0 -- C:\Users\Raul y Thiago\Desktop\Proyecto G10\G10-LATAM-equipo6-CommunityLab\.venv\Scripts\python.exe
+platform win32 -- Python 3.14.6, pytest-9.1.1, pluggy-1.6.0 -- C:\Users\<usuario>\Desktop\Proyecto G10\G10-LATAM-equipo6-CommunityLab\.venv\Scripts\python.exe
 metadata: {'Python': '3.14.6', 'Platform': 'Windows-10-10.0.19045-SP0', 'Packages': {'pytest': '9.1.1', 'pluggy': '1.6.0'}, 'Plugins': {'anyio': '4.15.1', 'html': '4.2.0', 'metadata': '3.1.1'}}
-rootdir: C:\Users\Raul y Thiago\Desktop\Proyecto G10\G10-LATAM-equipo6-CommunityLab
+rootdir: C:\Users\<usuario>\Desktop\Proyecto G10\G10-LATAM-equipo6-CommunityLab
 configfile: pytest.ini
 plugins: anyio-4.15.1, html-4.2.0, metadata-3.1.1
 collecting ... collected 81 items
@@ -401,15 +401,15 @@ E       	ntdll!RtlUserThreadStart [0x7ffaf041cc91+21]
 .venv\Lib\site-packages\selenium\webdriver\remote\errorhandler.py:232: WebDriverException
 ============================== warnings summary ===============================
 tests/test_channels.py: 10 warnings
-  C:\Users\Raul y Thiago\Desktop\Proyecto G10\G10-LATAM-equipo6-CommunityLab\.venv\Lib\site-packages\discord\ext\commands\core.py:430: DeprecationWarning: 'asyncio.iscoroutinefunction' is deprecated and slated for removal in Python 3.16; use inspect.iscoroutinefunction() instead
+  C:\Users\<usuario>\Desktop\Proyecto G10\G10-LATAM-equipo6-CommunityLab\.venv\Lib\site-packages\discord\ext\commands\core.py:430: DeprecationWarning: 'asyncio.iscoroutinefunction' is deprecated and slated for removal in Python 3.16; use inspect.iscoroutinefunction() instead
     if not asyncio.iscoroutinefunction(func):
 
 tests/test_gemini_service.py::test_generate_asset_logro_success
-  C:\Users\Raul y Thiago\Desktop\Proyecto G10\G10-LATAM-equipo6-CommunityLab\.venv\Lib\site-packages\google\genai\types.py:42: DeprecationWarning: '_UnionGenericAlias' is deprecated and slated for removal in Python 3.17
+  C:\Users\<usuario>\Desktop\Proyecto G10\G10-LATAM-equipo6-CommunityLab\.venv\Lib\site-packages\google\genai\types.py:42: DeprecationWarning: '_UnionGenericAlias' is deprecated and slated for removal in Python 3.17
     VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]
 
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
-- generated xml file: C:\Users\Raul y Thiago\Desktop\Proyecto G10\G10-LATAM-equipo6-CommunityLab\qa\pruebas-funcionales\evidencias\PY-07_junit.xml -
+- generated xml file: C:\Users\<usuario>\Desktop\Proyecto G10\G10-LATAM-equipo6-CommunityLab\qa\pruebas-funcionales\evidencias\PY-07_junit.xml -
 =========================== short test summary info ===========================
 FAILED tests/test_ui_streamlit.py::test_streamlit_panel_carga_correctamente
 FAILED tests/test_ui_streamlit.py::test_elementos_interactivos_ui - selenium....
