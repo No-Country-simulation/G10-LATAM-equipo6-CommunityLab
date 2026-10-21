@@ -25,3 +25,8 @@ function Add-Hallazgo($id, $sev, $caso, $detalle, $seg) {
   $rows | Export-Csv $p -Delimiter ';' -NoTypeInformation -Encoding UTF8
   "$id agregado"
 }
+function Reg-UI($id, $estado, $obs) {
+  $d = (Resolve-Path "qa\pruebas-funcionales\evidencias").Path; $f = "$d\$id.txt"
+  if (-not (Test-Path $f)) { "$id - Prueba manual en el panel Streamlit (entorno local)" | Out-File $f -Encoding utf8 }
+  "[$(Get-Date -Format 'yyyy-MM-dd HH:mm:ss K')] commit $(git rev-parse --short HEAD) | Resultado: $estado | $obs" | Out-File $f -Append -Encoding utf8
+}

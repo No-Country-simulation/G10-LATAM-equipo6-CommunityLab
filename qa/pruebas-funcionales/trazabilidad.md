@@ -1,16 +1,16 @@
 ﻿# Matriz de trazabilidad - CommunityLab (pruebas funcionales QA)
 
-- Fecha de generación: 2026-10-20 21:15 -03:00
-- Commit probado: 19b609d
+- Fecha de generación: 2026-10-20 21:37 -03:00
+- Commit probado: 9ac4947
 - Entorno: local (Windows y Docker Desktop), salvo INF-06 contra el servidor del equipo
 
 ## Resumen por estado
 | Estado | Casos |
 |---|---|
-| Pendiente | 26 |
+| Pendiente | 20 |
 | Bloqueado | 12 |
-| Parcial | 11 |
-| Pasó | 3 |
+| Pasó | 10 |
+| Parcial | 10 |
 | No concluyente | 3 |
 | Falló | 1 |
 | En curso | 1 |
@@ -44,7 +44,7 @@
 | PY-04 | Sistema dual con pipelines Python | Failover real | Pendiente | - | - |  |
 | PY-05 | Sistema dual con pipelines Python | Recuperación | Pendiente | - | - |  |
 | PY-06 | Sistema dual con pipelines Python | Sobrecarga | Pendiente | PY-06.csv, PY-06.txt, PY-06_stats.txt | 2026-10-13 19:48 |  |
-| PY-07 | Sistema dual con pipelines Python | Tests existentes | Parcial | PY-07.txt, PY-07b.txt, PY-07_diagnostico.txt, PY-07_junit.xml | 2026-10-20 20:57 | 77 passed 2 failed (Selenium) 2 skipped. El README indica 73 al 100 por ciento |
+| PY-07 | Sistema dual con pipelines Python | Tests existentes | Parcial | PY-07.txt, PY-07b.txt, PY-07_diagnostico.txt, PY-07_junit.xml, PY-07_main.txt | 2026-10-20 21:28 | 77 passed 2 failed (Selenium) 2 skipped. El README indica 73 al 100 por ciento |
 | IA-01 | APIs de IA, prompts e imágenes | Conexión Gemini | Parcial | IA-01_02.txt | 2026-10-13 21:18 | Gemini responde a través del pipeline. Llamada mínima aislada pendiente |
 | IA-02 | APIs de IA, prompts e imágenes | Respaldo OpenAI | Parcial | - | - | Cambio automático entre modelos de Gemini observado. Groq u OpenAI por confirmar con el equipo |
 | IA-03 | APIs de IA, prompts e imágenes | Análisis de sentimiento | No concluyente | IA-03.txt, IA-03_comparacion.csv, IA-03_log.txt, IA-03_log_aislado.txt, IA-03_log_rerun.txt, IA-03_referencia.csv | 2026-10-20 20:57 | Referencia propia en etiquetado. Actualizar con el porcentaje cuando termine |
@@ -59,13 +59,13 @@
 | LOG-03 | Lógica condicional | Queja grave emite alerta | Pendiente | - | - |  |
 | LOG-04 | Lógica condicional | Mensaje ambiguo | Pendiente | - | - |  |
 | LOG-05 | Lógica condicional | Mensaje en dos categorías | Pendiente | - | - |  |
-| UI-01 | Panel Streamlit | Carga de Streamlit | Parcial | UI-01.png | 2026-10-14 20:31 | La app arranca y escucha en el puerto 8501. Falta evidencia de carga en el navegador |
-| UI-02 | Panel Streamlit | Lista de publicaciones | Pendiente | - | - |  |
-| UI-03 | Panel Streamlit | Aprobar rechazar y editar | Pendiente | - | - |  |
-| UI-04 | Panel Streamlit | Lista vacía | Pendiente | - | - |  |
-| UI-05 | Panel Streamlit | Textos largos y acentos | Pendiente | - | - |  |
-| UI-06 | Panel Streamlit | Responsive | Pendiente | - | - |  |
-| UI-07 | Panel Streamlit | Acceso sin autenticación | Pendiente | UI-07_servidor.txt | 2026-10-19 22:37 |  |
+| UI-01 | Panel Streamlit | Carga de Streamlit | Pasó | UI-01.png | 2026-10-14 20:31 | Panel cargado en local sobre la version integrada con main. Captura en UI-01.png |
+| UI-02 | Panel Streamlit | Lista de publicaciones | Pasó | - | - | Panel cargado en local sobre la version integrada con main. Captura en UI-02.png |
+| UI-03 | Panel Streamlit | Aprobar rechazar y editar | Pasó | - | - | Panel cargado en local sobre la version integrada con main. Captura en UI-03.png |
+| UI-04 | Panel Streamlit | Lista vacía | Pasó | - | - | Panel cargado en local sobre la version integrada con main. Captura en UI-04.png |
+| UI-05 | Panel Streamlit | Textos largos y acentos | Pasó | - | - | Panel cargado en local sobre la version integrada con main. Captura en UI-05.png |
+| UI-06 | Panel Streamlit | Responsive | Pasó | - | - | Panel cargado en local sobre la version integrada con main. Captura en UI-06.png |
+| UI-07 | Panel Streamlit | Acceso sin autenticación | Pasó | UI-07_servidor.txt | 2026-10-19 22:37 | Panel cargado en local sobre la version integrada con main. Captura en UI-07.png |
 | OBJ-01 | JSON en OCI Object Storage | JSON en el bucket | Bloqueado | - | - | Sin llave de OCI en el equipo de QA |
 | OBJ-02 | JSON en OCI Object Storage | JSON válido | Bloqueado | - | - | Sin llave de OCI en el equipo de QA |
 | OBJ-03 | JSON en OCI Object Storage | Nombres sin colisión | Bloqueado | - | - | Sin llave de OCI en el equipo de QA |
@@ -129,9 +129,10 @@
 | PY-06.txt | 0F642DA3482D | 2026-10-13 19:48 | 1.2 |
 | PY-06_stats.txt | 39F593AB753F | 2026-10-13 19:48 | 5.7 |
 | PY-07.txt | 0FD5B72462DD | 2026-10-20 20:57 | 23.5 |
-| PY-07b.txt | AB0944FF8EA6 | 2026-10-20 20:57 | 14.1 |
+| PY-07b.txt | 2CCD344FE344 | 2026-10-20 21:28 | 15.3 |
 | PY-07_diagnostico.txt | E6D0D1397481 | 2026-10-13 19:48 | 1.5 |
 | PY-07_junit.xml | 4B9017219834 | 2026-10-13 19:48 | 25.6 |
+| PY-07_main.txt | 9C9ACE59BCB5 | 2026-10-20 21:17 | 1.2 |
 | UI-01.png | 055334591FA8 | 2026-10-14 20:31 | 186.6 |
 | UI-07_servidor.txt | C7EF5155BF43 | 2026-10-19 22:37 | 0.3 |
 | IA\entrada_IA03.json | 9B0AA35BBE0A | 2026-10-13 22:01 | 8.9 |
