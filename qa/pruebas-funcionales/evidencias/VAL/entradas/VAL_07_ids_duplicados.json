@@ -1,0 +1,27 @@
+{
+    "origen_comunidad":  "Discord_Oracle_Next_Education_G10",
+    "periodo_referencia":  "Semana_04",
+    "interacciones":  [
+                          {
+                              "id":  "msg_001",
+                              "autor":  "Mariana Souza",
+                              "canal":  "#logros-y-empleos",
+                              "tipo":  "testimonio",
+                              "texto":  "Comunidad, quede seleccionada para el puesto de Desarrolladora Junior de IA! El proyecto del curso de LangChain y OCI que construi en mi portfolio marco toda la diferencia en la entrevista tecnica. Muy agradecida con la comunidad por todo el apoyo!"
+                          },
+                          {
+                              "id":  "msg_001",
+                              "autor":  "Lucas Albuquerque",
+                              "canal":  "#dudas-langgraph",
+                              "tipo":  "pregunta_tecnica",
+                              "texto":  "Tengo dudas sobre como estructurar los nodos condicionales en LangGraph cuando la respuesta del LLM necesita reintento. Alguien tiene un ejemplo practico de router?"
+                          },
+                          {
+                              "id":  "msg_003",
+                              "autor":  "Carlos Mendoza",
+                              "canal":  "#logros-y-empleos",
+                              "tipo":  "testimonio",
+                              "texto":  "Ayer me confirmaron mi primer contrato como Data Analyst para una startup de Chile gracias a los proyectos que desarrollamos en las formaciones de Alura y Oracle ONE. No se rindan, el esfuerzo constante rinde frutos!"
+                          }
+                      ]
+}

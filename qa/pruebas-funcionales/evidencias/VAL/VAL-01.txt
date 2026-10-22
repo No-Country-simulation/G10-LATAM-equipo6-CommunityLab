@@ -1,0 +1,23 @@
+﻿VAL-01 - Validador ante entradas invalidas (12 archivos y 1 ruta inexistente)
+Fecha: 2026-10-21 22:01:31 -03:00
+Commit probado: 798dd2d
+
+
+Caso                     Codigo Traceback   Ms Salida                                                                                    
+----                     ------ ---------   -- ------                                                                                    
+VAL_01_valido                 0     False  980 Válidos: 3 / Fallidos: 0                                                                  
+VAL_02_json_malformado        1      True 1052 json.decoder.JSONDecodeError: Expecting ',' delimiter: line 1 column 67 (char 66) / === Va
+VAL_03_vacio                  1      True  973 json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0) / === Validando ar
+VAL_04_sin_texto              0     False 1257 Válidos: 2 / Fallidos: 1                                                                  
+VAL_05_tipos_incorrectos      0     False 1252 Válidos: 1 / Fallidos: 2                                                                  
+VAL_06_lista_vacia            0     False  979 Válidos: 0 / Fallidos: 0                                                                  
+VAL_07_ids_duplicados         0     False  829 Válidos: 3 / Fallidos: 0                                                                  
+VAL_08_texto_en_blanco        0     False  883 Válidos: 3 / Fallidos: 0                                                                  
+VAL_09_tipo_invalido          0     False  768 Válidos: 3 / Fallidos: 0                                                                  
+VAL_10_texto_largo            0     False  849 Válidos: 3 / Fallidos: 0                                                                  
+VAL_11_unicode                0     False  847 Válidos: 3 / Fallidos: 0                                                                  
+VAL_12_con_BOM                1      True  843 json.decoder.JSONDecodeError: Unexpected UTF-8 BOM (decode using utf-8-sig): line 1 column
+VAL_99_no_existe              1      True  806 FileNotFoundError: Archivo no encontrado: C:\Users\<usuario>\Desktop\Proyecto G10\G10-
+
+
+

@@ -1,16 +1,16 @@
 ﻿# Matriz de trazabilidad - CommunityLab (pruebas funcionales QA)
 
-- Fecha de generación: 2026-10-20 21:45 -03:00
-- Commit probado: 60817fd
+- Fecha de generación: 2026-10-21 22:14 -03:00
+- Commit probado: 798dd2d
 - Entorno: local (Windows y Docker Desktop), salvo INF-06 contra el servidor del equipo
 
 ## Resumen por estado
 | Estado | Casos |
 |---|---|
 | Pendiente | 20 |
+| Parcial | 12 |
 | Bloqueado | 12 |
 | Pasó | 10 |
-| Parcial | 10 |
 | No concluyente | 3 |
 | Falló | 1 |
 | En curso | 1 |
@@ -44,7 +44,7 @@
 | PY-04 | Sistema dual con pipelines Python | Failover real | Pendiente | - | - |  |
 | PY-05 | Sistema dual con pipelines Python | Recuperación | Pendiente | - | - |  |
 | PY-06 | Sistema dual con pipelines Python | Sobrecarga | Pendiente | PY-06.csv, PY-06.txt, PY-06_stats.txt | 2026-10-13 19:48 |  |
-| PY-07 | Sistema dual con pipelines Python | Tests existentes | Parcial | PY-07.txt, PY-07b.txt, PY-07_diagnostico.txt, PY-07_junit.xml, PY-07_main.txt | 2026-10-20 21:45 | 77 passed 2 failed (Selenium) 2 skipped. El README indica 73 al 100 por ciento |
+| PY-07 | Sistema dual con pipelines Python | Tests existentes | Parcial | PY-07.txt, PY-07b.txt, PY-07c.txt, PY-07_diagnostico.txt, PY-07_junit.xml, PY-07_main.txt | 2026-10-21 21:28 | 77 passed 2 failed (Selenium) 2 skipped. El README indica 73 al 100 por ciento |
 | IA-01 | APIs de IA, prompts e imágenes | Conexión Gemini | Parcial | IA-01_02.txt | 2026-10-13 21:18 | Gemini responde a través del pipeline. Llamada mínima aislada pendiente |
 | IA-02 | APIs de IA, prompts e imágenes | Respaldo OpenAI | Parcial | - | - | Cambio automático entre modelos de Gemini observado. Groq u OpenAI por confirmar con el equipo |
 | IA-03 | APIs de IA, prompts e imágenes | Análisis de sentimiento | No concluyente | IA-03.txt, IA-03_comparacion.csv, IA-03_log.txt, IA-03_log_aislado.txt, IA-03_log_rerun.txt, IA-03_referencia.csv | 2026-10-20 20:57 | Referencia propia en etiquetado. Actualizar con el porcentaje cuando termine |
@@ -59,13 +59,13 @@
 | LOG-03 | Lógica condicional | Queja grave emite alerta | Pendiente | - | - |  |
 | LOG-04 | Lógica condicional | Mensaje ambiguo | Pendiente | - | - |  |
 | LOG-05 | Lógica condicional | Mensaje en dos categorías | Pendiente | - | - |  |
-| UI-01 | Panel Streamlit | Carga de Streamlit | Pasó | UI-01.png | 2026-10-14 20:31 | Panel cargado en local sobre la version integrada con main. Captura en UI-01.png |
+| UI-01 | Panel Streamlit | Carga de Streamlit | Pasó | UI-01.png | 2026-10-14 20:31 | Panel cargado en local sobre la version integrada con main. Captura UI-01.png |
 | UI-02 | Panel Streamlit | Lista de publicaciones | Pasó | - | - | Panel cargado en local sobre la version integrada con main. Captura en UI-02.png |
 | UI-03 | Panel Streamlit | Aprobar rechazar y editar | Pasó | - | - | Panel cargado en local sobre la version integrada con main. Captura en UI-03.png |
 | UI-04 | Panel Streamlit | Lista vacía | Pasó | - | - | Panel cargado en local sobre la version integrada con main. Captura en UI-04.png |
 | UI-05 | Panel Streamlit | Textos largos y acentos | Pasó | - | - | Panel cargado en local sobre la version integrada con main. Captura en UI-05.png |
 | UI-06 | Panel Streamlit | Responsive | Pasó | - | - | Panel cargado en local sobre la version integrada con main. Captura en UI-06.png |
-| UI-07 | Panel Streamlit | Acceso sin autenticación | Pasó | UI-07_servidor.txt | 2026-10-19 22:37 | Panel cargado en local sobre la version integrada con main. Captura en UI-07.png |
+| UI-07 | Panel Streamlit | Acceso sin autenticación | Parcial | UI-07_servidor.txt | 2026-10-19 22:37 | En local entra sin login. Servidor no probado. Hallazgo por confirmar con el equipo |
 | OBJ-01 | JSON en OCI Object Storage | JSON en el bucket | Bloqueado | - | - | Sin llave de OCI en el equipo de QA |
 | OBJ-02 | JSON en OCI Object Storage | JSON válido | Bloqueado | - | - | Sin llave de OCI en el equipo de QA |
 | OBJ-03 | JSON en OCI Object Storage | Nombres sin colisión | Bloqueado | - | - | Sin llave de OCI en el equipo de QA |
@@ -75,6 +75,8 @@
 | E2E-02 | Flujo extremo a extremo | Flujo completo con queja | Pendiente | - | - | Depende de n8n funcional y de los bloques 5 7 y 8 |
 | E2E-03 | Flujo extremo a extremo | Flujo completo con pregunta frecuente | Pendiente | - | - | Depende de n8n funcional y de los bloques 5 7 y 8 |
 | E2E-04 | Flujo extremo a extremo | Flujo completo con n8n apagado | Pendiente | - | - | Depende de PY-04 |
+| VAL-01 | Validacion de datos del backend | Validador ante entradas invalidas (12 casos) | Parcial | VAL-01.txt | 2026-10-21 22:13 | Detecta registros sin texto y con tipos incorrectos. Acepta texto en blanco, ids repetidos, tipo desconocido y lista vacia (por confirmar con schemas.py). Falla con BOM y muestra traceback ante archivos rotos |
+| VAL-02 | Validacion de datos del backend | CLI del pipeline ante entradas invalidas a nivel de archivo | Pasó | VAL-02.txt | 2026-10-21 22:02 | Con JSON cortado, archivo vacio y ruta inexistente termina con codigo 1, sin traceback, sin llamadas a la IA y sin crear salida |
 
 ## Hallazgos vinculados a casos
 | ID | Severidad | Caso | Detalle | Seguimiento |
@@ -101,6 +103,12 @@
 | H-20 | Media | UI-07 | Streamlit corre fuera de Docker y escucha en todas las interfaces del puerto 8501 desde un proceso iniciado el 17 de octubre. Por confirmar si exige login y si se reinicia solo | Por confirmar con el equipo |
 | H-21 | Media | N8N-02 | El n8n del servidor tiene 27 workflows cargados y solo 2 activos. Hay duplicados por nombre (4 copias de jmedinag_WF_002 y 3 de CCely_WF_003) y copias personales de prueba. Los workflows de ingesta y el master estan cargados pero inactivos, por lo que el webhook de ingesta no responderia alli | Por confirmar con el equipo |
 | H-22 | Baja | N8N-02 | Hay dos workflows activos con el mismo nombre (Generador_Imagenes_Post) en el servidor. Por confirmar si usan rutas distintas o si una es una version anterior. El workflow CommunityLab_Slack_Dinamico del repo no aparece en el servidor | Por confirmar con el equipo |
+| H-23 "Baja" "INF-05" "La IP del servidor, el usuario y el directorio del proyecto figuran en archivos versionados de main (.env.example y PM_Files). Ya que el repositorio es publico, conviene sacarlos de la documentacion" "Por confirmar con el equipo" |  |  |  |  |
+| H-24 | Media | UI-07 | El panel Streamlit abre sin pedir autenticacion en el entorno local y escucha en todas las interfaces. Por confirmar si tendra login en el entorno desplegado | Por confirmar con el equipo |
+| H-2306 | Baja | VAL-01 | El validador falla con JSONDecodeError en un JSON guardado con BOM UTF-8, que es el formato por defecto al guardar con PowerShell 5.1 o con el Bloc de notas clasico. El archivo debe abrirse con utf-8-sig. Por confirmar si el pipeline tambien falla | Por confirmar con el equipo |
+| H-2307 | Baja | VAL-01 | El validador muestra un traceback completo ante JSON malformado, archivo vacio o ruta inexistente, mientras el CLI del pipeline termina con un error limpio en los mismos casos | Por confirmar con el equipo |
+| H-2308 | Media | VAL-01 | El validador acepta un texto de solo espacios, ids repetidos, un tipo desconocido y una lista vacia (con exito y 0 registros validados). Por confirmar con schemas.py si es diseno intencional. Un texto en blanco llegaria a la IA y consumiria cuota | Por confirmar con el equipo |
+| H-2309 | Informativo | VAL-02 | El CLI del pipeline rechaza archivos rotos con codigo 1, sin traceback, sin llamadas a la IA y sin crear archivo de salida | Conforme |
 
 ## Integridad de evidencias (SHA-256, primeros 12 caracteres)
 | Archivo | Hash | Fecha | KB |
@@ -130,6 +138,7 @@
 | PY-06_stats.txt | 39F593AB753F | 2026-10-13 19:48 | 5.7 |
 | PY-07.txt | 0FD5B72462DD | 2026-10-20 20:57 | 23.5 |
 | PY-07b.txt | CD7E0906E625 | 2026-10-20 21:45 | 7.7 |
+| PY-07c.txt | 497CE0F92E6D | 2026-10-21 21:28 | 7.7 |
 | PY-07_diagnostico.txt | E6D0D1397481 | 2026-10-13 19:48 | 1.5 |
 | PY-07_junit.xml | 4B9017219834 | 2026-10-13 19:48 | 25.6 |
 | PY-07_main.txt | 9C9ACE59BCB5 | 2026-10-20 21:17 | 1.2 |
@@ -163,5 +172,35 @@
 | IA\salida_IA06.json | F809E15BB49C | 2026-10-18 21:06 | 36.7 |
 | IA\salida_IA07.json | 1023BC171EFE | 2026-10-18 21:08 | 5.2 |
 | PY-03\entrada_5.json | 8BAF97B8C8D8 | 2026-10-13 20:41 | 2.8 |
+| VAL\pipeline_VAL_02_json_malformado.log | E421C8A38A34 | 2026-10-21 22:02 | 0.3 |
+| VAL\pipeline_VAL_03_vacio.log | 297927993904 | 2026-10-21 22:02 | 0.3 |
+| VAL\pipeline_VAL_99_no_existe.log | E5C3659E8619 | 2026-10-21 22:13 | 0.4 |
+| VAL\salida_VAL_01_valido.txt | 2FFE82A2BEEB | 2026-10-21 22:13 | 0.4 |
+| VAL\salida_VAL_02_json_malformado.txt | 9AECF80A3C80 | 2026-10-21 22:13 | 1.7 |
+| VAL\salida_VAL_03_vacio.txt | 246EDF1CE91A | 2026-10-21 22:13 | 1.7 |
+| VAL\salida_VAL_04_sin_texto.txt | 6E62380D0899 | 2026-10-21 22:13 | 0.4 |
+| VAL\salida_VAL_05_tipos_incorrectos.txt | BCC9A4B75FBE | 2026-10-21 22:13 | 0.4 |
+| VAL\salida_VAL_06_lista_vacia.txt | 09E492934D55 | 2026-10-21 22:13 | 0.4 |
+| VAL\salida_VAL_07_ids_duplicados.txt | 37577912C6B8 | 2026-10-21 22:13 | 0.4 |
+| VAL\salida_VAL_08_texto_en_blanco.txt | 6C14C9DCE6F0 | 2026-10-21 22:13 | 0.4 |
+| VAL\salida_VAL_09_tipo_invalido.txt | 8766922EB7E0 | 2026-10-21 22:13 | 0.4 |
+| VAL\salida_VAL_10_texto_largo.txt | 52149900578B | 2026-10-21 22:13 | 0.4 |
+| VAL\salida_VAL_11_unicode.txt | F09B23F96648 | 2026-10-21 22:13 | 0.4 |
+| VAL\salida_VAL_12_con_BOM.txt | 20AC942CE9AD | 2026-10-21 22:13 | 1.4 |
+| VAL\salida_VAL_99_no_existe.txt | 997C589C5846 | 2026-10-21 22:13 | 1.1 |
+| VAL\VAL-01.txt | D692A99F6A6B | 2026-10-21 22:13 | 2.2 |
+| VAL\VAL-02.txt | FBE5F8871DD9 | 2026-10-21 22:02 | 0.5 |
+| VAL\entradas\VAL_01_valido.json | 9327BBCDA168 | 2026-10-21 21:58 | 1.7 |
+| VAL\entradas\VAL_02_json_malformado.json | 63EADBE411E5 | 2026-10-21 21:58 | 0.1 |
+| VAL\entradas\VAL_03_vacio.json | E3B0C44298FC | 2026-10-21 21:58 | 0 |
+| VAL\entradas\VAL_04_sin_texto.json | FC18A372DF04 | 2026-10-21 21:58 | 1.4 |
+| VAL\entradas\VAL_05_tipos_incorrectos.json | 9C13676AF147 | 2026-10-21 21:58 | 1.6 |
+| VAL\entradas\VAL_06_lista_vacia.json | 37E187832275 | 2026-10-21 21:58 | 0.2 |
+| VAL\entradas\VAL_07_ids_duplicados.json | C5C14F80B23E | 2026-10-21 21:58 | 1.7 |
+| VAL\entradas\VAL_08_texto_en_blanco.json | 9ACBA2F415CB | 2026-10-21 21:58 | 1.5 |
+| VAL\entradas\VAL_09_tipo_invalido.json | 231613F0A38D | 2026-10-21 21:58 | 1.7 |
+| VAL\entradas\VAL_10_texto_largo.json | 64EBE689314D | 2026-10-21 21:58 | 11.3 |
+| VAL\entradas\VAL_11_unicode.json | F4D3D87B64DC | 2026-10-21 21:58 | 1.5 |
+| VAL\entradas\VAL_12_con_BOM.json | 15EB6ABDDD61 | 2026-10-21 21:58 | 1.7 |
 
-Archivos de apoyo sin caso propio (entradas, salidas y logs): 14
+Archivos de apoyo sin caso propio (entradas, salidas y logs): 42

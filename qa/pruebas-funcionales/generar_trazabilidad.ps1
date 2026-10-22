@@ -2,7 +2,7 @@
 $ev     = Join-Path $base "evidencias"
 $commit = git rev-parse --short HEAD
 $fecha  = Get-Date -Format "yyyy-MM-dd HH:mm K"
-$mapa = @{ INF="Infraestructura y setup base"; DOC="Contenedores Docker"; DB="PostgreSQL con pgvector"; N8N="Orquestador n8n"; PY="Sistema dual con pipelines Python"; IA="APIs de IA, prompts e imágenes"; LOG="Lógica condicional"; UI="Panel Streamlit"; OBJ="JSON en OCI Object Storage"; E2E="Flujo extremo a extremo" }
+$mapa = @{ INF="Infraestructura y setup base"; DOC="Contenedores Docker"; DB="PostgreSQL con pgvector"; N8N="Orquestador n8n"; PY="Sistema dual con pipelines Python"; IA="APIs de IA, prompts e imágenes"; LOG="Lógica condicional"; UI="Panel Streamlit"; OBJ="JSON en OCI Object Storage"; E2E="Flujo extremo a extremo"; VAL="Validacion de datos del backend" }
 $casos = @(Import-Csv (Join-Path $base "estados.csv") -Delimiter ';' -Encoding UTF8)
 $hall  = @(Import-Csv (Join-Path $base "hallazgos.csv") -Delimiter ';' -Encoding UTF8)
 $todos = @(Get-ChildItem $ev -Recurse -File -ErrorAction SilentlyContinue)
@@ -54,3 +54,4 @@ $m | Out-File (Join-Path $base "trazabilidad.md") -Encoding utf8
 $filas | Export-Csv (Join-Path $base "trazabilidad.csv") -NoTypeInformation -Encoding UTF8
 $filas | Group-Object Estado | Select-Object Name, Count | Format-Table -AutoSize
 "Generado: $(Join-Path $base 'trazabilidad.md')"
+

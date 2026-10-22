@@ -1,0 +1,165 @@
+﻿============================= test session starts =============================
+platform win32 -- Python 3.14.6, pytest-9.1.1, pluggy-1.6.0 -- C:\Users\Raul y Thiago\Desktop\Proyecto G10\G10-LATAM-equipo6-CommunityLab\.venv\Scripts\python.exe
+metadata: {'Python': '3.14.6', 'Platform': 'Windows-10-10.0.19045-SP0', 'Packages': {'pytest': '9.1.1', 'pluggy': '1.6.0'}, 'Plugins': {'anyio': '4.15.1', 'html': '4.2.0', 'metadata': '3.1.1'}}
+rootdir: C:\Users\Raul y Thiago\Desktop\Proyecto G10\G10-LATAM-equipo6-CommunityLab
+configfile: pytest.ini
+plugins: anyio-4.15.1, html-4.2.0, metadata-3.1.1
+collecting ... collected 2 items
+
+qa/pruebas-funcionales/tests_qa/test_ui_streamlit.py::test_streamlit_panel_carga_correctamente FAILED [ 50%]
+qa/pruebas-funcionales/tests_qa/test_ui_streamlit.py::test_elementos_interactivos_ui PASSED [100%]
+
+================================== FAILURES ===================================
+__________________ test_streamlit_panel_carga_correctamente ___________________
+
+driver_navegador = <selenium.webdriver.chrome.webdriver.WebDriver (session="b91e59264b495a8255e44e03e5b0e881")>
+
+    def test_streamlit_panel_carga_correctamente(driver_navegador):
+        """
+        Prueba UI de Humo (Smoke Test): Verifica que la interfaz de Streamlit
+        en el puerto 8501 responda y cargue el título principal del proyecto CommunityLab.
+        """
+        # 1. Navegar a la aplicación local de Streamlit
+        url_streamlit = "http://localhost:8501"
+        driver_navegador.get(url_streamlit)
+    
+        # 2. Espera inteligente (Explicit Wait): Esperamos a que Streamlit renderice el DOM (máx. 10 segundos)
+        wait = WebDriverWait(driver_navegador, 10)
+    
+        try:
+            #elementos visuales esenciales
+>           elemento_titulo = wait.until(
+                T.presence_of_element_located((By.TAG_NAME, "h1"))
+            )
+
+qa\pruebas-funcionales\tests_qa\test_ui_streamlit.py:47: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <selenium.webdriver.support.wait.WebDriverWait (session="b91e59264b495a8255e44e03e5b0e881")>
+method = <function presence_of_element_located.<locals>._predicate at 0x000001C560C1F8A0>
+message = ''
+
+    def until(self, method: Callable[[D], Literal[False] | T], message: str = "") -> T:
+        """Wait until the method returns a value that is not False.
+    
+        Calls the method provided with the driver as an argument until the
+        return value does not evaluate to ``False``.
+    
+        Args:
+            method: A callable object that takes a WebDriver instance as an
+                argument.
+            message: Optional message for TimeoutException.
+    
+        Returns:
+            The result of the last call to `method`.
+    
+        Raises:
+            TimeoutException: If 'method' does not return a truthy value within
+                the WebDriverWait object's timeout.
+    
+        Example:
+            >>> from selenium.webdriver.common.by import By
+            >>> from selenium.webdriver.support.wait import WebDriverWait
+            >>> from selenium.webdriver.support import expected_conditions as EC
+            >>>
+            >>> # Wait until an element is visible on the page
+            >>> wait = WebDriverWait(driver, 10)
+            >>> element = wait.until(EC.visibility_of_element_located((By.ID, "exampleId")))
+            >>> print(element.text)
+        """
+        screen = None
+        stacktrace = None
+    
+        end_time = time.monotonic() + self._timeout
+        while True:
+            try:
+                value = method(self._driver)
+                if value:
+                    return value
+            except self._ignored_exceptions as exc:
+                screen = getattr(exc, "screen", None)
+                stacktrace = getattr(exc, "stacktrace", None)
+            if time.monotonic() > end_time:
+                break
+            time.sleep(self._poll)
+>       raise TimeoutException(message, screen, stacktrace)
+E       selenium.common.exceptions.TimeoutException: Message: 
+E       Stacktrace:
+E       Symbols not available. Dumping unresolved backtrace:
+E       	(No symbol) [0x7ff637c5e745]
+E       	(No symbol) [0x7ff637813d00]
+E       	(No symbol) [0x7ff637643f3d]
+E       	(No symbol) [0x7ff63769f6ed]
+E       	(No symbol) [0x7ff63769f9bc]
+E       	(No symbol) [0x7ff6376f7ed7]
+E       	(No symbol) [0x7ff6376f4b5a]
+E       	(No symbol) [0x7ff637691462]
+E       	(No symbol) [0x7ff637692273]
+E       	(No symbol) [0x7ff637d017b1]
+E       	(No symbol) [0x7ff637d387c7]
+E       	(No symbol) [0x7ff637d2c85e]
+E       	(No symbol) [0x7ff6379d884e]
+E       	(No symbol) [0x7ff637820415]
+E       	(No symbol) [0x7ff63781bdf4]
+E       	(No symbol) [0x7ff63781bf84]
+E       	(No symbol) [0x7ff637807f7c]
+E       	(No symbol) [0x7ffaee627374]
+E       	(No symbol) [0x7ffaf041cc91]
+
+.venv\Lib\site-packages\selenium\webdriver\support\wait.py:121: TimeoutException
+
+During handling of the above exception, another exception occurred:
+
+driver_navegador = <selenium.webdriver.chrome.webdriver.WebDriver (session="b91e59264b495a8255e44e03e5b0e881")>
+
+    def test_streamlit_panel_carga_correctamente(driver_navegador):
+        """
+        Prueba UI de Humo (Smoke Test): Verifica que la interfaz de Streamlit
+        en el puerto 8501 responda y cargue el título principal del proyecto CommunityLab.
+        """
+        # 1. Navegar a la aplicación local de Streamlit
+        url_streamlit = "http://localhost:8501"
+        driver_navegador.get(url_streamlit)
+    
+        # 2. Espera inteligente (Explicit Wait): Esperamos a que Streamlit renderice el DOM (máx. 10 segundos)
+        wait = WebDriverWait(driver_navegador, 10)
+    
+        try:
+            #elementos visuales esenciales
+            elemento_titulo = wait.until(
+                T.presence_of_element_located((By.TAG_NAME, "h1"))
+            )
+    
+            # 3. Validaciones de QA (Assertions)
+            assert elemento_titulo is not None, "El panel de Streamlit no renderizó el título principal (h1)."
+            print(f"\n[QA UI Success] Panel detectado con éxito. Título encontrado: {elemento_titulo.text}")
+    
+        except Exception as e:
+>           pytest.fail(f"La interfaz de Streamlit no cargó correctamente o el servidor no está activo en {url_streamlit}. Error: {str(e)}")
+E           Failed: La interfaz de Streamlit no cargó correctamente o el servidor no está activo en http://localhost:8501. Error: Message: 
+E           Stacktrace:
+E           Symbols not available. Dumping unresolved backtrace:
+E           	(No symbol) [0x7ff637c5e745]
+E           	(No symbol) [0x7ff637813d00]
+E           	(No symbol) [0x7ff637643f3d]
+E           	(No symbol) [0x7ff63769f6ed]
+E           	(No symbol) [0x7ff63769f9bc]
+E           	(No symbol) [0x7ff6376f7ed7]
+E           	(No symbol) [0x7ff6376f4b5a]
+E           	(No symbol) [0x7ff637691462]
+E           	(No symbol) [0x7ff637692273]
+E           	(No symbol) [0x7ff637d017b1]
+E           	(No symbol) [0x7ff637d387c7]
+E           	(No symbol) [0x7ff637d2c85e]
+E           	(No symbol) [0x7ff6379d884e]
+E           	(No symbol) [0x7ff637820415]
+E           	(No symbol) [0x7ff63781bdf4]
+E           	(No symbol) [0x7ff63781bf84]
+E           	(No symbol) [0x7ff637807f7c]
+E           	(No symbol) [0x7ffaee627374]
+E           	(No symbol) [0x7ffaf041cc91]
+
+qa\pruebas-funcionales\tests_qa\test_ui_streamlit.py:56: Failed
+=========================== short test summary info ===========================
+FAILED qa/pruebas-funcionales/tests_qa/test_ui_streamlit.py::test_streamlit_panel_carga_correctamente
+======================== 1 failed, 1 passed in 30.40s =========================

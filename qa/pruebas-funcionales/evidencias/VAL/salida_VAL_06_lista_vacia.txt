@@ -1,0 +1,5 @@
+﻿<frozen runpy>:130: RuntimeWarning: 'src.ai_engine.validator' found in sys.modules after import of package 'src.ai_engine', but prior to execution of 'src.ai_engine.validator'; this may result in unpredictable behaviour
+=== Validando archivo: C:\Users\<usuario>\Desktop\Proyecto G10\G10-LATAM-equipo6-CommunityLab\qa\pruebas-funcionales\evidencias\VAL\entradas\VAL_06_lista_vacia.json ===
+Total analizados: 0
+Válidos: 0
+Fallidos: 0
