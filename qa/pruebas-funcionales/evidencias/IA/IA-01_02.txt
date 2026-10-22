@@ -1,0 +1,8 @@
+﻿IA-01/02 - Conexión mínima a los proveedores de IA
+Fecha: 2026-10-13 21:18:41 -03:00
+Commit probado: 68c7382
+
+Gemini (modelo gemini-3.6-flash): ERROR HTTP 503 en 1069 ms
+
+Groq (modelo openai/gpt-oss-20b): OK en 554 ms
+Respuesta: positivo

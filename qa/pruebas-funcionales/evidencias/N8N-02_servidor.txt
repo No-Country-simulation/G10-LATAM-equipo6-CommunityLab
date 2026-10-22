@@ -1,0 +1,35 @@
+﻿N8N-02 - Estado en el servidor (solo lectura)
+Fecha: 2026-10-19 22:37:30 -03:00
+Commit local probado: 73a1fa5
+
+Workflows cargados:
+VbiaaT0wBJZjR0Sz|CCely_WF_001
+164UrZhViJYbKfV7|CCely_WF_002
+LtSH6uqvNTq9QouT|CCely_WF_002
+ehLdvC03XOEK57h4|jmedinag_WF_001
+YNRhYemizz2AoAV6|jmedinag_WF_002
+Ll4nwPHBxhqcCmJi|JLMansilla001
+ki81pkq4eAUIzQES|CCely_WF_003
+6vLbwA78o0mlgYUq|My workflow RG
+eJ6kk9zM7az6viG3|jmedinag_WF_002
+L0rxc2POjd2b0KEN|CesarCely_WF_002 Hackathon RG
+Ks3i5iHXdqyZAOQ1|JLMansilla001 ultima version RG
+Ln90EcfzGRoc0VIe|RG_Practica_Pers_Alura
+JR9Ix8YRA6zfNrQ0|jmedina_WF_003
+NOHpmxRdZanXenxK|CCely_WF_003
+fYEy0lGwawtB7uh7|jmedinag_WF_002
+nq3Ty3JaN49HM6B5|CCely_WF_003
+0nZC9ksVszIbNIc8|CCely_WF_004
+MfLRzC8lAOjHxhnJ|CommunityLab_Ingesta_Local_Webhook
+rXDvhA9R1gh9NNOA|CCely_WF_005
+ak01UbTKWyzgjChD|CommunityLab_Discord_Dinamico
+is13JQSeKCSPaCx1|CommunityLab_Generador_Imagenes_Post
+m5n0Kwdg5KMCGg6Y|CommunityLab_Telegram_Dinamico
+nmhDhDoFWzB9adP0|CommunityLab_Generador_Imagenes_Post
+Vi7ZiRt2gF1OPbhT|jmedinag_WF_002
+ip4RBBQbog0PzG5i|CommunityLab_Ingesta_Local_Webhook
+1GMgA9A1xdqJJmhW|CommunityLab_Master_Omnicanal_E2E_OCI
+VVUyQTLVUUkkjR7G|CommunityLab_Generador_Imagenes_Post
+Workflows activos:
+is13JQSeKCSPaCx1|CommunityLab_Generador_Imagenes_Post
+nmhDhDoFWzB9adP0|CommunityLab_Generador_Imagenes_Post

@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="2" tests="81" time="33.178" timestamp="2026-10-12T16:17:55.764112-03:00" hostname="Pituchos"><testcase classname="tests.test_ai_engine" name="test_valid_community_interaction" time="0.006" /><testcase classname="tests.test_ai_engine" name="test_invalid_community_interaction" time="0.005" /><testcase classname="tests.test_ai_engine" name="test_valid_asset_output_logro" time="0.004" /><testcase classname="tests.test_ai_engine" name="test_valid_asset_output_duda_tecnica" time="0.002" /><testcase classname="tests.test_ai_engine" name="test_invalid_consistency_logro_without_post" time="0.006" /><testcase classname="tests.test_ai_engine" name="test_invalid_consistency_duda_without_faq" time="0.002" /><testcase classname="tests.test_ai_engine" name="test_extract_json_from_markdown_block" time="0.002" /><testcase classname="tests.test_ai_engine" name="test_validate_sample_dataset_batch" time="0.004" /><testcase classname="tests.test_bot_manager" name="test_singleton_get_instance" time="0.005" /><testcase classname="tests.test_bot_manager" name="test_initial_status" time="0.005" /><testcase classname="tests.test_bot_manager" name="test_missing_tokens_handling" time="0.007" /><testcase classname="tests.test_bot_manager" name="test_start_and_stop_telegram_mocked" time="0.007" /><testcase classname="tests.test_bot_manager" name="test_start_and_stop_discord_mocked" time="0.007" /><testcase classname="tests.test_bot_manager" name="test_start_and_stop_slack_mocked" time="0.013" /><testcase classname="tests.test_bot_manager" name="test_start_channel_invalid" time="0.005" /><testcase classname="tests.test_bot_manager" name="test_start_all_and_stop_all" time="0.008" /><testcase classname="tests.test_channels" name="test_dispatcher_process_incoming_message_success" time="0.043" /><testcase classname="tests.test_channels" name="test_dispatcher_persists_accumulatively" time="0.029" /><testcase classname="tests.test_channels" name="test_telegram_bot_missing_token_raises_error" time="0.003" /><testcase classname="tests.test_channels" name="test_telegram_bot_handle_incoming_text_success[asyncio]" time="0.033" /><testcase classname="tests.test_channels" name="test_telegram_bot_commands[asyncio]" time="0.029" /><testcase classname="tests.test_channels" name="test_discord_bot_ignores_self_messages[asyncio]" time="0.010" /><testcase classname="tests.test_channels" name="test_discord_bot_processes_mention_with_embed[asyncio]" time="0.028" /><testcase classname="tests.test_channels" name="test_telegram_bot_handle_incoming_text_success[trio]" time="0.039" /><testcase classname="tests.test_channels" name="test_telegram_bot_commands[trio]" time="0.030" /><testcase classname="tests.test_channels" name="test_discord_bot_ignores_self_messages[trio]" time="0.024" /><testcase classname="tests.test_channels" name="test_discord_bot_processes_mention_with_embed[trio]" time="0.027" /><testcase classname="tests.test_channels" name="test_discord_bot_missing_token_raises_error" time="0.005" /><testcase classname="tests.test_channels" name="test_slack_bot_missing_tokens_raises_error" time="0.004" /><testcase classname="tests.test_channels" name="test_slack_bot_event_handler_dispatches_correctly" time="2.375" /><testcase classname="tests.test_channels" name="test_slack_bot_resolves_user_display_name" time="0.004" /><testcase classname="tests.test_cloud_oci" name="test_init_with_explicit_config" time="0.005" /><testcase classname="tests.test_cloud_oci" name="test_upload_json_asset_dict" time="0.005" /><testcase classname="tests.test_cloud_oci" name="test_get_asset" time="0.005" /><testcase classname="tests.test_cloud_oci" name="test_list_assets" time="0.009" /><testcase classname="tests.test_cloud_oci" name="test_create_preauthenticated_request" time="0.008" /><testcase classname="tests.test_cloud_oci" name="test_oci_local_fallback_mode_upload_and_read" time="0.054" /><testcase classname="tests.test_cloud_oci" name="test_oci_local_fallback_par" time="0.003" /><testcase classname="tests.test_cloud_oci" name="test_oci_upload_invalid_type_raises" time="0.007" /><testcase classname="tests.test_config" name="test_config_local_environment" time="0.004" /><testcase classname="tests.test_config" name="test_config_produccion_environment" time="0.003" /><testcase classname="tests.test_config" name="test_config_local_fallback_when_local_token_not_set" time="0.003" /><testcase classname="tests.test_config" name="test_config_dual_slack_apps" time="0.003" /><testcase classname="tests.test_config" name="test_get_n8n_channel_webhook_url" time="0.004" /><testcase classname="tests.test_flujos_criticos_api" name="test_api_ingesta_webhook_responde_correctamente" time="0.006" /><testcase classname="tests.test_flujos_criticos_api" name="test_api_ingesta_manejo_de_errores" time="0.003" /><testcase classname="tests.test_gemini_service" name="test_build_user_prompt" time="0.004" /><testcase classname="tests.test_gemini_service" name="test_missing_api_key_raises_value_error" time="0.006" /><testcase classname="tests.test_gemini_service" name="test_generate_asset_logro_success" time="2.039" /><testcase classname="tests.test_gemini_service" name="test_generate_asset_duda_tecnica_success" time="0.007" /><testcase classname="tests.test_gemini_service" name="test_generate_asset_retry_on_rate_limit" time="0.023" /><testcase classname="tests.test_gemini_service" name="test_process_interaction_returns_processed_community_asset" time="0.007" /><testcase classname="tests.test_ingestion" name="test_carga_dataset_oficial_15_registros" time="0.005" /><testcase classname="tests.test_ingestion" name="test_carga_archivo_inexistente_lanza_error" time="0.004" /><testcase classname="tests.test_ingestion" name="test_carga_modo_no_estricto_omite_invalidos" time="0.012" /><testcase classname="tests.test_ingestion" name="test_carga_modo_estricto_lanza_error" time="0.011" /><testcase classname="tests.test_ingestion" name="test_filtrar_por_canal" time="0.004" /><testcase classname="tests.test_ingestion" name="test_filtrar_por_tipo" time="0.005" /><testcase classname="tests.test_ingestion" name="test_obtener_canales_y_tipos_unicos" time="0.005" /><testcase classname="tests.test_ingestion" name="test_generar_lotes_batching" time="0.005" /><testcase classname="tests.test_ingestion" name="test_filtrar_omitir_ids" time="0.005" /><testcase classname="tests.test_oci_storage" name="test_client_initialization" time="0.003"><skipped type="pytest.skip" message="Credenciales de OCI no configuradas en el entorno.">C:\Users\Raul y Thiago\Desktop\Proyecto G10\G10-LATAM-equipo6-CommunityLab\tests\test_oci_storage.py:40: Credenciales de OCI no configuradas en el entorno.</skipped></testcase><testcase classname="tests.test_oci_storage" name="test_upload_and_get_asset_package" time="0.002"><skipped type="pytest.skip" message="Credenciales de OCI no configuradas en el entorno.">C:\Users\Raul y Thiago\Desktop\Proyecto G10\G10-LATAM-equipo6-CommunityLab\tests\test_oci_storage.py:47: Credenciales de OCI no configuradas en el entorno.</skipped></testcase><testcase classname="tests.test_pipeline" name="test_pipeline_procesar_archivo_con_limite" time="0.019" /><testcase classname="tests.test_pipeline" name="test_pipeline_metricas_consolidadas" time="0.035" /><testcase classname="tests.test_pipeline" name="test_pipeline_filtro_por_canal" time="0.020" /><testcase classname="tests.test_pipeline" name="test_pipeline_guardar_paquete_json" time="0.026" /><testcase classname="tests.test_pipeline" name="test_pipeline_resiliencia_continua_ante_fallas_individuales" time="0.026" /><testcase classname="tests.test_pipeline" name="test_pipeline_subir_a_oci_4_archivos_especializados" time="0.013" /><testcase classname="tests.test_ui_services" name="test_guardar_curaduria_humana" time="0.012" /><testcase classname="tests.test_ui_services" name="test_obtener_ultimos_paquetes_mock" time="0.004" /><testcase classname="tests.test_ui_services" name="test_cargar_paquete_mock" time="0.003" /><testcase classname="tests.test_ui_services" name="test_procesar_archivo_ui_mock" time="0.011" /><testcase classname="tests.test_ui_services" name="test_procesar_archivo_n8n_ui_exito" time="0.281" /><testcase classname="tests.test_ui_services" name="test_procesar_archivo_n8n_ui_404" time="0.051" /><testcase classname="tests.test_ui_services" name="test_fusionar_paquetes" time="0.005" /><testcase classname="tests.test_ui_services" name="test_logger_sistema" time="0.018" /><testcase classname="tests.test_ui_services" name="test_vaciar_historico_oci_local" time="0.015" /><testcase classname="tests.test_ui_services" name="test_obtener_ids_procesados_sesion" time="0.014" /><testcase classname="tests.test_ui_streamlit" name="test_streamlit_panel_carga_correctamente" time="15.098"><failure message="selenium.common.exceptions.WebDriverException: Message: unknown error: net::ERR_CONNECTION_REFUSED&#10;  (Session info: chrome=154.0.8037.98)&#10;Stacktrace:&#10;&#09;chromedriver!GetHandleVerifier [0x7ff7f8049d55+5a55]&#10;&#09;chromedriver!(No symbol) [0x7ff7f7f6f540]&#10;&#09;chromedriver!(No symbol) [0x7ff7f7d945fd]&#10;&#09;chromedriver!(No symbol) [0x7ff7f7d913eb]&#10;&#09;chromedriver!(No symbol) [0x7ff7f7d81901]&#10;&#09;chromedriver!(No symbol) [0x7ff7f7d83744]&#10;&#09;chromedriver!(No symbol) [0x7ff7f7d81e94]&#10;&#09;chromedriver!(No symbol) [0x7ff7f7d8166b]&#10;&#09;chromedriver!(No symbol) [0x7ff7f7d81321]&#10;&#09;chromedriver!(No symbol) [0x7ff7f7d7eff0]&#10;&#09;chromedriver!(No symbol) [0x7ff7f7d7f762]&#10;&#09;chromedriver!(No symbol) [0x7ff7f7d988e7]&#10;&#09;chromedriver!(No symbol) [0x7ff7f7e40ab4]&#10;&#09;chromedriver!(No symbol) [0x7ff7f7e190ea]&#10;&#09;chromedriver!(No symbol) [0x7ff7f7e3fcd9]&#10;&#09;chromedriver!(No symbol) [0x7ff7f7de1a12]&#10;&#09;chromedriver!(No symbol) [0x7ff7f7de2823]&#10;&#09;chromedriver!GetHandleVerifier [0x7ff7f84604b1+41c1b1]&#10;&#09;chromedriver!GetHandleVerifier [0x7ff7f848e26b+449f6b]&#10;&#09;chromedriver!GetHandleVerifier [0x7ff7f848274e+43e44e]&#10;&#09;chromedriver!GetHandleVerifier [0x7ff7f81432fe+feffe]&#10;&#09;chromedriver!(No symbol) [0x7ff7f7f7cb55]&#10;&#09;chromedriver!(No symbol) [0x7ff7f7f77f64]&#10;&#09;chromedriver!(No symbol) [0x7ff7f7f780f4]&#10;&#09;chromedriver!(No symbol) [0x7ff7f7f62e4c]&#10;&#09;KERNEL32!BaseThreadInitThunk [0x7ffaee627374+14]&#10;&#09;ntdll!RtlUserThreadStart [0x7ffaf041cc91+21]">driver_navegador = &lt;selenium.webdriver.chrome.webdriver.WebDriver (session="cda6a764d48d2dd424da8f21978f139b")&gt;
+
+    def test_streamlit_panel_carga_correctamente(driver_navegador):
+        """
+        Prueba UI de Humo (Smoke Test): Verifica que la interfaz de Streamlit
+        en el puerto 8501 responda y cargue el título principal del proyecto CommunityLab.
+        """
+        # 1. Navegar a la aplicación local de Streamlit
+        url_streamlit = "http://localhost:8501"
+&gt;       driver_navegador.get(url_streamlit)
+
+tests\test_ui_streamlit.py:40: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+.venv\Lib\site-packages\selenium\webdriver\remote\webdriver.py:526: in get
+    self.execute(Command.GET, {"url": url})
+.venv\Lib\site-packages\selenium\webdriver\remote\webdriver.py:506: in execute
+    self.error_handler.check_response(response)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;selenium.webdriver.remote.errorhandler.ErrorHandler object at 0x000002BF0B59D7F0&gt;
+response = {'status': 500, 'value': '{"value":{"error":"unknown error","message":"unknown error: net::ERR_CONNECTION_REFUSED\\n  ...f62e4c]\\n\\tKERNEL32!BaseThreadInitThunk [0x7ffaee627374+14]\\n\\tntdll!RtlUserThreadStart [0x7ffaf041cc91+21]\\n"}}'}
+
+    def check_response(self, response: dict[str, Any]) -&gt; None:
+        """Check that a JSON response from the WebDriver does not have an error.
+    
+        Args:
+            response: The JSON response from the WebDriver server as a dictionary
+                object.
+    
+        Raises:
+            WebDriverException: If the response contains an error message.
+        """
+        status = response.get("status", None)
+        if not status or status == ErrorCode.SUCCESS:
+            return
+        value = None
+        message = response.get("message", "")
+        screen: str = response.get("screen", "")
+        stacktrace = None
+        if isinstance(status, int):
+            value_json = response.get("value", None)
+            if value_json and isinstance(value_json, str):
+                try:
+                    value = json.loads(value_json)
+                    if isinstance(value, dict):
+                        if len(value) == 1:
+                            value = value["value"]
+                        status = value.get("error", None)
+                        if not status:
+                            status = value.get("status", ErrorCode.UNKNOWN_ERROR)
+                            message = value.get("value") or value.get("message")
+                            if not isinstance(message, str):
+                                value = message
+                                message = message.get("message") if isinstance(message, dict) else None
+                        else:
+                            message = value.get("message", None)
+                except ValueError:
+                    pass
+    
+        exception_class: type[WebDriverException]
+        e = ErrorCode()
+        error_codes = [item for item in dir(e) if not item.startswith("__")]
+        for error_code in error_codes:
+            error_info = getattr(ErrorCode, error_code)
+            if isinstance(error_info, list) and status in error_info:
+                exception_class = getattr(ExceptionMapping, error_code, WebDriverException)
+                break
+        else:
+            exception_class = WebDriverException
+    
+        if not value:
+            value = response["value"]
+        if isinstance(value, str):
+            raise exception_class(value)
+        if message == "" and "message" in value:
+            message = value["message"]
+    
+        screen = None  # type: ignore[assignment]
+        if "screen" in value:
+            screen = value["screen"]
+    
+        stacktrace = None
+        st_value = value.get("stackTrace") or value.get("stacktrace")
+        if st_value:
+            if isinstance(st_value, str):
+                stacktrace = st_value.split("\n")
+            else:
+                stacktrace = []
+                try:
+                    for frame in st_value:
+                        line = frame.get("lineNumber", "")
+                        file = frame.get("fileName", "&lt;anonymous&gt;")
+                        if line:
+                            file = f"{file}:{line}"
+                        meth = frame.get("methodName", "&lt;anonymous&gt;")
+                        if "className" in frame:
+                            meth = f"{frame['className']}.{meth}"
+                        msg = "    at %s (%s)"
+                        msg = msg % (meth, file)
+                        stacktrace.append(msg)
+                except TypeError:
+                    pass
+        if exception_class == UnexpectedAlertPresentException:
+            alert_text = None
+            if "data" in value:
+                alert_text = value["data"].get("text")
+            elif "alert" in value:
+                alert_text = value["alert"].get("text")
+            raise exception_class(message, screen, stacktrace, alert_text)
+&gt;       raise exception_class(message, screen, stacktrace)
+E       selenium.common.exceptions.WebDriverException: Message: unknown error: net::ERR_CONNECTION_REFUSED
+E         (Session info: chrome=154.0.8037.98)
+E       Stacktrace:
+E       	chromedriver!GetHandleVerifier [0x7ff7f8049d55+5a55]
+E       	chromedriver!(No symbol) [0x7ff7f7f6f540]
+E       	chromedriver!(No symbol) [0x7ff7f7d945fd]
+E       	chromedriver!(No symbol) [0x7ff7f7d913eb]
+E       	chromedriver!(No symbol) [0x7ff7f7d81901]
+E       	chromedriver!(No symbol) [0x7ff7f7d83744]
+E       	chromedriver!(No symbol) [0x7ff7f7d81e94]
+E       	chromedriver!(No symbol) [0x7ff7f7d8166b]
+E       	chromedriver!(No symbol) [0x7ff7f7d81321]
+E       	chromedriver!(No symbol) [0x7ff7f7d7eff0]
+E       	chromedriver!(No symbol) [0x7ff7f7d7f762]
+E       	chromedriver!(No symbol) [0x7ff7f7d988e7]
+E       	chromedriver!(No symbol) [0x7ff7f7e40ab4]
+E       	chromedriver!(No symbol) [0x7ff7f7e190ea]
+E       	chromedriver!(No symbol) [0x7ff7f7e3fcd9]
+E       	chromedriver!(No symbol) [0x7ff7f7de1a12]
+E       	chromedriver!(No symbol) [0x7ff7f7de2823]
+E       	chromedriver!GetHandleVerifier [0x7ff7f84604b1+41c1b1]
+E       	chromedriver!GetHandleVerifier [0x7ff7f848e26b+449f6b]
+E       	chromedriver!GetHandleVerifier [0x7ff7f848274e+43e44e]
+E       	chromedriver!GetHandleVerifier [0x7ff7f81432fe+feffe]
+E       	chromedriver!(No symbol) [0x7ff7f7f7cb55]
+E       	chromedriver!(No symbol) [0x7ff7f7f77f64]
+E       	chromedriver!(No symbol) [0x7ff7f7f780f4]
+E       	chromedriver!(No symbol) [0x7ff7f7f62e4c]
+E       	KERNEL32!BaseThreadInitThunk [0x7ffaee627374+14]
+E       	ntdll!RtlUserThreadStart [0x7ffaf041cc91+21]
+
+.venv\Lib\site-packages\selenium\webdriver\remote\errorhandler.py:232: WebDriverException</failure></testcase><testcase classname="tests.test_ui_streamlit" name="test_elementos_interactivos_ui" time="6.410"><failure message="selenium.common.exceptions.WebDriverException: Message: unknown error: net::ERR_CONNECTION_REFUSED&#10;  (Session info: chrome=154.0.8037.98)&#10;Stacktrace:&#10;&#09;chromedriver!GetHandleVerifier [0x7ff7f8049d55+5a55]&#10;&#09;chromedriver!(No symbol) [0x7ff7f7f6f540]&#10;&#09;chromedriver!(No symbol) [0x7ff7f7d945fd]&#10;&#09;chromedriver!(No symbol) [0x7ff7f7d913eb]&#10;&#09;chromedriver!(No symbol) [0x7ff7f7d81901]&#10;&#09;chromedriver!(No symbol) [0x7ff7f7d83744]&#10;&#09;chromedriver!(No symbol) [0x7ff7f7d81e94]&#10;&#09;chromedriver!(No symbol) [0x7ff7f7d8166b]&#10;&#09;chromedriver!(No symbol) [0x7ff7f7d81321]&#10;&#09;chromedriver!(No symbol) [0x7ff7f7d7eff0]&#10;&#09;chromedriver!(No symbol) [0x7ff7f7d7f762]&#10;&#09;chromedriver!(No symbol) [0x7ff7f7d988e7]&#10;&#09;chromedriver!(No symbol) [0x7ff7f7e40ab4]&#10;&#09;chromedriver!(No symbol) [0x7ff7f7e190ea]&#10;&#09;chromedriver!(No symbol) [0x7ff7f7e3fcd9]&#10;&#09;chromedriver!(No symbol) [0x7ff7f7de1a12]&#10;&#09;chromedriver!(No symbol) [0x7ff7f7de2823]&#10;&#09;chromedriver!GetHandleVerifier [0x7ff7f84604b1+41c1b1]&#10;&#09;chromedriver!GetHandleVerifier [0x7ff7f848e26b+449f6b]&#10;&#09;chromedriver!GetHandleVerifier [0x7ff7f848274e+43e44e]&#10;&#09;chromedriver!GetHandleVerifier [0x7ff7f81432fe+feffe]&#10;&#09;chromedriver!(No symbol) [0x7ff7f7f7cb55]&#10;&#09;chromedriver!(No symbol) [0x7ff7f7f77f64]&#10;&#09;chromedriver!(No symbol) [0x7ff7f7f780f4]&#10;&#09;chromedriver!(No symbol) [0x7ff7f7f62e4c]&#10;&#09;KERNEL32!BaseThreadInitThunk [0x7ffaee627374+14]&#10;&#09;ntdll!RtlUserThreadStart [0x7ffaf041cc91+21]">driver_navegador = &lt;selenium.webdriver.chrome.webdriver.WebDriver (session="cda6a764d48d2dd424da8f21978f139b")&gt;
+
+    def test_elementos_interactivos_ui(driver_navegador):
+        """
+        Prueba UI de Integración: Verifica la presencia de botones de control
+        o selectores de motor en el panel de curaduría.
+        """
+&gt;       driver_navegador.get("http://localhost:8501")
+
+tests\test_ui_streamlit.py:63: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+.venv\Lib\site-packages\selenium\webdriver\remote\webdriver.py:526: in get
+    self.execute(Command.GET, {"url": url})
+.venv\Lib\site-packages\selenium\webdriver\remote\webdriver.py:506: in execute
+    self.error_handler.check_response(response)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;selenium.webdriver.remote.errorhandler.ErrorHandler object at 0x000002BF0B59D7F0&gt;
+response = {'status': 500, 'value': '{"value":{"error":"unknown error","message":"unknown error: net::ERR_CONNECTION_REFUSED\\n  ...f62e4c]\\n\\tKERNEL32!BaseThreadInitThunk [0x7ffaee627374+14]\\n\\tntdll!RtlUserThreadStart [0x7ffaf041cc91+21]\\n"}}'}
+
+    def check_response(self, response: dict[str, Any]) -&gt; None:
+        """Check that a JSON response from the WebDriver does not have an error.
+    
+        Args:
+            response: The JSON response from the WebDriver server as a dictionary
+                object.
+    
+        Raises:
+            WebDriverException: If the response contains an error message.
+        """
+        status = response.get("status", None)
+        if not status or status == ErrorCode.SUCCESS:
+            return
+        value = None
+        message = response.get("message", "")
+        screen: str = response.get("screen", "")
+        stacktrace = None
+        if isinstance(status, int):
+            value_json = response.get("value", None)
+            if value_json and isinstance(value_json, str):
+                try:
+                    value = json.loads(value_json)
+                    if isinstance(value, dict):
+                        if len(value) == 1:
+                            value = value["value"]
+                        status = value.get("error", None)
+                        if not status:
+                            status = value.get("status", ErrorCode.UNKNOWN_ERROR)
+                            message = value.get("value") or value.get("message")
+                            if not isinstance(message, str):
+                                value = message
+                                message = message.get("message") if isinstance(message, dict) else None
+                        else:
+                            message = value.get("message", None)
+                except ValueError:
+                    pass
+    
+        exception_class: type[WebDriverException]
+        e = ErrorCode()
+        error_codes = [item for item in dir(e) if not item.startswith("__")]
+        for error_code in error_codes:
+            error_info = getattr(ErrorCode, error_code)
+            if isinstance(error_info, list) and status in error_info:
+                exception_class = getattr(ExceptionMapping, error_code, WebDriverException)
+                break
+        else:
+            exception_class = WebDriverException
+    
+        if not value:
+            value = response["value"]
+        if isinstance(value, str):
+            raise exception_class(value)
+        if message == "" and "message" in value:
+            message = value["message"]
+    
+        screen = None  # type: ignore[assignment]
+        if "screen" in value:
+            screen = value["screen"]
+    
+        stacktrace = None
+        st_value = value.get("stackTrace") or value.get("stacktrace")
+        if st_value:
+            if isinstance(st_value, str):
+                stacktrace = st_value.split("\n")
+            else:
+                stacktrace = []
+                try:
+                    for frame in st_value:
+                        line = frame.get("lineNumber", "")
+                        file = frame.get("fileName", "&lt;anonymous&gt;")
+                        if line:
+                            file = f"{file}:{line}"
+                        meth = frame.get("methodName", "&lt;anonymous&gt;")
+                        if "className" in frame:
+                            meth = f"{frame['className']}.{meth}"
+                        msg = "    at %s (%s)"
+                        msg = msg % (meth, file)
+                        stacktrace.append(msg)
+                except TypeError:
+                    pass
+        if exception_class == UnexpectedAlertPresentException:
+            alert_text = None
+            if "data" in value:
+                alert_text = value["data"].get("text")
+            elif "alert" in value:
+                alert_text = value["alert"].get("text")
+            raise exception_class(message, screen, stacktrace, alert_text)
+&gt;       raise exception_class(message, screen, stacktrace)
+E       selenium.common.exceptions.WebDriverException: Message: unknown error: net::ERR_CONNECTION_REFUSED
+E         (Session info: chrome=154.0.8037.98)
+E       Stacktrace:
+E       	chromedriver!GetHandleVerifier [0x7ff7f8049d55+5a55]
+E       	chromedriver!(No symbol) [0x7ff7f7f6f540]
+E       	chromedriver!(No symbol) [0x7ff7f7d945fd]
+E       	chromedriver!(No symbol) [0x7ff7f7d913eb]
+E       	chromedriver!(No symbol) [0x7ff7f7d81901]
+E       	chromedriver!(No symbol) [0x7ff7f7d83744]
+E       	chromedriver!(No symbol) [0x7ff7f7d81e94]
+E       	chromedriver!(No symbol) [0x7ff7f7d8166b]
+E       	chromedriver!(No symbol) [0x7ff7f7d81321]
+E       	chromedriver!(No symbol) [0x7ff7f7d7eff0]
+E       	chromedriver!(No symbol) [0x7ff7f7d7f762]
+E       	chromedriver!(No symbol) [0x7ff7f7d988e7]
+E       	chromedriver!(No symbol) [0x7ff7f7e40ab4]
+E       	chromedriver!(No symbol) [0x7ff7f7e190ea]
+E       	chromedriver!(No symbol) [0x7ff7f7e3fcd9]
+E       	chromedriver!(No symbol) [0x7ff7f7de1a12]
+E       	chromedriver!(No symbol) [0x7ff7f7de2823]
+E       	chromedriver!GetHandleVerifier [0x7ff7f84604b1+41c1b1]
+E       	chromedriver!GetHandleVerifier [0x7ff7f848e26b+449f6b]
+E       	chromedriver!GetHandleVerifier [0x7ff7f848274e+43e44e]
+E       	chromedriver!GetHandleVerifier [0x7ff7f81432fe+feffe]
+E       	chromedriver!(No symbol) [0x7ff7f7f7cb55]
+E       	chromedriver!(No symbol) [0x7ff7f7f77f64]
+E       	chromedriver!(No symbol) [0x7ff7f7f780f4]
+E       	chromedriver!(No symbol) [0x7ff7f7f62e4c]
+E       	KERNEL32!BaseThreadInitThunk [0x7ffaee627374+14]
+E       	ntdll!RtlUserThreadStart [0x7ffaf041cc91+21]
+
+.venv\Lib\site-packages\selenium\webdriver\remote\errorhandler.py:232: WebDriverException</failure></testcase></testsuite></testsuites>

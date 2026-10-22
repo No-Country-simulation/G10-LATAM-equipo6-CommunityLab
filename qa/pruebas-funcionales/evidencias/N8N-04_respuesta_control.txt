@@ -1,0 +1,15 @@
+﻿N8N-04 - Respuesta completa del caso de control (mensaje válido)
+Fecha: 2026-10-11 22:58:28 -03:00
+Commit probado: 36f8ca8
+Comando: curl.exe -s -i -m 60 -X POST http://localhost:5678/webhook/communitylab-ingesta (cuerpo: {"mensaje":"prueba"})
+
+HTTP/1.1 500 Internal Server Error
+Content-Type: application/json; charset=utf-8
+Content-Length: 31
+ETag: W/"1f-ccITd5ldGQPMVB1CUICVlV/ylNg"
+Vary: Accept-Encoding
+Date: Mon, 12 Oct 2026 01:58:39 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+{"message":"Error in workflow"}

@@ -1,0 +1,23 @@
+﻿N8N-04 - Webhook con entradas inválidas (entorno local)
+Fecha: 2026-10-11 22:38:18 -03:00
+Commit probado: 36f8ca8
+URL: http://localhost:5678/webhook/communitylab-ingesta
+
+ID       Caso                                        HTTP    Ms Respuesta
+--       ----                                        ----    -- ---------
+N8N-04-0 CONTROL: mensaje válido                      500 21590          
+N8N-04a  JSON vacío {}                                500 13236          
+N8N-04b  Campo obligatorio ausente (otro_campo)       500 13015          
+N8N-04c  mensaje vacío                                500 13149          
+N8N-04d  mensaje null                                 500 13223          
+N8N-04e  mensaje numérico                             500 13129          
+N8N-04f  JSON malformado                              422    80          
+N8N-04g  Sin cuerpo                                   500 13067          
+N8N-04h  Content-Type text/plain                      500   229          
+N8N-04i  Texto de 10.000 caracteres                   500 13140          
+N8N-04j  Emojis y acentos/ñ                           500 13199          
+N8N-04k  Caracteres especiales (HTML/SQL como texto)  500 13616          
+N8N-04l  Método GET en vez de POST                    404    29          
+
+
+

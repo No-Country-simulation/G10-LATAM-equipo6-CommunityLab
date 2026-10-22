@@ -1,0 +1,41 @@
+{
+    "origen_comunidad":  "Discord_Oracle_Next_Education_G10",
+    "periodo_referencia":  "Semana_04",
+    "interacciones":  [
+                          {
+                              "id":  "qa_ia04_01",
+                              "autor":  "Autor QA 1",
+                              "canal":  "#logros-y-empleos",
+                              "tipo":  "testimonio",
+                              "texto":  "¡Conseguí mi primer trabajo como desarrolladora junior! El curso de Python de Alura y los proyectos del grupo fueron clave. ¡Gracias, comunidad!"
+                          },
+                          {
+                              "id":  "qa_ia04_02",
+                              "autor":  "Autor QA 2",
+                              "canal":  "#logros-y-empleos",
+                              "tipo":  "testimonio",
+                              "texto":  "Hoy firmé contrato como analista de datos después de seis meses de estudio en Oracle ONE. Gracias a mi grupo por el apoyo constante."
+                          },
+                          {
+                              "id":  "qa_ia04_03",
+                              "autor":  "Autor QA 3",
+                              "canal":  "#logros-y-empleos",
+                              "tipo":  "testimonio",
+                              "texto":  "Después de muchas entrevistas, me ofrecieron un puesto de soporte técnico cloud. Lo logré gracias a los laboratorios de OCI."
+                          },
+                          {
+                              "id":  "qa_ia04_04",
+                              "autor":  "Autor QA 4",
+                              "canal":  "#logros-y-empleos",
+                              "tipo":  "testimonio",
+                              "texto":  "Quiero compartir que me promovieron a desarrollador semi senior. Todo empezó con el curso de lógica de programación de esta comunidad."
+                          },
+                          {
+                              "id":  "qa_ia04_05",
+                              "autor":  "Autor QA 5",
+                              "canal":  "#logros-y-empleos",
+                              "tipo":  "testimonio",
+                              "texto":  "Acabo de aceptar una oferta como QA junior en una empresa de software. El apoyo del equipo en Discord fue fundamental."
+                          }
+                      ]
+}

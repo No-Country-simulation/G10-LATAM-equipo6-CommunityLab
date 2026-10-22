@@ -1,0 +1,44 @@
+﻿N8N-02 - Workflows del repo vs cargados en n8n (entorno local)
+Fecha: 2026-10-11 21:32:57 -03:00
+Commit probado: 36f8ca8
+
+--- Workflows en el repo (8) ---
+
+Archivo                                 Nombre                                Nodos ActivoEnJSON WebhookPath           
+-------                                 ------                                ----- ------------ -----------           
+communitylab_discord_dinamico.json      CommunityLab_Discord_Dinamico             7              communitylab-discord, 
+communitylab_ingesta_llm.json           CCely_WF_002                              8 False                              
+communitylab_ingesta_local_webhook.json CommunityLab_Ingesta_Local_Webhook        9 True         communitylab-ingesta, 
+communitylab_master_omnicanal_oci.json  CommunityLab_Master_Omnicanal_E2E_OCI    34 False        communitylab-ingest...
+communitylab_slack_dinamico.json        CommunityLab_Slack_Dinamico              10 True         communitylab-slack, , 
+communitylab_telegram_dinamico.json     CommunityLab_Telegram_Dinamico            6                                    
+ingestion_groq_subflow.json             CCely_WF_005                             13 False        communitylab-ingesta, 
+jmedinag_WF_002.json                    jmedinag_WF_002                           8 False        ingesta-comunidad     
+
+
+
+--- Salida de: n8n list:workflow ---
+DC001CommunityLb|CommunityLab_Discord_Dinamico
+164UrZhViJYbKfV7|CCely_WF_002
+is13JQSeKCSPaCx1|CommunityLab_Master_Omnicanal_E2E_OCI
+SK001CommunityLb|CommunityLab_Slack_Dinamico
+TG001CommunityLb|CommunityLab_Telegram_Dinamico
+rXDvhA9R1gh9NNOA|CCely_WF_005
+YNRhYemizz2AoAV6|jmedinag_WF_002
+
+--- Comparación repo vs n8n ---
+
+Nombre                                CargadoEnN8N
+------                                ------------
+CommunityLab_Discord_Dinamico                 True
+CCely_WF_002                                  True
+CommunityLab_Ingesta_Local_Webhook           False
+CommunityLab_Master_Omnicanal_E2E_OCI         True
+CommunityLab_Slack_Dinamico                   True
+CommunityLab_Telegram_Dinamico                True
+CCely_WF_005                                  True
+jmedinag_WF_002                               True
+
+
+
+Resumen: 7 de 8 cargados

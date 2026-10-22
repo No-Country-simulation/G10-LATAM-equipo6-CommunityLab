@@ -1,0 +1,424 @@
+﻿PY-07 - Ejecución de los tests existentes (pytest sobre tests\)
+Fecha: 2026-10-12 16:17:33 -03:00
+Commit probado: 36f8ca8
+Python: Python 3.14.6
+pytest: pytest 9.1.1
+
+--- 1. Recolección (sin ejecutar) ---
+tests/test_pipeline.py::test_pipeline_subir_a_oci_4_archivos_especializados
+tests/test_ui_services.py::test_guardar_curaduria_humana
+tests/test_ui_services.py::test_obtener_ultimos_paquetes_mock
+tests/test_ui_services.py::test_cargar_paquete_mock
+tests/test_ui_services.py::test_procesar_archivo_ui_mock
+tests/test_ui_services.py::test_procesar_archivo_n8n_ui_exito
+tests/test_ui_services.py::test_procesar_archivo_n8n_ui_404
+tests/test_ui_services.py::test_fusionar_paquetes
+tests/test_ui_services.py::test_logger_sistema
+tests/test_ui_services.py::test_vaciar_historico_oci_local
+tests/test_ui_services.py::test_obtener_ids_procesados_sesion
+tests/test_ui_streamlit.py::test_streamlit_panel_carga_correctamente
+tests/test_ui_streamlit.py::test_elementos_interactivos_ui
+
+81 tests collected in 10.83s
+
+--- 2. Ejecución completa ---
+============================= test session starts =============================
+platform win32 -- Python 3.14.6, pytest-9.1.1, pluggy-1.6.0 -- C:\Users\<usuario>\Desktop\Proyecto G10\G10-LATAM-equipo6-CommunityLab\.venv\Scripts\python.exe
+metadata: {'Python': '3.14.6', 'Platform': 'Windows-10-10.0.19045-SP0', 'Packages': {'pytest': '9.1.1', 'pluggy': '1.6.0'}, 'Plugins': {'anyio': '4.15.1', 'html': '4.2.0', 'metadata': '3.1.1'}}
+rootdir: C:\Users\<usuario>\Desktop\Proyecto G10\G10-LATAM-equipo6-CommunityLab
+configfile: pytest.ini
+plugins: anyio-4.15.1, html-4.2.0, metadata-3.1.1
+collecting ... collected 81 items
+
+tests/test_ai_engine.py::test_valid_community_interaction PASSED         [  1%]
+tests/test_ai_engine.py::test_invalid_community_interaction PASSED       [  2%]
+tests/test_ai_engine.py::test_valid_asset_output_logro PASSED            [  3%]
+tests/test_ai_engine.py::test_valid_asset_output_duda_tecnica PASSED     [  4%]
+tests/test_ai_engine.py::test_invalid_consistency_logro_without_post PASSED [  6%]
+tests/test_ai_engine.py::test_invalid_consistency_duda_without_faq PASSED [  7%]
+tests/test_ai_engine.py::test_extract_json_from_markdown_block PASSED    [  8%]
+tests/test_ai_engine.py::test_validate_sample_dataset_batch PASSED       [  9%]
+tests/test_bot_manager.py::test_singleton_get_instance PASSED            [ 11%]
+tests/test_bot_manager.py::test_initial_status PASSED                    [ 12%]
+tests/test_bot_manager.py::test_missing_tokens_handling PASSED           [ 13%]
+tests/test_bot_manager.py::test_start_and_stop_telegram_mocked PASSED    [ 14%]
+tests/test_bot_manager.py::test_start_and_stop_discord_mocked PASSED     [ 16%]
+tests/test_bot_manager.py::test_start_and_stop_slack_mocked PASSED       [ 17%]
+tests/test_bot_manager.py::test_start_channel_invalid PASSED             [ 18%]
+tests/test_bot_manager.py::test_start_all_and_stop_all PASSED            [ 19%]
+tests/test_channels.py::test_dispatcher_process_incoming_message_success PASSED [ 20%]
+tests/test_channels.py::test_dispatcher_persists_accumulatively PASSED   [ 22%]
+tests/test_channels.py::test_telegram_bot_missing_token_raises_error PASSED [ 23%]
+tests/test_channels.py::test_telegram_bot_handle_incoming_text_success[asyncio] PASSED [ 24%]
+tests/test_channels.py::test_telegram_bot_commands[asyncio] PASSED       [ 25%]
+tests/test_channels.py::test_discord_bot_ignores_self_messages[asyncio] PASSED [ 27%]
+tests/test_channels.py::test_discord_bot_processes_mention_with_embed[asyncio] PASSED [ 28%]
+tests/test_channels.py::test_telegram_bot_handle_incoming_text_success[trio] PASSED [ 29%]
+tests/test_channels.py::test_telegram_bot_commands[trio] PASSED          [ 30%]
+tests/test_channels.py::test_discord_bot_ignores_self_messages[trio] PASSED [ 32%]
+tests/test_channels.py::test_discord_bot_processes_mention_with_embed[trio] PASSED [ 33%]
+tests/test_channels.py::test_discord_bot_missing_token_raises_error PASSED [ 34%]
+tests/test_channels.py::test_slack_bot_missing_tokens_raises_error PASSED [ 35%]
+tests/test_channels.py::test_slack_bot_event_handler_dispatches_correctly PASSED [ 37%]
+tests/test_channels.py::test_slack_bot_resolves_user_display_name PASSED [ 38%]
+tests/test_cloud_oci.py::test_init_with_explicit_config PASSED           [ 39%]
+tests/test_cloud_oci.py::test_upload_json_asset_dict PASSED              [ 40%]
+tests/test_cloud_oci.py::test_get_asset PASSED                           [ 41%]
+tests/test_cloud_oci.py::test_list_assets PASSED                         [ 43%]
+tests/test_cloud_oci.py::test_create_preauthenticated_request PASSED     [ 44%]
+tests/test_cloud_oci.py::test_oci_local_fallback_mode_upload_and_read PASSED [ 45%]
+tests/test_cloud_oci.py::test_oci_local_fallback_par PASSED              [ 46%]
+tests/test_cloud_oci.py::test_oci_upload_invalid_type_raises PASSED      [ 48%]
+tests/test_config.py::test_config_local_environment PASSED               [ 49%]
+tests/test_config.py::test_config_produccion_environment PASSED          [ 50%]
+tests/test_config.py::test_config_local_fallback_when_local_token_not_set PASSED [ 51%]
+tests/test_config.py::test_config_dual_slack_apps PASSED                 [ 53%]
+tests/test_config.py::test_get_n8n_channel_webhook_url PASSED            [ 54%]
+tests/test_flujos_criticos_api.py::test_api_ingesta_webhook_responde_correctamente PASSED [ 55%]
+tests/test_flujos_criticos_api.py::test_api_ingesta_manejo_de_errores PASSED [ 56%]
+tests/test_gemini_service.py::test_build_user_prompt PASSED              [ 58%]
+tests/test_gemini_service.py::test_missing_api_key_raises_value_error PASSED [ 59%]
+tests/test_gemini_service.py::test_generate_asset_logro_success PASSED   [ 60%]
+tests/test_gemini_service.py::test_generate_asset_duda_tecnica_success PASSED [ 61%]
+tests/test_gemini_service.py::test_generate_asset_retry_on_rate_limit PASSED [ 62%]
+tests/test_gemini_service.py::test_process_interaction_returns_processed_community_asset PASSED [ 64%]
+tests/test_ingestion.py::test_carga_dataset_oficial_15_registros PASSED  [ 65%]
+tests/test_ingestion.py::test_carga_archivo_inexistente_lanza_error PASSED [ 66%]
+tests/test_ingestion.py::test_carga_modo_no_estricto_omite_invalidos PASSED [ 67%]
+tests/test_ingestion.py::test_carga_modo_estricto_lanza_error PASSED     [ 69%]
+tests/test_ingestion.py::test_filtrar_por_canal PASSED                   [ 70%]
+tests/test_ingestion.py::test_filtrar_por_tipo PASSED                    [ 71%]
+tests/test_ingestion.py::test_obtener_canales_y_tipos_unicos PASSED      [ 72%]
+tests/test_ingestion.py::test_generar_lotes_batching PASSED              [ 74%]
+tests/test_ingestion.py::test_filtrar_omitir_ids PASSED                  [ 75%]
+tests/test_oci_storage.py::test_client_initialization SKIPPED (Crede...) [ 76%]
+tests/test_oci_storage.py::test_upload_and_get_asset_package SKIPPED     [ 77%]
+tests/test_pipeline.py::test_pipeline_procesar_archivo_con_limite PASSED [ 79%]
+tests/test_pipeline.py::test_pipeline_metricas_consolidadas PASSED       [ 80%]
+tests/test_pipeline.py::test_pipeline_filtro_por_canal PASSED            [ 81%]
+tests/test_pipeline.py::test_pipeline_guardar_paquete_json PASSED        [ 82%]
+tests/test_pipeline.py::test_pipeline_resiliencia_continua_ante_fallas_individuales PASSED [ 83%]
+tests/test_pipeline.py::test_pipeline_subir_a_oci_4_archivos_especializados PASSED [ 85%]
+tests/test_ui_services.py::test_guardar_curaduria_humana PASSED          [ 86%]
+tests/test_ui_services.py::test_obtener_ultimos_paquetes_mock PASSED     [ 87%]
+tests/test_ui_services.py::test_cargar_paquete_mock PASSED               [ 88%]
+tests/test_ui_services.py::test_procesar_archivo_ui_mock PASSED          [ 90%]
+tests/test_ui_services.py::test_procesar_archivo_n8n_ui_exito PASSED     [ 91%]
+tests/test_ui_services.py::test_procesar_archivo_n8n_ui_404 PASSED       [ 92%]
+tests/test_ui_services.py::test_fusionar_paquetes PASSED                 [ 93%]
+tests/test_ui_services.py::test_logger_sistema PASSED                    [ 95%]
+tests/test_ui_services.py::test_vaciar_historico_oci_local PASSED        [ 96%]
+tests/test_ui_services.py::test_obtener_ids_procesados_sesion PASSED     [ 97%]
+tests/test_ui_streamlit.py::test_streamlit_panel_carga_correctamente FAILED [ 98%]
+tests/test_ui_streamlit.py::test_elementos_interactivos_ui FAILED        [100%]
+
+================================== FAILURES ===================================
+__________________ test_streamlit_panel_carga_correctamente ___________________
+
+driver_navegador = <selenium.webdriver.chrome.webdriver.WebDriver (session="cda6a764d48d2dd424da8f21978f139b")>
+
+    def test_streamlit_panel_carga_correctamente(driver_navegador):
+        """
+        Prueba UI de Humo (Smoke Test): Verifica que la interfaz de Streamlit
+        en el puerto 8501 responda y cargue el título principal del proyecto CommunityLab.
+        """
+        # 1. Navegar a la aplicación local de Streamlit
+        url_streamlit = "http://localhost:8501"
+>       driver_navegador.get(url_streamlit)
+
+tests\test_ui_streamlit.py:40: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+.venv\Lib\site-packages\selenium\webdriver\remote\webdriver.py:526: in get
+    self.execute(Command.GET, {"url": url})
+.venv\Lib\site-packages\selenium\webdriver\remote\webdriver.py:506: in execute
+    self.error_handler.check_response(response)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <selenium.webdriver.remote.errorhandler.ErrorHandler object at 0x000002BF0B59D7F0>
+response = {'status': 500, 'value': '{"value":{"error":"unknown error","message":"unknown error: net::ERR_CONNECTION_REFUSED\\n  ...f62e4c]\\n\\tKERNEL32!BaseThreadInitThunk [0x7ffaee627374+14]\\n\\tntdll!RtlUserThreadStart [0x7ffaf041cc91+21]\\n"}}'}
+
+    def check_response(self, response: dict[str, Any]) -> None:
+        """Check that a JSON response from the WebDriver does not have an error.
+    
+        Args:
+            response: The JSON response from the WebDriver server as a dictionary
+                object.
+    
+        Raises:
+            WebDriverException: If the response contains an error message.
+        """
+        status = response.get("status", None)
+        if not status or status == ErrorCode.SUCCESS:
+            return
+        value = None
+        message = response.get("message", "")
+        screen: str = response.get("screen", "")
+        stacktrace = None
+        if isinstance(status, int):
+            value_json = response.get("value", None)
+            if value_json and isinstance(value_json, str):
+                try:
+                    value = json.loads(value_json)
+                    if isinstance(value, dict):
+                        if len(value) == 1:
+                            value = value["value"]
+                        status = value.get("error", None)
+                        if not status:
+                            status = value.get("status", ErrorCode.UNKNOWN_ERROR)
+                            message = value.get("value") or value.get("message")
+                            if not isinstance(message, str):
+                                value = message
+                                message = message.get("message") if isinstance(message, dict) else None
+                        else:
+                            message = value.get("message", None)
+                except ValueError:
+                    pass
+    
+        exception_class: type[WebDriverException]
+        e = ErrorCode()
+        error_codes = [item for item in dir(e) if not item.startswith("__")]
+        for error_code in error_codes:
+            error_info = getattr(ErrorCode, error_code)
+            if isinstance(error_info, list) and status in error_info:
+                exception_class = getattr(ExceptionMapping, error_code, WebDriverException)
+                break
+        else:
+            exception_class = WebDriverException
+    
+        if not value:
+            value = response["value"]
+        if isinstance(value, str):
+            raise exception_class(value)
+        if message == "" and "message" in value:
+            message = value["message"]
+    
+        screen = None  # type: ignore[assignment]
+        if "screen" in value:
+            screen = value["screen"]
+    
+        stacktrace = None
+        st_value = value.get("stackTrace") or value.get("stacktrace")
+        if st_value:
+            if isinstance(st_value, str):
+                stacktrace = st_value.split("\n")
+            else:
+                stacktrace = []
+                try:
+                    for frame in st_value:
+                        line = frame.get("lineNumber", "")
+                        file = frame.get("fileName", "<anonymous>")
+                        if line:
+                            file = f"{file}:{line}"
+                        meth = frame.get("methodName", "<anonymous>")
+                        if "className" in frame:
+                            meth = f"{frame['className']}.{meth}"
+                        msg = "    at %s (%s)"
+                        msg = msg % (meth, file)
+                        stacktrace.append(msg)
+                except TypeError:
+                    pass
+        if exception_class == UnexpectedAlertPresentException:
+            alert_text = None
+            if "data" in value:
+                alert_text = value["data"].get("text")
+            elif "alert" in value:
+                alert_text = value["alert"].get("text")
+            raise exception_class(message, screen, stacktrace, alert_text)
+>       raise exception_class(message, screen, stacktrace)
+E       selenium.common.exceptions.WebDriverException: Message: unknown error: net::ERR_CONNECTION_REFUSED
+E         (Session info: chrome=154.0.8037.98)
+E       Stacktrace:
+E       	chromedriver!GetHandleVerifier [0x7ff7f8049d55+5a55]
+E       	chromedriver!(No symbol) [0x7ff7f7f6f540]
+E       	chromedriver!(No symbol) [0x7ff7f7d945fd]
+E       	chromedriver!(No symbol) [0x7ff7f7d913eb]
+E       	chromedriver!(No symbol) [0x7ff7f7d81901]
+E       	chromedriver!(No symbol) [0x7ff7f7d83744]
+E       	chromedriver!(No symbol) [0x7ff7f7d81e94]
+E       	chromedriver!(No symbol) [0x7ff7f7d8166b]
+E       	chromedriver!(No symbol) [0x7ff7f7d81321]
+E       	chromedriver!(No symbol) [0x7ff7f7d7eff0]
+E       	chromedriver!(No symbol) [0x7ff7f7d7f762]
+E       	chromedriver!(No symbol) [0x7ff7f7d988e7]
+E       	chromedriver!(No symbol) [0x7ff7f7e40ab4]
+E       	chromedriver!(No symbol) [0x7ff7f7e190ea]
+E       	chromedriver!(No symbol) [0x7ff7f7e3fcd9]
+E       	chromedriver!(No symbol) [0x7ff7f7de1a12]
+E       	chromedriver!(No symbol) [0x7ff7f7de2823]
+E       	chromedriver!GetHandleVerifier [0x7ff7f84604b1+41c1b1]
+E       	chromedriver!GetHandleVerifier [0x7ff7f848e26b+449f6b]
+E       	chromedriver!GetHandleVerifier [0x7ff7f848274e+43e44e]
+E       	chromedriver!GetHandleVerifier [0x7ff7f81432fe+feffe]
+E       	chromedriver!(No symbol) [0x7ff7f7f7cb55]
+E       	chromedriver!(No symbol) [0x7ff7f7f77f64]
+E       	chromedriver!(No symbol) [0x7ff7f7f780f4]
+E       	chromedriver!(No symbol) [0x7ff7f7f62e4c]
+E       	KERNEL32!BaseThreadInitThunk [0x7ffaee627374+14]
+E       	ntdll!RtlUserThreadStart [0x7ffaf041cc91+21]
+
+.venv\Lib\site-packages\selenium\webdriver\remote\errorhandler.py:232: WebDriverException
+_______________________ test_elementos_interactivos_ui ________________________
+
+driver_navegador = <selenium.webdriver.chrome.webdriver.WebDriver (session="cda6a764d48d2dd424da8f21978f139b")>
+
+    def test_elementos_interactivos_ui(driver_navegador):
+        """
+        Prueba UI de Integración: Verifica la presencia de botones de control
+        o selectores de motor en el panel de curaduría.
+        """
+>       driver_navegador.get("http://localhost:8501")
+
+tests\test_ui_streamlit.py:63: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+.venv\Lib\site-packages\selenium\webdriver\remote\webdriver.py:526: in get
+    self.execute(Command.GET, {"url": url})
+.venv\Lib\site-packages\selenium\webdriver\remote\webdriver.py:506: in execute
+    self.error_handler.check_response(response)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <selenium.webdriver.remote.errorhandler.ErrorHandler object at 0x000002BF0B59D7F0>
+response = {'status': 500, 'value': '{"value":{"error":"unknown error","message":"unknown error: net::ERR_CONNECTION_REFUSED\\n  ...f62e4c]\\n\\tKERNEL32!BaseThreadInitThunk [0x7ffaee627374+14]\\n\\tntdll!RtlUserThreadStart [0x7ffaf041cc91+21]\\n"}}'}
+
+    def check_response(self, response: dict[str, Any]) -> None:
+        """Check that a JSON response from the WebDriver does not have an error.
+    
+        Args:
+            response: The JSON response from the WebDriver server as a dictionary
+                object.
+    
+        Raises:
+            WebDriverException: If the response contains an error message.
+        """
+        status = response.get("status", None)
+        if not status or status == ErrorCode.SUCCESS:
+            return
+        value = None
+        message = response.get("message", "")
+        screen: str = response.get("screen", "")
+        stacktrace = None
+        if isinstance(status, int):
+            value_json = response.get("value", None)
+            if value_json and isinstance(value_json, str):
+                try:
+                    value = json.loads(value_json)
+                    if isinstance(value, dict):
+                        if len(value) == 1:
+                            value = value["value"]
+                        status = value.get("error", None)
+                        if not status:
+                            status = value.get("status", ErrorCode.UNKNOWN_ERROR)
+                            message = value.get("value") or value.get("message")
+                            if not isinstance(message, str):
+                                value = message
+                                message = message.get("message") if isinstance(message, dict) else None
+                        else:
+                            message = value.get("message", None)
+                except ValueError:
+                    pass
+    
+        exception_class: type[WebDriverException]
+        e = ErrorCode()
+        error_codes = [item for item in dir(e) if not item.startswith("__")]
+        for error_code in error_codes:
+            error_info = getattr(ErrorCode, error_code)
+            if isinstance(error_info, list) and status in error_info:
+                exception_class = getattr(ExceptionMapping, error_code, WebDriverException)
+                break
+        else:
+            exception_class = WebDriverException
+    
+        if not value:
+            value = response["value"]
+        if isinstance(value, str):
+            raise exception_class(value)
+        if message == "" and "message" in value:
+            message = value["message"]
+    
+        screen = None  # type: ignore[assignment]
+        if "screen" in value:
+            screen = value["screen"]
+    
+        stacktrace = None
+        st_value = value.get("stackTrace") or value.get("stacktrace")
+        if st_value:
+            if isinstance(st_value, str):
+                stacktrace = st_value.split("\n")
+            else:
+                stacktrace = []
+                try:
+                    for frame in st_value:
+                        line = frame.get("lineNumber", "")
+                        file = frame.get("fileName", "<anonymous>")
+                        if line:
+                            file = f"{file}:{line}"
+                        meth = frame.get("methodName", "<anonymous>")
+                        if "className" in frame:
+                            meth = f"{frame['className']}.{meth}"
+                        msg = "    at %s (%s)"
+                        msg = msg % (meth, file)
+                        stacktrace.append(msg)
+                except TypeError:
+                    pass
+        if exception_class == UnexpectedAlertPresentException:
+            alert_text = None
+            if "data" in value:
+                alert_text = value["data"].get("text")
+            elif "alert" in value:
+                alert_text = value["alert"].get("text")
+            raise exception_class(message, screen, stacktrace, alert_text)
+>       raise exception_class(message, screen, stacktrace)
+E       selenium.common.exceptions.WebDriverException: Message: unknown error: net::ERR_CONNECTION_REFUSED
+E         (Session info: chrome=154.0.8037.98)
+E       Stacktrace:
+E       	chromedriver!GetHandleVerifier [0x7ff7f8049d55+5a55]
+E       	chromedriver!(No symbol) [0x7ff7f7f6f540]
+E       	chromedriver!(No symbol) [0x7ff7f7d945fd]
+E       	chromedriver!(No symbol) [0x7ff7f7d913eb]
+E       	chromedriver!(No symbol) [0x7ff7f7d81901]
+E       	chromedriver!(No symbol) [0x7ff7f7d83744]
+E       	chromedriver!(No symbol) [0x7ff7f7d81e94]
+E       	chromedriver!(No symbol) [0x7ff7f7d8166b]
+E       	chromedriver!(No symbol) [0x7ff7f7d81321]
+E       	chromedriver!(No symbol) [0x7ff7f7d7eff0]
+E       	chromedriver!(No symbol) [0x7ff7f7d7f762]
+E       	chromedriver!(No symbol) [0x7ff7f7d988e7]
+E       	chromedriver!(No symbol) [0x7ff7f7e40ab4]
+E       	chromedriver!(No symbol) [0x7ff7f7e190ea]
+E       	chromedriver!(No symbol) [0x7ff7f7e3fcd9]
+E       	chromedriver!(No symbol) [0x7ff7f7de1a12]
+E       	chromedriver!(No symbol) [0x7ff7f7de2823]
+E       	chromedriver!GetHandleVerifier [0x7ff7f84604b1+41c1b1]
+E       	chromedriver!GetHandleVerifier [0x7ff7f848e26b+449f6b]
+E       	chromedriver!GetHandleVerifier [0x7ff7f848274e+43e44e]
+E       	chromedriver!GetHandleVerifier [0x7ff7f81432fe+feffe]
+E       	chromedriver!(No symbol) [0x7ff7f7f7cb55]
+E       	chromedriver!(No symbol) [0x7ff7f7f77f64]
+E       	chromedriver!(No symbol) [0x7ff7f7f780f4]
+E       	chromedriver!(No symbol) [0x7ff7f7f62e4c]
+E       	KERNEL32!BaseThreadInitThunk [0x7ffaee627374+14]
+E       	ntdll!RtlUserThreadStart [0x7ffaf041cc91+21]
+
+.venv\Lib\site-packages\selenium\webdriver\remote\errorhandler.py:232: WebDriverException
+============================== warnings summary ===============================
+tests/test_channels.py: 10 warnings
+  C:\Users\<usuario>\Desktop\Proyecto G10\G10-LATAM-equipo6-CommunityLab\.venv\Lib\site-packages\discord\ext\commands\core.py:430: DeprecationWarning: 'asyncio.iscoroutinefunction' is deprecated and slated for removal in Python 3.16; use inspect.iscoroutinefunction() instead
+    if not asyncio.iscoroutinefunction(func):
+
+tests/test_gemini_service.py::test_generate_asset_logro_success
+  C:\Users\<usuario>\Desktop\Proyecto G10\G10-LATAM-equipo6-CommunityLab\.venv\Lib\site-packages\google\genai\types.py:42: DeprecationWarning: '_UnionGenericAlias' is deprecated and slated for removal in Python 3.17
+    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: C:\Users\<usuario>\Desktop\Proyecto G10\G10-LATAM-equipo6-CommunityLab\qa\pruebas-funcionales\evidencias\PY-07_junit.xml -
+=========================== short test summary info ===========================
+FAILED tests/test_ui_streamlit.py::test_streamlit_panel_carga_correctamente
+FAILED tests/test_ui_streamlit.py::test_elementos_interactivos_ui - selenium....
+============ 2 failed, 77 passed, 2 skipped, 11 warnings in 33.17s ============
+
+Código de salida de pytest: 1 (0 = todos pasaron)
+Duración medida: 37.9 s
+
+--- 3. Efecto sobre el repositorio (git status) ---
+?? qa/
+
+Resumen de pytest: ============ 2 failed, 77 passed, 2 skipped, 11 warnings in 33.17s ============

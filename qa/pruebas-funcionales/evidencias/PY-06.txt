@@ -1,0 +1,63 @@
+﻿PY-06 - Carga: 30 solicitudes seguidas al webhook (entorno local)
+Fecha: 2026-10-12 16:10:49 -03:00
+Commit probado: 36f8ca8
+Duración total: 423 s
+
+--- Resultados por código HTTP ---
+
+Name Count
+---- -----
+500     30
+
+
+
+--- Tiempos (ms) ---
+
+         Average Minimum Maximum
+         ------- ------- -------
+14072,6333333333   12933   24484
+
+
+
+--- Detalle ---
+
+ N HTTP    Ms
+ - ----    --
+ 1  500 21636
+ 2  500 13379
+ 3  500 24484
+ 4  500 13826
+ 5  500 13035
+ 6  500 13057
+ 7  500 12997
+ 8  500 14240
+ 9  500 13450
+10  500 13324
+11  500 14162
+12  500 13664
+13  500 13472
+14  500 15155
+15  500 12956
+16  500 12933
+17  500 13335
+18  500 13011
+19  500 13001
+20  500 13067
+21  500 13342
+22  500 13256
+23  500 13174
+24  500 13059
+25  500 13432
+26  500 13007
+27  500 14249
+28  500 13478
+29  500 13632
+30  500 13366
+
+
+
+--- Estado del contenedor tras la prueba ---
+NAME               IMAGE                            COMMAND                   SERVICE   CREATED        STATUS          PORTS
+communitylab-n8n   docker.n8n.io/n8nio/n8n:latest   "/bin/sh -c 'if [ \"$…"   n8n       20 hours ago   Up 12 minutes   0.0.0.0:5678->5678/tcp, [::]:5678->5678/tcp
+RestartCount=0 Status=running
+

@@ -1,0 +1,150 @@
+{
+  "metadata_paquete": {
+    "version": "1.0.0",
+    "generado_en": "2026-10-14T22:35:06.496015+00:00",
+    "archivo_origen": "entrada_IA04.json",
+    "total_registros_origen": 5,
+    "total_procesados_exitosamente": 5,
+    "total_fallidos": 0
+  },
+  "metricas": {
+    "distribucion_sentimiento": {
+      "positivo": 5,
+      "neutro": 0,
+      "negativo": 0
+    },
+    "distribucion_tipo_contenido": {
+      "logro_contratacion": 5,
+      "duda_tecnica": 0,
+      "feedback_general": 0,
+      "showcase": 0
+    },
+    "total_posts_linkedin_generados": 5,
+    "total_tips_faq_generados": 0
+  },
+  "activos": [
+    {
+      "lote_id": "py_223506",
+      "procesado_en": "2026-10-14T22:35:06.496015+00:00",
+      "motor_orquestacion": "python_gemini",
+      "interaccion": {
+        "id": "qa_ia04_01",
+        "autor": "Autor QA 1",
+        "canal": "#logros-y-empleos",
+        "tipo": "testimonio",
+        "texto": "¡Conseguí mi primer trabajo como desarrolladora junior! El curso de Python de Alura y los proyectos del grupo fueron clave. ¡Gracias, comunidad!"
+      },
+      "activo": {
+        "sentimiento": "positivo",
+        "tipo_contenido": "logro_contratacion",
+        "temas_clave": [
+          "Python",
+          "Desarrollo Web",
+          "Empleabilidad"
+        ],
+        "respuesta_chat": "¡Hola Autor QA 1! Felicitaciones por tu nuevo rol como desarrolladora junior. Es un orgullo ver cómo el esfuerzo en los cursos de Python y los proyectos rinde frutos. ¡Mucho éxito en esta nueva etapa!",
+        "post_linkedin": "¡Una gran historia de éxito para inspirar a toda la comunidad de Oracle ONE y Alura! \n\nAutor QA 1 acaba de conseguir su primer empleo como desarrolladora junior, demostrando que la constancia, el aprendizaje continuo basado en proyectos y el apoyo de la comunidad son la combinación perfecta para transformar vidas en la tecnología.\n\nEl camino no siempre es fácil, pero cada línea de código escrita y cada desafío superado en Python nos acerca a nuestras metas. \n\n¿Cuál es tu próximo objetivo en el mundo tech? ¡Déjalo en los comentarios!\n\n#OracleONE #AluraLATAM #TechTalent #PythonDeveloper #MujeresEnTech",
+        "tip_tecnico_faq": null
+      }
+    },
+    {
+      "lote_id": "py_223506",
+      "procesado_en": "2026-10-14T22:35:06.496015+00:00",
+      "motor_orquestacion": "python_gemini",
+      "interaccion": {
+        "id": "qa_ia04_02",
+        "autor": "Autor QA 2",
+        "canal": "#logros-y-empleos",
+        "tipo": "testimonio",
+        "texto": "Hoy firmé contrato como analista de datos después de seis meses de estudio en Oracle ONE. Gracias a mi grupo por el apoyo constante."
+      },
+      "activo": {
+        "sentimiento": "positivo",
+        "tipo_contenido": "logro_contratacion",
+        "temas_clave": [
+          "Oracle ONE",
+          "Analista de Datos",
+          "Carrera Tech"
+        ],
+        "respuesta_chat": "¡Hola Autor QA 2! Muchas felicidades por firmar tu contrato como analista de datos. Es un gran reconocimiento a tus seis meses de esfuerzo en Oracle ONE y al poder del trabajo en comunidad. ¡Mucho éxito en esta nueva etapa!",
+        "post_linkedin": "¡De estudiante a Analista de Datos! 🚀 Hoy celebramos un nuevo logro en la comunidad de Oracle ONE. Tras seis meses de dedicación, estudio constante y el valioso apoyo de sus compañeros, uno de nuestros talentos acaba de firmar su contrato como Analista de Datos.\n\nEste hito demuestra que la constancia, el aprendizaje basado en proyectos y el networking en comunidad transforman vidas y abren puertas en el sector tecnológico.\n\n💡 ¿Cuál es tu mayor motivación hoy para seguir aprendiendo?\n\n#OracleONE #AluraLATAM #TechTalent #DataAnalytics #CrecimientoProfesional",
+        "tip_tecnico_faq": null
+      }
+    },
+    {
+      "lote_id": "py_223506",
+      "procesado_en": "2026-10-14T22:35:06.496015+00:00",
+      "motor_orquestacion": "python_gemini",
+      "interaccion": {
+        "id": "qa_ia04_03",
+        "autor": "Autor QA 3",
+        "canal": "#logros-y-empleos",
+        "tipo": "testimonio",
+        "texto": "Después de muchas entrevistas, me ofrecieron un puesto de soporte técnico cloud. Lo logré gracias a los laboratorios de OCI."
+      },
+      "activo": {
+        "sentimiento": "positivo",
+        "tipo_contenido": "logro_contratacion",
+        "temas_clave": [
+          "OCI",
+          "Cloud",
+          "Soporte Tecnico",
+          "Empleabilidad"
+        ],
+        "respuesta_chat": "¡Hola Autor QA 3! Muchas felicidades por tu nuevo puesto en soporte técnico cloud. Es una gran noticia y nos alegra mucho saber que los laboratorios de OCI fueron clave para lograrlo. ¡Mucho éxito en esta nueva etapa profesional!",
+        "post_linkedin": "¡Una gran historia de éxito en nuestra comunidad! 🚀 Después de un proceso exigente de entrevistas, Autor QA 3 ha conseguido un nuevo puesto como especialista en soporte técnico cloud. La constancia y el uso práctico de herramientas como Oracle Cloud Infrastructure (OCI) a través de nuestros laboratorios marcaron la diferencia. La lección de hoy: la práctica constante y el uso de tecnologías cloud líderes abren puertas en el mercado tecnológico. ¡Felicitaciones y a seguir creciendo!\n\n#OracleONE #AluraLATAM #TechTalent #CloudComputing",
+        "tip_tecnico_faq": null
+      }
+    },
+    {
+      "lote_id": "py_223506",
+      "procesado_en": "2026-10-14T22:35:06.496015+00:00",
+      "motor_orquestacion": "python_gemini",
+      "interaccion": {
+        "id": "qa_ia04_04",
+        "autor": "Autor QA 4",
+        "canal": "#logros-y-empleos",
+        "tipo": "testimonio",
+        "texto": "Quiero compartir que me promovieron a desarrollador semi senior. Todo empezó con el curso de lógica de programación de esta comunidad."
+      },
+      "activo": {
+        "sentimiento": "positivo",
+        "tipo_contenido": "logro_contratacion",
+        "temas_clave": [
+          "Desarrollo Profesional",
+          "Lógica de Programación",
+          "Crecimiento Laboral"
+        ],
+        "respuesta_chat": "¡Hola Autor QA 4! Muchas felicidades por tu promoción a desarrollador semi senior. Es inspirador ver cómo los fundamentos de la lógica de programación abrieron este camino para ti. ¡A seguir cosechando éxitos en esta nueva etapa!",
+        "post_linkedin": "¡El esfuerzo y la constancia siempre dan frutos! 🚀\n\nQuiero celebrar el gran logro de Autor QA 4, quien acaba de ser promovido a desarrollador semi senior. Todo comenzó con un sólido paso: dominar la lógica de programación en nuestra comunidad.\n\nEsta historia nos recuerda que cada línea de código que escribimos hoy es una inversión en nuestro futuro profesional. La educación continua y la práctica constante son la clave para transformar nuestra carrera en tecnología.\n\n¿Y tú, qué esperas para dar el primer paso en tu formación?\n\n#OracleONE #AluraLATAM #TechTalent #CrecimientoProfesional",
+        "tip_tecnico_faq": null
+      }
+    },
+    {
+      "lote_id": "py_223506",
+      "procesado_en": "2026-10-14T22:35:06.496015+00:00",
+      "motor_orquestacion": "python_gemini",
+      "interaccion": {
+        "id": "qa_ia04_05",
+        "autor": "Autor QA 5",
+        "canal": "#logros-y-empleos",
+        "tipo": "testimonio",
+        "texto": "Acabo de aceptar una oferta como QA junior en una empresa de software. El apoyo del equipo en Discord fue fundamental."
+      },
+      "activo": {
+        "sentimiento": "positivo",
+        "tipo_contenido": "logro_contratacion",
+        "temas_clave": [
+          "QA",
+          "empleo",
+          "comunidad",
+          "discord"
+        ],
+        "respuesta_chat": "¡Hola, Autor QA 5! Muchas felicidades por tu nueva posición como QA junior. Es una gran noticia y nos alegra mucho saber que el apoyo de la comunidad en Discord te acompañó en este camino hacia el éxito profesional. ¡A seguir brillando!",
+        "post_linkedin": "¡Una gran historia de éxito en nuestra comunidad de Oracle ONE y Alura LATAM! 🎉\n\nAutor QA 5 acaba de dar un gran salto en su carrera profesional al aceptar una oferta como QA junior en una empresa de software. Este logro demuestra que la constancia, el aprendizaje continuo y el poder de una comunidad unida marcan la diferencia.\n\nLección aprendida: No estás solo en el mundo tech. Apoyarse en pares, resolver dudas juntos y compartir experiencias acelera el camino hacia el primer empleo en tecnología.\n\n¿Quieres saber más sobre cómo prepararte para el mercado laboral tech? Únete a nuestras iniciativas y sé parte de la próxima gran historia.\n\n#OracleONE #AluraLATAM #TechTalent #QA #PrimerEmpleo",
+        "tip_tecnico_faq": null
+      }
+    }
+  ],
+  "fallidos": []
+}

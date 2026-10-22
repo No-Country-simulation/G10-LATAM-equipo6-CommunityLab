@@ -1,0 +1,51 @@
+﻿INF-03/04 y DOC-01 - Estado del servidor (solo lectura)
+Fecha: 2026-10-19 22:25:11 -03:00
+Commit local probado: 73a1fa5
+ubuntu@147.15.x.x: Permission denied (publickey).
+bash: line 1: ﻿echo: command not found
+ubuntu
+hackathon-g10
+ 01:29:57 up 34 days,  7:51,  1 user,  load average: 0.12, 0.08, 0.01
+PRETTY_NAME="Ubuntu 22.04.5 LTS"
+2
+               total        used        free      shared  buff/cache   available
+Mem:           956Mi       455Mi        72Mi       0.0Ki       428Mi       325Mi
+Swap:          6.0Gi       850Mi       5.2Gi
+NAME      TYPE SIZE   USED PRIO
+/swapfile file   6G 850.7M   -2
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda1        45G   19G   27G  42% /
+== docker ==
+Docker version 29.1.3, build 29.1.3-0ubuntu3~22.04.2
+docker-compose version 1.29.2, build unknown
+== repo en el servidor ==
+829cabc 2026-10-14 fix(n8n): actualizar endpoint del webhook de generacion de imagenes a generar-imagen-post2
+cambios sin confirmar: 0
+== compose, solo claves estructurales ==
+-- /home/ubuntu/G10-LATAM-equipo6-CommunityLab/docker-compose.yml
+3:    image: docker.n8n.io/n8nio/n8n:latest
+4:    container_name: communitylab-n8n
+5:    restart: always
+55:      - n8n_data:/home/node/.n8n
+59:  n8n_data:
+60:    external: true
+61:    name: n8n-hackathon_n8n_data
+-- /home/ubuntu/n8n-hackathon/docker-compose.yml
+4:    image: docker.n8n.io/n8nio/n8n
+5:    restart: always
+18:      - n8n_data:/home/node/.n8n
+20:  n8n_data:
+== contenedores y volumenes ==
+communitylab-n8n | docker.n8n.io/n8nio/n8n:latest | Up 4 weeks | creado 2026-09-16 21:44:22 +0000 UTC
+n8n-hackathon_n8n_data
+== quien escucha en 5678 y 8501 ==
+LISTEN 0      4096         0.0.0.0:5678       0.0.0.0:*    users:(("docker-proxy",pid=28151,fd=7))                     
+LISTEN 0      4096            [::]:5678          [::]:*    users:(("docker-proxy",pid=28156,fd=7))                     
+LISTEN 0      2048               *:8501             *:*    users:(("python",pid=298944,fd=6))                          
+ubuntu    298944  0.4 16.6 2584484 163328 ?      Sl   Oct17  17:49 .venv/bin/python -m streamlit run src/ui/app.py --server.port 8501 --serv
+== sesiones abiertas, solo cantidad ==
+wc: invalid option -- '
+'
+Try 'wc --help' for more information.
+
+Nota de QA: la línea 'Permission denied' del inicio corresponde a un intento previo con una llave no autorizada. El resto es la salida de la ejecución correcta. Los mensajes 'command not found' y 'wc: invalid option' son artefactos de PowerShell 5.1 y no indican un problema del servidor.

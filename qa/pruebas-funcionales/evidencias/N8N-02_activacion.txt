@@ -1,0 +1,15 @@
+﻿N8N-02 - Activación del workflow CommunityLab_Ingesta_Local_Webhook (entorno local)
+Fecha: 2026-10-11 22:30:47 -03:00
+Commit probado: 36f8ca8
+
+> docker exec communitylab-n8n n8n list:workflow
+DC001CommunityLb|CommunityLab_Discord_Dinamico
+164UrZhViJYbKfV7|CCely_WF_002
+is13JQSeKCSPaCx1|CommunityLab_Master_Omnicanal_E2E_OCI
+SK001CommunityLb|CommunityLab_Slack_Dinamico
+TG001CommunityLb|CommunityLab_Telegram_Dinamico
+rXDvhA9R1gh9NNOA|CCely_WF_005
+YNRhYemizz2AoAV6|jmedinag_WF_002
+
+ID detectado: 
+No se encontró el workflow en n8n: ¿está importado?

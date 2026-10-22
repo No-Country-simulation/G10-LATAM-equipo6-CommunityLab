@@ -1,0 +1,10 @@
+﻿<frozen runpy>:130: RuntimeWarning: 'src.ai_engine.validator' found in sys.modules after import of package 'src.ai_engine', but prior to execution of 'src.ai_engine.validator'; this may result in unpredictable behaviour
+Traceback (most recent call last):
+  File "<frozen runpy>", line 203, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "C:\Users\<usuario>\Desktop\Proyecto G10\G10-LATAM-equipo6-CommunityLab\src\ai_engine\validator.py", line 141, in <module>
+    summary = validate_batch_file(target_path)
+  File "C:\Users\<usuario>\Desktop\Proyecto G10\G10-LATAM-equipo6-CommunityLab\src\ai_engine\validator.py", line 101, in validate_batch_file
+    raise FileNotFoundError(f"Archivo no encontrado: {path}")
+FileNotFoundError: Archivo no encontrado: C:\Users\<usuario>\Desktop\Proyecto G10\G10-LATAM-equipo6-CommunityLab\qa\pruebas-funcionales\evidencias\VAL\entradas\VAL_99_no_existe.json
+=== Validando archivo: C:\Users\<usuario>\Desktop\Proyecto G10\G10-LATAM-equipo6-CommunityLab\qa\pruebas-funcionales\evidencias\VAL\entradas\VAL_99_no_existe.json ===

@@ -1,0 +1,17 @@
+﻿PY-07 - Suite del equipo sobre la version integrada con main
+Fecha: 2026-10-20 21:17:16 -03:00
+Commit probado: 9ac4947
+...........................................................ss........... [ 83%]
+..............                                                           [100%]
+============================== warnings summary ===============================
+tests/test_channels.py: 10 warnings
+  C:\Users\Raul y Thiago\Desktop\Proyecto G10\G10-LATAM-equipo6-CommunityLab\.venv\Lib\site-packages\discord\ext\commands\core.py:430: DeprecationWarning: 'asyncio.iscoroutinefunction' is deprecated and slated for removal in Python 3.16; use inspect.iscoroutinefunction() instead
+    if not asyncio.iscoroutinefunction(func):
+
+tests/test_gemini_service.py::test_generate_asset_logro_success
+  C:\Users\Raul y Thiago\Desktop\Proyecto G10\G10-LATAM-equipo6-CommunityLab\.venv\Lib\site-packages\google\genai\types.py:42: DeprecationWarning: '_UnionGenericAlias' is deprecated and slated for removal in Python 3.17
+    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+84 passed, 2 skipped, 11 warnings in 8.06s
+Codigo de salida: 0

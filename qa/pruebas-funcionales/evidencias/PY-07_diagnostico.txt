@@ -1,0 +1,27 @@
+﻿PY-07 - Diagnóstico de fallos y omitidos
+Fecha: 2026-10-12 16:30:00 -03:00
+Commit probado: 36f8ca8
+
+--- Tests recolectados ---
+81 tests collected in 10.83s
+
+--- Tests FAILED / SKIPPED / ERROR ---
+tests/test_oci_storage.py::test_client_initialization SKIPPED (Crede...) [ 76%]
+tests/test_oci_storage.py::test_upload_and_get_asset_package SKIPPED     [ 77%]
+tests/test_ui_streamlit.py::test_streamlit_panel_carga_correctamente FAILED [ 98%]
+tests/test_ui_streamlit.py::test_elementos_interactivos_ui FAILED        [100%]
+status = value.get("status", ErrorCode.UNKNOWN_ERROR)
+FAILED tests/test_ui_streamlit.py::test_streamlit_panel_carga_correctamente
+FAILED tests/test_ui_streamlit.py::test_elementos_interactivos_ui - selenium....
+
+--- Mensaje de Selenium ---
+response = {'status': 500, 'value': '{"value":{"error":"unknown error","message":"unknown error: net::ERR_CONNECTION_REFUSED\\n  ...f62e4c]\\n\\tKERNEL32!BaseThreadInitThunk [0x7ffaee627374+14]\\n\\tntdll!RtlUserThreadStart [0x7ffaf041cc91+21]\\n"}}'}
+WebDriverException: If the response contains an error message.
+exception_class: type[WebDriverException]
+exception_class = getattr(ExceptionMapping, error_code, WebDriverException)
+exception_class = WebDriverException
+E       selenium.common.exceptions.WebDriverException: Message: unknown error: net::ERR_CONNECTION_REFUSED
+.venv\Lib\site-packages\selenium\webdriver\remote\errorhandler.py:232: WebDriverException
+
+--- ¿Se recolectó prueba_pytest.py? ---
+No aparece: pytest no lo recolecta por defecto

@@ -1,0 +1,13 @@
+﻿VAL-02 - CLI del pipeline ante entradas invalidas a nivel de archivo
+Fecha: 2026-10-21 22:02:52 -03:00
+Commit probado: 798dd2d
+
+
+Caso                   Codigo Traceback LlamadasIA SalidaCreada
+----                   ------ --------- ---------- ------------
+VAL_02_json_malformado      1     False          0        False
+VAL_03_vacio                1     False          0        False
+VAL_99_no_existe            1     False          0        False
+
+
+

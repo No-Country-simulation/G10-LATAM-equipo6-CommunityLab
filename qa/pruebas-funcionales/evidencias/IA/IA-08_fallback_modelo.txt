@@ -1,0 +1,28 @@
+﻿IA-08 - Cambio automático de modelo ante error 503
+Fecha: 2026-10-13 22:18:58 -03:00
+Commit probado: 68c7382
+Fuente: IA-03_log_rerun.txt
+
+Eventos de cambio de modelo: 1
+
+Línea 6: Modelo 'gemini-3.6-flash' con error (503 Alta Demanda). Cambiando automáticamente al modelo 'gemini-3.5-flash-lite'...
+
+--- Registros procesados tras el primer cambio de modelo ---
+Resultado ID='msg_001' -> Sentimiento=positivo, Tipo=logro_contratacion, Temas=['LangChain', 'OCI', 'IA', 'Desarrollo Junior'], PostLinkedIn=True
+Resultado ID='msg_002' -> Sentimiento=neutro, Tipo=duda_tecnica, Temas=['LangGraph', 'LLM', 'Python', 'AI'], PostLinkedIn=False
+Resultado ID='msg_003' -> Sentimiento=positivo, Tipo=logro_contratacion, Temas=['Data Analyst', 'Oracle ONE', 'Alura', 'Empleabilidad'], PostLinkedIn=True
+Resultado ID='msg_004' -> Sentimiento=neutro, Tipo=duda_tecnica, Temas=['OCI', 'Python', 'Cloud', 'SDK'], PostLinkedIn=False
+Resultado ID='msg_005' -> Sentimiento=positivo, Tipo=showcase, Temas=['OCI', 'Docker', 'Gemini Flash', 'Telegram Bot'], PostLinkedIn=True
+Resultado ID='msg_006' -> Sentimiento=positivo, Tipo=feedback_general, Temas=['Prompt Engineering', 'Few-Shot Learning', 'Prompt Injection', 'Ciberseguridad'], PostLinkedIn=False
+Resultado ID='msg_007' -> Sentimiento=neutro, Tipo=duda_tecnica, Temas=['Gemini 1.5 Flash', 'API', 'Tokens', 'Streaming'], PostLinkedIn=False
+Resultado ID='msg_008' -> Sentimiento=positivo, Tipo=logro_contratacion, Temas=['Hackathon', 'Automatización', 'Desarrollo Profesional', 'Oracle ONE'], PostLinkedIn=True
+Resultado ID='msg_009' -> Sentimiento=neutro, Tipo=duda_tecnica, Temas=['Docker', 'Streamlit', 'OCI', 'Redes'], PostLinkedIn=False
+Resultado ID='msg_010' -> Sentimiento=positivo, Tipo=feedback_general, Temas=['Linux', 'Swap', 'Cloud Computing', 'DevOps'], PostLinkedIn=False
+Resultado ID='msg_011' -> Sentimiento=positivo, Tipo=feedback_general, Temas=['Git', 'Comunidad', 'Discord'], PostLinkedIn=False
+Resultado ID='msg_012' -> Sentimiento=neutro, Tipo=duda_tecnica, Temas=['LangGraph', 'PostgreSQL', 'Cloud Storage', 'Python'], PostLinkedIn=False
+Resultado ID='msg_013' -> Sentimiento=positivo, Tipo=logro_contratacion, Temas=['Python', 'Backend', 'Carrera Tech'], PostLinkedIn=True
+Resultado ID='msg_014' -> Sentimiento=positivo, Tipo=showcase, Temas=['Python', 'IA', 'Gradio', 'GitHub'], PostLinkedIn=True
+Resultado ID='msg_015' -> Sentimiento=neutro, Tipo=duda_tecnica, Temas=['OCI', 'Object Storage', 'Cloud Computing'], PostLinkedIn=False
+Resultado ID='msg_016' -> Sentimiento=negativo, Tipo=feedback_general, Temas=['empleabilidad', 'emprendimiento', 'carrera_profesional'], PostLinkedIn=False
+Resultado ID='msg_017' -> Sentimiento=neutro, Tipo=duda_tecnica, Temas=['OCI', 'Object Storage', 'Cloud'], PostLinkedIn=False
+Resultado ID='msg_018' -> Sentimiento=negativo, Tipo=feedback_general, Temas=['comunidad', 'mentoria', 'etica'], PostLinkedIn=False
