@@ -21,15 +21,27 @@ BADGE = {
 }
 
 CANAL_ICON = {
-    "Telegram": "✈️",
-    "Discord": "🎮",
-    "Slack": "💬",
-    "LinkedIn": "💼",
-    "X": "𝕏",
-    "Dataset Batch": "📊",
-    "Lotes": "📦",
-    "Newsletter": "✉️",
-    "WhatsApp": "📱",
+    "Telegram": "Telegram",
+    "Discord": "Discord",
+    "Slack": "Slack",
+    "LinkedIn": "LinkedIn",
+    "X": "X",
+    "Dataset Batch": "Lote de Datos",
+    "Lotes": "Lotes",
+    "Newsletter": "Boletín",
+    "WhatsApp": "WhatsApp",
+}
+
+CANAL_LUCIDE_NAME = {
+    "Telegram": "telegram",
+    "Discord": "discord",
+    "Slack": "slack",
+    "LinkedIn": "linkedin",
+    "X": "twitter",
+    "Dataset Batch": "package",
+    "Lotes": "package",
+    "Newsletter": "file-text",
+    "WhatsApp": "message-square",
 }
 TODOS_LOS_CANALES = ["LinkedIn", "X", "Telegram", "Discord", "Slack", "Newsletter"]
 

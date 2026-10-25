@@ -11,6 +11,7 @@ import os
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Set, Union
 from urllib.parse import quote, unquote, urlsplit, urlunsplit
+import streamlit as st
 
 from src.ai_engine.schemas import CommunityInteraction, ProcessedCommunityAsset
 from src.cloud_oci.storage_client import OCIStorageManager
@@ -137,6 +138,37 @@ def obtener_ids_procesados_sesion(consultar_oci: bool = True) -> Set[str]:
     return ids
 
 
+@st.cache_data(ttl=60, show_spinner=False)
+def _cached_list_assets(prefix: str, limite: int) -> List[Dict[str, Any]]:
+    sm = OCIStorageManager(allow_local_fallback=True)
+    try:
+        objetos = sm.list_assets(prefix=prefix, limit=limite)
+        return sorted(objetos, key=lambda x: x.get("created_at") or x.get("name"), reverse=True)
+    except Exception as e:
+        logger.error("Error al listar paquetes para la UI: %s", e)
+        return []
+
+
+@st.cache_data(ttl=60, show_spinner=False)
+def _cached_get_asset(nombre_objeto: str) -> Optional[Dict[str, Any]]:
+    sm = OCIStorageManager(allow_local_fallback=True)
+    try:
+        return sm.get_asset(nombre_objeto)
+    except Exception as e:
+        logger.error("Error al cargar el paquete '%s': %s", nombre_objeto, e)
+        return None
+
+
+def invalidar_cache_datos() -> None:
+    """Invalida la caché de listado y contenido de paquetes para refresco inmediato."""
+    try:
+        _cached_list_assets.clear()
+        _cached_get_asset.clear()
+        _cached_obtener_mapa_curaduria.clear()
+    except Exception:
+        pass
+
+
 def obtener_ultimos_paquetes(
     storage_manager: Optional[OCIStorageManager] = None,
     prefix: str = "activos",
@@ -147,14 +179,14 @@ def obtener_ultimos_paquetes(
     Returns:
         Lista de diccionarios con metadatos de los paquetes ordenados del más reciente al más antiguo.
     """
-    sm = storage_manager or OCIStorageManager(allow_local_fallback=True)
-    try:
-        objetos = sm.list_assets(prefix=prefix, limit=limite)
-        # Ordenar por fecha de creación o nombre descendente
-        return sorted(objetos, key=lambda x: x.get("created_at") or x.get("name"), reverse=True)
-    except Exception as e:
-        logger.error("Error al listar paquetes para la UI: %s", e)
-        return []
+    if storage_manager is not None:
+        try:
+            objetos = storage_manager.list_assets(prefix=prefix, limit=limite)
+            return sorted(objetos, key=lambda x: x.get("created_at") or x.get("name"), reverse=True)
+        except Exception as e:
+            logger.error("Error al listar paquetes para la UI: %s", e)
+            return []
+    return _cached_list_assets(prefix=prefix, limite=limite)
 
 
 def cargar_paquete(
@@ -162,12 +194,13 @@ def cargar_paquete(
     storage_manager: Optional[OCIStorageManager] = None,
 ) -> Optional[Dict[str, Any]]:
     """Carga el contenido completo de un paquete para la vista de detalle en la interfaz."""
-    sm = storage_manager or OCIStorageManager(allow_local_fallback=True)
-    try:
-        return sm.get_asset(nombre_objeto)
-    except Exception as e:
-        logger.error("Error al cargar el paquete '%s': %s", nombre_objeto, e)
-        return None
+    if storage_manager is not None:
+        try:
+            return storage_manager.get_asset(nombre_objeto)
+        except Exception as e:
+            logger.error("Error al cargar el paquete '%s': %s", nombre_objeto, e)
+            return None
+    return _cached_get_asset(nombre_objeto)
 
 
 def vaciar_historico_oci(prefix: str = "activos") -> int:
@@ -191,7 +224,7 @@ def vaciar_historico_oci(prefix: str = "activos") -> int:
                     try:
                         sm.delete_object(nombre)
                         eliminados += 1
-                        logger.info("🗑️ Objeto '%s' eliminado de OCI Cloud.", nombre)
+                        logger.info("Objeto '%s' eliminado de OCI Cloud.", nombre)
                     except Exception as err:
                         logger.warning("No se pudo eliminar '%s' en OCI: %s", nombre, err)
     except Exception as e_oci:
@@ -213,6 +246,7 @@ def vaciar_historico_oci(prefix: str = "activos") -> int:
                 logger.warning("No se pudo eliminar local '%s': %s", item, e)
 
     logger.info("Almacenamiento histórico de OCI vaciado: %d elementos eliminados.", eliminados)
+    invalidar_cache_datos()
     return eliminados
 
 
@@ -240,6 +274,7 @@ def vaciar_historico_oci_local(ruta: Union[str, Path] = "data/oci_local_storage/
             except Exception as e:
                 logger.warning("No se pudo eliminar '%s': %s", item, e)
     logger.info("Almacenamiento local de OCI vaciado: %d elementos eliminados.", eliminados)
+    invalidar_cache_datos()
     return eliminados
 
 
@@ -355,7 +390,7 @@ def procesar_archivo_n8n_ui(
             if resp.status_code == 404:
                 raise RuntimeError(
                     f"El Webhook no fue encontrado en n8n (404 Not Found) en: '{url}'.\n\n"
-                    "💡 Causa: El workflow 'communitylab_ingesta_llm' en la VM de OCI (http://147.15.9.116:5678) "
+                    "Causa: El workflow 'communitylab_ingesta_llm' en la VM de OCI (http://147.15.9.116:5678) "
                     "aún no tiene un nodo 'Webhook' activado en modo producción para esa URL.\n\n"
                     "Para activarlo en n8n:\n"
                     "1. Ingresa a la interfaz de n8n (http://147.15.9.116:5678).\n"
@@ -813,11 +848,15 @@ def guardar_curaduria_humana(
         logger.info("Curaduría guardada localmente (modo fallback/offline): %s", ruta_registro)
 
     logger.info("Curaduría registrada para '%s': estado=%s (OCI=%s)", id_interaccion, estado_aprobacion, sincronizado_en_oci)
+    try:
+        _cached_obtener_mapa_curaduria.clear()
+    except Exception:
+        pass
     return nuevo_registro
 
 
-def obtener_mapa_curaduria() -> Dict[str, Dict[str, Any]]:
-    """Obtiene el historial de curaduría de OCI Object Storage indexado por ID de interacción."""
+@st.cache_data(ttl=30, show_spinner=False)
+def _cached_obtener_mapa_curaduria() -> Dict[str, Dict[str, Any]]:
     registros: List[Dict[str, Any]] = []
     try:
         sm = OCIStorageManager(allow_local_fallback=True)
@@ -847,3 +886,8 @@ def obtener_mapa_curaduria() -> Dict[str, Dict[str, Any]]:
             id_limpio = id_int.split(" ")[0]
             mapa[id_limpio] = r
     return mapa
+
+
+def obtener_mapa_curaduria() -> Dict[str, Dict[str, Any]]:
+    """Obtiene el historial de curaduría de OCI Object Storage indexado por ID de interacción."""
+    return _cached_obtener_mapa_curaduria()

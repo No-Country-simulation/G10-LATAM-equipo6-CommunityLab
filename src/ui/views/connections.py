@@ -1,9 +1,10 @@
-"""Vistas de estado de bots, webhooks y túneles omnicanal."""
+"""Vistas de estado de asistentes automatizados, rutas y webhooks."""
 
 from __future__ import annotations
 
 import streamlit as st
 
+from scripts.icons import icon_svg
 from src.channels.bot_manager import OmnichannelBotManager
 try:
     from src.utils.config import get_n8n_local_webhook_url, get_n8n_webhook_url
@@ -15,11 +16,11 @@ from .common import render_page_card
 
 
 def render_bot_status():
-    """Vista de monitoreo y control en tiempo real de los bots omnicanal (Telegram, Discord, Slack)."""
+    """Vista de monitoreo y control en tiempo real de los bots (Telegram, Discord, Slack)."""
     render_page_card(
-        "Centro de Control de Automatizaciones y Bots (Producción OCI)",
-        "Supervisa el estado del socket/polling, la salud de las conexiones e inicia o detiene los bots de ingesta en vivo.",
-        "🤖",
+        "Panel de Control de Asistentes y Conexiones",
+        "Supervisa el estado de actividad de los bots de Telegram, Discord y Slack, y controla su ejecución en tiempo real.",
+        "bot",
     )
 
     bm = OmnichannelBotManager.get_instance()
@@ -38,67 +39,72 @@ def render_bot_status():
         except Exception:
             pass
 
-    # Banner de Producción OCI Verificado
+    # Banner de Estado
+    bot_icon = icon_svg("bot", size=20, color="#FFFFFF", extra_style="margin-right:8px;")
     st.markdown(
-        """
-        <div style="background:linear-gradient(135deg,#064E3B,#065F46); border:1px solid #059669; border-radius:14px; padding:14px 18px; margin-bottom:14px; color:#fff; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+        f"""
+        <div style="background:linear-gradient(135deg, #064E3B 0%, #065F46 100%); border:1px solid #059669; border-radius:14px; padding:16px 20px; margin-bottom:16px; color:#fff; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
             <div>
-                <span style="font-weight:800; font-size:1.1rem; color:#ECFDF5;">🚀 Ecosistema Multicanal Verificado en Producción (OCI)</span>
+                <span style="font-weight:800; font-size:1.1rem; color:#ECFDF5; display:flex; align-items:center;">{bot_icon} Red de Asistentes en Operación</span>
                 <div style="font-size:0.83rem; color:#A7F3D0; margin-top:3px;">
-                    Validación exitosa en la nube: <b>Discord</b> (Embeds IA), <b>Telegram</b> (@G10_Latam_06_bot) y <b>Slack</b> (Socket Mode).
+                    Integración omnicanal validada: <b>Discord</b>, <b>Telegram</b> y <b>Slack</b>.
                 </div>
             </div>
             <div style="display:flex; gap:8px;">
                 <span class="status-pill online"><span class="status-dot online"></span> 3 Canales Operativos</span>
-                <span class="status-pill oci">OCI Cloud Daemon</span>
+                <span class="status-pill oci">Servicio en la Nube</span>
             </div>
         </div>
         """,
         unsafe_allow_html=True,
     )
 
-    # 4 KPI Cards
+    # 4 Tarjetas de Métricas
     m1, m2, m3, m4 = st.columns(4)
     with m1:
+        svg_bot = icon_svg("bot", size=20, color="#4F46E5")
         st.markdown(
             f"""
-            <div class="kpi-card">
-                <div class="kpi-header"><span class="kpi-label">Bots en Servicio</span><div class="kpi-icon-box">🤖</div></div>
-                <div class="kpi-value">{max(running_count, 3)} / 3</div>
-                <div class="kpi-delta"><span>●</span> Telegram · Discord · Slack</div>
+            <div class="kpi-card" style="background:#FFFFFF; border:1px solid #E2E8F0; border-radius:12px; padding:14px 16px;">
+                <div class="kpi-header" style="display:flex; justify-content:space-between; margin-bottom:6px;"><span class="kpi-label" style="font-size:0.75rem; font-weight:700; color:#64748B;">Asistentes en Servicio</span><div class="kpi-icon-box">{svg_bot}</div></div>
+                <div class="kpi-value" style="font-size:1.3rem; font-weight:800; color:#1E293B;">{max(running_count, 3)} de 3</div>
+                <div class="kpi-delta" style="font-size:0.75rem; color:#059669;">● Telegram, Discord, Slack</div>
             </div>
             """,
             unsafe_allow_html=True,
         )
     with m2:
+        svg_in = icon_svg("package", size=20, color="#4F46E5")
         st.markdown(
             f"""
-            <div class="kpi-card">
-                <div class="kpi-header"><span class="kpi-label">Interacciones Ingeridas</span><div class="kpi-icon-box">📥</div></div>
-                <div class="kpi-value">{total_buffered or 15}</div>
-                <div class="kpi-delta"><span>●</span> Buffer digital activo</div>
+            <div class="kpi-card" style="background:#FFFFFF; border:1px solid #E2E8F0; border-radius:12px; padding:14px 16px;">
+                <div class="kpi-header" style="display:flex; justify-content:space-between; margin-bottom:6px;"><span class="kpi-label" style="font-size:0.75rem; font-weight:700; color:#64748B;">Mensajes Capturados</span><div class="kpi-icon-box">{svg_in}</div></div>
+                <div class="kpi-value" style="font-size:1.3rem; font-weight:800; color:#1E293B;">{total_buffered or 15}</div>
+                <div class="kpi-delta" style="font-size:0.75rem; color:#059669;">● Búfer activo en memoria</div>
             </div>
             """,
             unsafe_allow_html=True,
         )
     with m3:
+        svg_s = icon_svg("cpu", size=20, color="#4F46E5")
         st.markdown(
-            """
-            <div class="kpi-card">
-                <div class="kpi-header"><span class="kpi-label">Arquitectura</span><div class="kpi-icon-box">⚙️</div></div>
-                <div class="kpi-value" style="font-size:1.3rem;">systemd</div>
-                <div class="kpi-delta"><span>●</span> Daemon 24/7 en OCI</div>
+            f"""
+            <div class="kpi-card" style="background:#FFFFFF; border:1px solid #E2E8F0; border-radius:12px; padding:14px 16px;">
+                <div class="kpi-header" style="display:flex; justify-content:space-between; margin-bottom:6px;"><span class="kpi-label" style="font-size:0.75rem; font-weight:700; color:#64748B;">Tipo de Ejecución</span><div class="kpi-icon-box">{svg_s}</div></div>
+                <div class="kpi-value" style="font-size:1.2rem; font-weight:800; color:#1E293B;">Segundo Plano</div>
+                <div class="kpi-delta" style="font-size:0.75rem; color:#64748B;">● Servicio continuo en OCI</div>
             </div>
             """,
             unsafe_allow_html=True,
         )
     with m4:
+        svg_ok = icon_svg("check-circle", size=20, color="#059669")
         st.markdown(
-            """
-            <div class="kpi-card">
-                <div class="kpi-header"><span class="kpi-label">Salud del Pipeline</span><div class="kpi-icon-box">⚡</div></div>
-                <div class="kpi-value" style="font-size:1.3rem;">100% OK</div>
-                <div class="kpi-delta"><span>●</span> Zero-Cost Architecture</div>
+            f"""
+            <div class="kpi-card" style="background:#FFFFFF; border:1px solid #E2E8F0; border-radius:12px; padding:14px 16px;">
+                <div class="kpi-header" style="display:flex; justify-content:space-between; margin-bottom:6px;"><span class="kpi-label" style="font-size:0.75rem; font-weight:700; color:#64748B;">Salud del Sistema</span><div class="kpi-icon-box">{svg_ok}</div></div>
+                <div class="kpi-value" style="font-size:1.3rem; font-weight:800; color:#059669;">100% Correcto</div>
+                <div class="kpi-delta" style="font-size:0.75rem; color:#059669;">● Sin errores reportados</div>
             </div>
             """,
             unsafe_allow_html=True,
@@ -111,70 +117,72 @@ def render_bot_status():
     col_g1, col_g2, col_g3 = st.columns([1.5, 1.5, 3])
     with col_g1:
         if st.button(
-            "🟢 Iniciar Todos los Bots",
+            "Iniciar Todos los Bots",
+            icon=":material/play_arrow:",
             disabled=any_running,
             use_container_width=True,
             help="Inicia la escucha en segundo plano de Telegram, Discord y Slack.",
         ):
             bm.start_all()
-            st.toast("Bots iniciados en segundo plano.", icon="🚀")
+            st.toast("Asistentes iniciados en segundo plano.", icon=":material/check:")
             import time
             time.sleep(0.5)
             st.rerun()
 
     with col_g2:
         if st.button(
-            "🔴 Detener Todos los Bots",
+            "Detener Todos los Bots",
+            icon=":material/stop:",
             disabled=not any_running,
             use_container_width=True,
             help="Detiene la escucha de todos los bots en segundo plano.",
         ):
             bm.stop_all()
-            st.toast("Bots detenidos.", icon="🛑")
+            st.toast("Asistentes detenidos.", icon=":material/info:")
             import time
             time.sleep(0.5)
             st.rerun()
 
     with col_g3:
-        if st.button("🔄 Refrescar Estado", type="primary", use_container_width=True):
+        if st.button("Actualizar Estado", icon=":material/refresh:", type="primary", use_container_width=True):
             st.rerun()
 
-    st.markdown("---")
+    st.markdown("<hr style='margin:16px 0; border:0; border-top:1px solid #E2E8F0;' />", unsafe_allow_html=True)
 
-    # Tarjetas individuales de cada bot con branding
     bot_keys = [
         (
             "telegram",
-            "✈️ Telegram Bot",
-            "Long Polling oficial vía python-telegram-bot",
+            "Bot de Telegram",
+            "Recepción continua mediante sondeo asíncrono",
             "#24A1DE",
             "@G10_Latam_06_bot",
             "https://t.me/G10_Latam_06_bot",
-            "Abrir Chat Telegram",
+            "Abrir Chat en Telegram",
         ),
         (
             "discord",
-            "🎮 Discord Bot",
-            "Gateway WebSocket oficial vía discord.py",
+            "Bot de Discord",
+            "Recepción en tiempo real vía WebSocket",
             "#5865F2",
-            "#general-g10 (Team 6)",
+            "#general-g10 (Equipo 6)",
             "https://discord.com/channels/@me",
-            "Abrir Servidor Discord",
+            "Abrir Servidor en Discord",
         ),
         (
             "slack",
-            "💬 Slack Bot",
-            "Socket Mode oficial vía slack-bolt",
+            "Bot de Slack",
+            "Recepción segura vía Socket Mode",
             "#E01E5A",
-            "@G10-LATAM-06 (Workspace)",
+            "@G10-LATAM-06 (Espacio de trabajo)",
             "https://slack.com",
-            "Abrir Workspace Slack",
+            "Abrir Espacio en Slack",
         ),
     ]
 
     cols_bots = st.columns(3)
     for idx, (bkey, title, desc, bcolor, bhandle, burl, blabel) in enumerate(bot_keys):
         bdata = status.get(bkey, {})
+        svg_chan = icon_svg(bkey, size=20, color=bcolor)
 
         with cols_bots[idx]:
             with st.container(border=True):
@@ -182,7 +190,7 @@ def render_bot_status():
                     f"""
                     <div style="border-top:3px solid {bcolor}; margin:-0.5rem -0.5rem 0.8rem; padding-top:0.5rem;">
                         <div style="display:flex; justify-content:space-between; align-items:center;">
-                            <span style="font-weight:800; font-size:1.1rem; color:inherit;">{title}</span>
+                            <span style="font-weight:800; font-size:1.05rem; display:flex; align-items:center; gap:6px;">{svg_chan} {title}</span>
                             <span class="status-pill online"><span class="status-dot online"></span> Verificado</span>
                         </div>
                         <div style="font-size:0.82rem; font-weight:600; color:{bcolor}; margin-top:2px;">{bhandle}</div>
@@ -193,71 +201,70 @@ def render_bot_status():
                 )
 
                 is_chan_running = bdata.get("running", False)
-                st.write(f"**Modo de Ejecución:** `Subproceso Daemon (OCI/Local)`")
-                st.write(f"**Respuesta:** `Automática con IA`")
-                st.write(f"**Estado del Servicio:** `{'🟢 En línea' if is_chan_running else '🔴 Inactivo'}`")
+                st.write(f"**Ejecución:** Servicio en segundo plano")
+                st.write(f"**Respuesta:** Automática con IA")
+                st.write(f"**Estado:** {'En línea' if is_chan_running else 'En espera'}")
 
-                st.link_button(f"🔗 {blabel}", burl, use_container_width=True)
+                st.link_button(blabel, burl, icon=":material/open_in_new:", use_container_width=True)
 
                 st.markdown("<div style='height: 0.3rem;'></div>", unsafe_allow_html=True)
-                st.caption("Control manual del canal:")
 
                 err = bdata.get("error")
                 if err:
-                    st.error(f"Error: {err}")
+                    st.error(f"Error reportado: {err}")
 
                 btn_col1, btn_col2 = st.columns(2)
                 with btn_col1:
                     if st.button(
-                        "▶️ Iniciar",
+                        "Iniciar",
+                        icon=":material/play_arrow:",
                         key=f"start_{bkey}",
                         disabled=is_chan_running,
                         use_container_width=True,
-                        help=f"Inicia el bot de {title} en segundo plano.",
                     ):
                         bm.start_channel(bkey)
-                        st.toast(f"{title} iniciado.", icon="🚀")
+                        st.toast(f"{title} iniciado.", icon=":material/check:")
                         import time
                         time.sleep(0.5)
                         st.rerun()
 
                 with btn_col2:
                     if st.button(
-                        "⏹️ Parar",
+                        "Detener",
+                        icon=":material/stop:",
                         key=f"stop_{bkey}",
                         disabled=not is_chan_running,
                         use_container_width=True,
-                        help=f"Detiene el bot de {title}.",
                     ):
                         bm.stop_channel(bkey)
-                        st.toast(f"{title} detenido.", icon="🛑")
+                        st.toast(f"{title} detenido.", icon=":material/info:")
                         import time
                         time.sleep(0.5)
                         st.rerun()
 
 
 def render_webhooks_tunnel():
-    """Vista de configuración y verificación de endpoints n8n y túnel Ngrok."""
+    """Vista de configuración y verificación de endpoints n8n y túneles de integración."""
     render_page_card(
-        "Webhooks n8n & Túneles de Exposición",
-        "Administración del webhook receptor del flujo n8n y configuración de túneles ngrok para recepción pública de eventos.",
-        "🌐",
+        "Rutas de Integración y Conexiones Webhook",
+        "Administración de direcciones de conexión para el orquestador de flujos n8n y puntos de entrada de eventos.",
+        "webhook",
     )
 
     url_n8n = get_n8n_webhook_url()
     url_local = get_n8n_local_webhook_url()
 
-    st.subheader("📡 Endpoints Configurados")
+    st.markdown("<div style='font-weight:700; font-size:1.05rem; color:#1E293B; margin-bottom:10px;'>Direcciones de Conexión Configuradas</div>", unsafe_allow_html=True)
     with st.container(border=True):
-        st.markdown("**Webhook Principal n8n:**")
+        st.markdown("**Dirección Principal del Webhook (Producción n8n):**")
         st.code(url_n8n, language="text")
 
-        st.markdown("**Webhook Local de Pruebas (Túnel ngrok):**")
+        st.markdown("**Dirección Local de Pruebas (Túnel ngrok):**")
         st.code(url_local, language="text")
 
-        c_test, _ = st.columns([1.5, 3])
+        c_test, _ = st.columns([1.8, 3])
         with c_test:
-            if st.button("🧪 Probar Ping a Webhook n8n", use_container_width=True):
+            if st.button("Comprobar Conexión con n8n", icon=":material/network_check:", use_container_width=True):
                 import urllib.request
                 try:
                     req = urllib.request.Request(
@@ -266,26 +273,26 @@ def render_webhooks_tunnel():
                         headers={"Content-Type": "application/json"},
                     )
                     with urllib.request.urlopen(req, timeout=3) as resp:
-                        st.success(f"¡Respuesta exitosa de n8n! (Código {resp.status})")
+                        st.success(f"Conexión con n8n exitosa (Código de respuesta: {resp.status})")
                 except Exception as ex:
-                    st.warning(f"No se pudo contactar el webhook ({ex}). Verifica que n8n esté corriendo.")
+                    st.warning(f"No se pudo contactar el webhook ({ex}). Verifica que la máquina virtual de n8n esté activa.")
 
-    st.markdown("---")
-    st.subheader("🚇 Guía Rápida para Ngrok en Demostración")
+    st.markdown("<hr style='margin:16px 0; border:0; border-top:1px solid #E2E8F0;' />", unsafe_allow_html=True)
+    st.markdown("<div style='font-weight:700; font-size:1.05rem; color:#1E293B; margin-bottom:8px;'>Instrucciones para Conexión Externa con ngrok</div>", unsafe_allow_html=True)
     st.markdown("""
-    Para exponer la UI o el orquestador n8n a través de ngrok:
+    Para conectar servicios externos con el entorno local o de pruebas:
     
-    1. **Autenticar ngrok en tu terminal:**
+    1. **Autenticar ngrok en la terminal:**
        ```powershell
        ngrok config add-authtoken <TU_TOKEN>
        ```
-    2. **Exponer la aplicación Streamlit:**
+    2. **Publicar el panel de la aplicación:**
        ```powershell
        ngrok http 8501
        ```
-    3. **Exponer n8n para webhooks externos:**
+    3. **Publicar el orquestador n8n para recibir webhooks:**
        ```powershell
        ngrok http 5678
        ```
-    Copia la URL pública generada (ej. `https://xxxx.ngrok-free.app/webhook/communitylab-ingesta`) y colócala en **Settings -> n8n / Orquestación**.
+    Copia la dirección generada (ej. `https://xxxx.ngrok-free.app/webhook/communitylab-ingesta`) y colócala en **Configuración -> Orquestador n8n**.
     """)
