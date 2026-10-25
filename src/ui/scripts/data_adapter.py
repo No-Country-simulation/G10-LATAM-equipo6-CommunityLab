@@ -35,13 +35,14 @@ def detectar_canal_ingesta(item: dict) -> str:
 
 
 def emoji_por_tipo(tipo: str) -> str:
+    """Devuelve el nombre de icono semántico para el tipo de contenido."""
     mapping = {
-        "logro_contratacion": "🏆",
-        "duda_tecnica": "💡",
-        "showcase": "🚀",
-        "feedback_general": "💬",
+        "logro_contratacion": "award",
+        "duda_tecnica": "lightbulb",
+        "showcase": "sparkles",
+        "feedback_general": "message-square",
     }
-    return mapping.get(tipo, "✨")
+    return mapping.get(tipo, "file-text")
 
 
 def estado_a_badge(estado_cur: str) -> str:
@@ -113,17 +114,17 @@ def obtener_opciones_fuente() -> list[tuple[str, str, str]]:
     try:
         paquetes_cloud = obtener_ultimos_paquetes(limite=10)
         for p in paquetes_cloud:
-            opciones.append((f"☁️ OCI: {p['name']}", p["name"], "oci"))
+            opciones.append((f"Nube OCI: {p['name']}", p["name"], "oci"))
     except Exception:
         pass
 
     # 2. Fuentes Locales
     rutas_locales = [
-        ("📁 Local: Canales (Python)", Path("data/paquete_procesado_canales_python.json")),
-        ("📁 Local: Canales (N8N)", Path("data/paquete_procesado_canales_n8n.json")),
-        ("📁 Local: Lotes (Python)", Path("data/paquete_procesado_python.json")),
-        ("📁 Local: Lotes (N8N)", Path("data/paquete_procesado_n8n.json")),
-        ("📁 Local: Lote General", Path("data/paquete_procesado.json")),
+        ("Local: Canales (Python)", Path("data/paquete_procesado_canales_python.json")),
+        ("Local: Canales (n8n)", Path("data/paquete_procesado_canales_n8n.json")),
+        ("Local: Lotes (Python)", Path("data/paquete_procesado_python.json")),
+        ("Local: Lotes (n8n)", Path("data/paquete_procesado_n8n.json")),
+        ("Local: Lote General", Path("data/paquete_procesado.json")),
     ]
 
     for label, p in rutas_locales:
@@ -207,9 +208,11 @@ def transformar_item_a_post(item: dict, meta_paquete: dict, mapa_curaduria: dict
     proc_time = item.get("procesado_en", "") or item.get("procesado_el", "")
     hace_str = proc_time[11:16] if len(proc_time) >= 16 else "Reciente"
 
+    icon_name = emoji_por_tipo(tipo)
+
     return {
         "id": item_id,
-        "title": f"[{tipo.upper()}] {autor} ({canal_origen})",
+        "title": f"[{tipo.replace('_', ' ').title()}] {autor} ({canal_origen})",
         "canal": "LinkedIn" if tipo in ("logro_contratacion", "showcase") else "Discord",
         "canal_ingesta": canal_ingesta,
         "sentimiento": sentimiento,
@@ -220,7 +223,8 @@ def transformar_item_a_post(item: dict, meta_paquete: dict, mapa_curaduria: dict
         "hace": hace_str,
         "banner": banner_titulo.capitalize(),
         "sub": f"{autor} en {canal_origen}",
-        "emoji": emoji_por_tipo(tipo),
+        "emoji": "",
+        "icon_name": icon_name,
         "copy": copy_defecto,
         "_raw": item,
         "_cur_info": cur_info,

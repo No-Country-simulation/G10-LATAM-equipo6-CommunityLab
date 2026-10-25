@@ -22,7 +22,8 @@ POSTS = [
         hace="Hace 10 min",
         banner="De la comunidad al mercado",
         sub="Caso de éxito con proyectos reales, OCI y aprendizaje colectivo.",
-        emoji="🚀",
+        emoji="",
+        icon_name="award",
         copy=COPY_DEFAULT,
     ),
     dict(
@@ -38,8 +39,9 @@ POSTS = [
         hace="Hace 2 h",
         banner="Tip rápido: LangGraph",
         sub="Pregunta recurrente detectada en el canal de soporte técnico.",
-        emoji="🧠",
-        copy="Tip rápido: cómo estructurar nodos condicionales en LangGraph 🚀\n\nCuando la respuesta del LLM requiere reintento, conviene separar la lógica de routing y mantener un punto único de decisión.\n\n#CommunityLab #LangGraph #IA #Python",
+        emoji="",
+        icon_name="lightbulb",
+        copy="Tip rápido: cómo estructurar nodos condicionales en LangGraph.\n\nCuando la respuesta del LLM requiere reintento, conviene separar la lógica de routing y mantener un punto único de decisión.\n\n#CommunityLab #LangGraph #IA #Python",
     ),
     dict(
         id="post_003",
@@ -54,8 +56,9 @@ POSTS = [
         hace="Hace 5 h",
         banner="Community Highlights",
         sub="Resumen semanal con historias, logros y aprendizajes clave.",
-        emoji="📬",
-        copy="Community Highlights ✨\n\nEsta semana celebramos los avances de nuestros miembros, los proyectos que cerraron su ciclo y las dudas técnicas que se volvieron ejemplos útiles para todo el grupo.\n\n#CommunityLab #Newsletter #Growth",
+        emoji="",
+        icon_name="file-text",
+        copy="Community Highlights\n\nEsta semana celebramos los avances de nuestros miembros, los proyectos que cerraron su ciclo y las dudas técnicas que se volvieron ejemplos útiles para todo el grupo.\n\n#CommunityLab #Newsletter #Growth",
     ),
     dict(
         id="post_004",
@@ -70,8 +73,9 @@ POSTS = [
         hace="Hace 1 día",
         banner="FAQ técnica: OCI",
         sub="Pregunta frecuente en canales de soporte y mentoría.",
-        emoji="☁️",
-        copy="FAQ técnica: cómo organizar buckets en OCI ☁️\n\nPara proyectos pequeños, conviene separar por entorno y tipo de activo para mantener trazabilidad y control de acceso.\n\n#OCI #CommunityLab #Cloud",
+        emoji="",
+        icon_name="cloud",
+        copy="FAQ técnica: cómo organizar buckets en OCI.\n\nPara proyectos pequeños, conviene separar por entorno y tipo de activo para mantener trazabilidad y control de acceso.\n\n#OCI #CommunityLab #Cloud",
     ),
 ]
 

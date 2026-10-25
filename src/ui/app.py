@@ -27,8 +27,8 @@ from views import render_view
 def configure_app() -> None:
     """Configura la aplicación y los tokens de diseño visual."""
     st.set_page_config(
-        page_title="CommunityLab · Panel de Operaciones",
-        page_icon="🚀",
+        page_title="CommunityLab · Panel de Inteligencia Comunitaria",
+        page_icon=":material/hub:",
         layout="wide",
         initial_sidebar_state="expanded",
     )
