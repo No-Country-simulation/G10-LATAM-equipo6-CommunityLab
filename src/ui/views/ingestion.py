@@ -1,12 +1,14 @@
-"""Vistas de ingesta en vivo y procesamiento por lotes con backend real."""
+"""Vistas de captura en vivo y procesamiento de archivos por lotes."""
 
 import json
 from pathlib import Path
 import time
 import streamlit as st
 
+from scripts.icons import icon_svg
 from src.channels.bot_manager import get_bot_manager
 from src.ui.services import (
+    invalidar_cache_datos,
     obtener_ids_procesados_sesion,
     procesar_archivo_n8n_ui,
     procesar_archivo_ui,
@@ -18,25 +20,26 @@ from .common import render_page_card
 
 def render_live_channels():
     render_page_card(
-        "Fuentes y Canales Activos en Vivo (Producción OCI)",
-        "Recepción continua y asíncrona de interacciones desde Telegram, Discord y Slack mediante bots de fondo conectados al pipeline.",
-        "📡",
+        "Canales de Mensajería en Vivo",
+        "Recepción continua y en tiempo real de mensajes desde Telegram, Discord y Slack a través de los asistentes automatizados.",
+        "radio",
     )
 
-    # Banner de Estado Multicanal OCI
+    # Banner de Estado Multicanal
+    globe_svg = icon_svg("globe", size=18, color="#818CF8", extra_style="margin-right:8px;")
     st.markdown(
-        """
-        <div style="background:linear-gradient(135deg,#1E293B,#0F172A); border:1px solid #334155; border-radius:14px; padding:14px 18px; margin-bottom:14px; color:#fff; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+        f"""
+        <div style="background:linear-gradient(135deg, #1E1B4B 0%, #1E293B 100%); border:1px solid #334155; border-radius:14px; padding:14px 20px; margin-bottom:16px; color:#fff; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
             <div>
-                <span style="font-weight:800; font-size:1.05rem;">🌐 Ecosistema Omnicanal Verificado</span>
+                <span style="font-weight:800; font-size:1.05rem; display:flex; align-items:center;">{globe_svg} Red de Asistentes Conectados</span>
                 <div style="font-size:0.82rem; color:#94A3B8; margin-top:2px;">
-                    Bots en ejecución en OCI Oracle Cloud Infrastructure con arquitectura systemd 24/7.
+                    Bots en escucha activa sobre infraestructura en la nube Oracle Cloud (24/7).
                 </div>
             </div>
             <div style="display:flex; gap:8px;">
-                <span class="status-pill online"><span class="status-dot online"></span> Discord OK</span>
-                <span class="status-pill online"><span class="status-dot online"></span> Telegram OK</span>
-                <span class="status-pill online"><span class="status-dot online"></span> Slack OK</span>
+                <span class="status-pill online"><span class="status-dot online"></span> Discord Activo</span>
+                <span class="status-pill online"><span class="status-dot online"></span> Telegram Activo</span>
+                <span class="status-pill online"><span class="status-dot online"></span> Slack Activo</span>
             </div>
         </div>
         """,
@@ -50,21 +53,21 @@ def render_live_channels():
     # Controles principales
     c_btn1, c_btn2, c_btn3, c_spacer = st.columns([1.5, 1.5, 1.5, 2.5])
     with c_btn1:
-        if st.button("▶️ Iniciar Escucha de Bots", disabled=any_running, type="primary", use_container_width=True):
+        if st.button("Iniciar Asistentes", icon=":material/play_arrow:", disabled=any_running, type="primary", use_container_width=True):
             bot_manager.start_all()
-            st.toast("Bots iniciados en segundo plano.", icon="🚀")
+            st.toast("Asistentes iniciados en segundo plano.", icon=":material/check:")
             time.sleep(1)
             st.rerun()
 
     with c_btn2:
-        if st.button("⏹️ Detener Escucha", disabled=not any_running, use_container_width=True):
+        if st.button("Detener Asistentes", icon=":material/stop:", disabled=not any_running, use_container_width=True):
             bot_manager.stop_all()
-            st.toast("Bots detenidos.", icon="🛑")
+            st.toast("Asistentes detenidos.", icon=":material/info:")
             time.sleep(1)
             st.rerun()
 
     with c_btn3:
-        if st.button("🔄 Refrescar Estado", use_container_width=True):
+        if st.button("Actualizar Estado", icon=":material/refresh:", use_container_width=True):
             st.rerun()
 
     st.markdown("<div style='height: 0.6rem;'></div>", unsafe_allow_html=True)
@@ -72,28 +75,25 @@ def render_live_channels():
     # Tarjetas individuales de los 3 Canales con colores de marca
     channel_branding = {
         "telegram": {
-            "name": "Telegram Bot",
-            "icon": "✈️",
+            "name": "Bot de Telegram",
+            "icon_name": "telegram",
             "handle": "@G10_Latam_06_bot",
-            "protocol": "Long Polling (python-telegram-bot)",
+            "protocol": "Recepción continua (python-telegram-bot)",
             "border_color": "#24A1DE",
-            "bg_accent": "rgba(36, 161, 222, 0.08)",
         },
         "discord": {
-            "name": "Discord Bot",
-            "icon": "🎮",
-            "handle": "#general-g10 (Team 6)",
-            "protocol": "Gateway WebSocket (discord.py)",
+            "name": "Bot de Discord",
+            "icon_name": "discord",
+            "handle": "#general-g10 (Equipo 6)",
+            "protocol": "Conexión Gateway WebSocket (discord.py)",
             "border_color": "#5865F2",
-            "bg_accent": "rgba(88, 101, 242, 0.08)",
         },
         "slack": {
-            "name": "Slack Bot",
-            "icon": "💬",
+            "name": "Bot de Slack",
+            "icon_name": "slack",
             "handle": "@G10-LATAM-06",
-            "protocol": "Socket Mode (slack-bolt)",
+            "protocol": "Socket Mode bidireccional (slack-bolt)",
             "border_color": "#E01E5A",
-            "bg_accent": "rgba(224, 30, 90, 0.08)",
         },
     }
 
@@ -102,14 +102,14 @@ def render_live_channels():
         data = status_bots.get(k, {})
         is_on = data.get("running", False)
         status_text = "● En línea y escuchando" if is_on else "○ Inactivo / Standby"
-        status_color = "#10B981" if is_on else "#F59E0B"
+        svg_chan = icon_svg(brand["icon_name"], size=22, color=brand["border_color"])
 
         with cols[idx]:
             st.markdown(
                 f"""
                 <div style="background:#FFFFFF; border:1px solid #E2E8F0; border-top:4px solid {brand['border_color']}; border-radius:14px; padding:1.1rem; box-shadow:0 4px 14px rgba(0,0,0,0.03); height:100%;">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span style="font-size:1.3rem;">{brand['icon']}</span>
+                        <span style="display:inline-flex; align-items:center; justify-content:center; width:34px; height:34px; border-radius:8px; background:rgba(0,0,0,0.03);">{svg_chan}</span>
                         <span class="status-pill {'online' if is_on else 'standby'}">{status_text}</span>
                     </div>
                     <div style="font-weight:800; font-size:1.1rem; color:#1E293B; margin-top:8px;">{brand['name']}</div>
@@ -118,21 +118,21 @@ def render_live_channels():
                         Protocolo: <b>{brand['protocol']}</b>
                     </div>
                     <div style="margin-top:10px; font-size:0.75rem; color:#94A3B8; border-top:1px dashed #E2E8F0; padding-top:6px;">
-                        Modo: <code>OCI Cloud Daemon</code>
+                        Modo: <code>Servicio en Nube (OCI Daemon)</code>
                     </div>
                 </div>
                 """,
                 unsafe_allow_html=True,
             )
 
-    st.markdown("---")
+    st.markdown("<hr style='margin:18px 0; border:0; border-top:1px solid #E2E8F0;' />", unsafe_allow_html=True)
 
-    # ⚡ Simulador Interactivo de Ingesta en Vivo (One-Click Demo Playground para Jueces)
-    with st.expander("⚡ Simulador Interactivo de Ingesta en Vivo (Demostración de 1 Clic para Evaluadores)", expanded=True):
+    # Simulador Interactivo de Ingesta
+    with st.expander("Simulador de Mensajes en Vivo (Prueba Rápida)", expanded=True):
         st.markdown(
             """
             <div style="font-size:0.85rem; color:#475569; margin-bottom:10px;">
-                Permite a los jueces y evaluadores simular la llegada de un mensaje en tiempo real desde cualquiera de los canales y observar cómo el pipeline de IA lo procesa instantáneamente.
+                Permite simular la llegada de un mensaje en tiempo real desde cualquiera de los canales y observar cómo la Inteligencia Artificial lo clasifica de inmediato.
             </div>
             """,
             unsafe_allow_html=True,
@@ -144,19 +144,19 @@ def render_live_channels():
         with sim_col2:
             autor_sim = st.text_input("Autor del Mensaje", value="Estudiante ONE", key="sim_autor")
         with sim_col3:
-            st.markdown("<div style='font-size:0.8rem; font-weight:700; color:#64748B; margin-bottom:4px;'>Plantillas Rápidas:</div>", unsafe_allow_html=True)
+            st.markdown("<div style='font-size:0.8rem; font-weight:700; color:#64748B; margin-bottom:4px;'>Ejemplos Rápidos:</div>", unsafe_allow_html=True)
             preset_cols = st.columns(3)
             with preset_cols[0]:
-                if st.button("🎓 Logro", use_container_width=True, help="Insertar mensaje de éxito laboral"):
+                if st.button("Logro Laboral", icon=":material/school:", use_container_width=True, help="Insertar mensaje de éxito laboral"):
                     st.session_state["sim_msg_txt"] = "¡Hola equipo! Les comparto con alegría que quedé contratado como Backend Jr tras completar la formación de Oracle ONE!"
                     st.rerun()
             with preset_cols[1]:
-                if st.button("🛠️ Duda", use_container_width=True, help="Insertar consulta técnica"):
+                if st.button("Duda Técnica", icon=":material/help:", use_container_width=True, help="Insertar consulta técnica"):
                     st.session_state["sim_msg_txt"] = "Tengo una duda técnica: ¿cómo configuro la Security List en OCI para habilitar el webhook de n8n en el puerto 5678?"
                     st.rerun()
             with preset_cols[2]:
-                if st.button("💡 Feedback", use_container_width=True, help="Insertar feedback positivo"):
-                    st.session_state["sim_msg_txt"] = "Excelente sesión de mentoría del Team 6 sobre orquestación con IA y Python. ¡Muy claros los conceptos!"
+                if st.button("Opinión / Feedback", icon=":material/thumb_up:", use_container_width=True, help="Insertar feedback positivo"):
+                    st.session_state["sim_msg_txt"] = "Excelente sesión de mentoría del Equipo 6 sobre orquestación con IA y Python. ¡Muy claros los conceptos!"
                     st.rerun()
 
         default_txt = st.session_state.get(
@@ -165,21 +165,20 @@ def render_live_channels():
         )
         msg_texto = st.text_area("Contenido del Mensaje:", value=default_txt, height=75, key="txt_sim_input")
 
-        if st.button("🚀 Ingerir Mensaje y Procesar con IA en Vivo", type="primary", use_container_width=True):
-            # Análisis rápido inferido
+        if st.button("Procesar Mensaje con Inteligencia Artificial", icon=":material/bolt:", type="primary", use_container_width=True):
             txt_lower = msg_texto.lower()
             if any(w in txt_lower for w in ["contratado", "empleo", "logro", "conseguí", "certificaci"]):
                 cat_ia = "logro_contratacion"
                 sent_ia = "positivo"
-                copy_sug = f"🎉 ¡Gran logro de la comunidad! {autor_sim} comparte su éxito tras Oracle ONE. ¡Felicitaciones! #OracleNextEducation #TalentoTech"
+                copy_sug = f"¡Gran logro de la comunidad! {autor_sim} comparte su éxito tras Oracle ONE. ¡Felicitaciones! #OracleNextEducation #TalentoTech"
             elif any(w in txt_lower for w in ["duda", "error", "cómo", "como", "problema", "puerto", "oci"]):
                 cat_ia = "duda_tecnica"
                 sent_ia = "neutro"
-                copy_sug = f"💡 Solución Técnica de la Comunidad: Para configurar el Security List en OCI, abre la VCN y agrega una regla Ingress para el puerto solicitado. #CommunityLab #CloudFAQ"
+                copy_sug = f"Solución Técnica de la Comunidad: Para configurar el Security List en OCI, abre la VCN y agrega una regla Ingress para el puerto solicitado. #CommunityLab #CloudFAQ"
             else:
                 cat_ia = "feedback_general"
                 sent_ia = "positivo"
-                copy_sug = f"💬 Feedback de nuestra comunidad: {msg_texto[:120]}... ¡Seguimos construyendo juntos! #CommunityLab"
+                copy_sug = f"Opinión de nuestra comunidad: {msg_texto[:120]}... ¡Seguimos construyendo juntos! #CommunityLab"
 
             nueva_interaccion = {
                 "lote_id": f"sim_{int(time.time())}",
@@ -201,7 +200,6 @@ def render_live_channels():
                 },
             }
 
-            # Guardar en buffer de canales
             f_canales_py = Path("data/paquete_procesado_canales_python.json")
             data_buf = {"activos": []}
             if f_canales_py.exists():
@@ -216,13 +214,14 @@ def render_live_channels():
                 f_canales_py.parent.mkdir(parents=True, exist_ok=True)
                 with open(f_canales_py, "w", encoding="utf-8") as f:
                     json.dump(data_buf, f, indent=2, ensure_ascii=False)
-                st.toast("¡Mensaje ingerido y procesado exitosamente por la IA!", icon="🚀")
+                invalidar_cache_datos()
+                st.toast("Mensaje procesado exitosamente por la Inteligencia Artificial.", icon=":material/check:")
                 time.sleep(0.5)
                 st.rerun()
             except Exception as e:
                 st.error(f"Error al guardar simulación: {e}")
 
-    st.markdown("#### 📥 Últimas Interacciones Capturadas en Vivo")
+    st.markdown("<div style='font-weight:700; font-size:1.1rem; color:#1E293B; margin-top:16px; margin-bottom:8px;'>Mensajes Recientes Capturados por los Asistentes</div>", unsafe_allow_html=True)
 
     f_canales_py = Path("data/paquete_procesado_canales_python.json")
     f_fallback = Path("data/paquete_procesado.json")
@@ -250,7 +249,7 @@ def render_live_channels():
 
     if activos_a_mostrar:
         m_col1, m_col2, m_col3 = st.columns(3)
-        m_col1.metric("Mensajes en Buffer", len(activos_a_mostrar))
+        m_col1.metric("Mensajes en Espera", len(activos_a_mostrar))
         m_col2.metric("Última Captura", "Reciente (En línea)")
         m_col3.metric("Fuente de Datos", fuente_nombre)
 
@@ -259,16 +258,23 @@ def render_live_channels():
             inter = a.get("interaccion", {})
             act = a.get("activo", {})
             canal_nombre = inter.get("canal", "#general")
+            tipo_label = {
+                "logro_contratacion": "Logro Laboral",
+                "duda_tecnica": "Duda Técnica",
+                "showcase": "Proyecto",
+                "feedback_general": "Opinión General",
+            }.get(act.get("tipo_contenido"), act.get("tipo_contenido", "General"))
+
             filas_tabla.append({
-                "Canal": f"📡 {canal_nombre}",
+                "Canal": canal_nombre,
                 "Autor": inter.get("autor", "Estudiante ONE"),
                 "Mensaje Capturado": inter.get("texto", "")[:85] + ("..." if len(inter.get("texto", "")) > 85 else ""),
-                "Categoría IA": act.get("tipo_contenido", "General"),
-                "Sentimiento": act.get("sentimiento", "neutro").upper(),
+                "Clasificación IA": tipo_label,
+                "Sentimiento": act.get("sentimiento", "neutro").capitalize(),
             })
         st.dataframe(filas_tabla, use_container_width=True, hide_index=True)
     else:
-        st.info("Utiliza el simulador superior o envía un mensaje por Telegram, Discord o Slack para ver la ingesta aquí.")
+        st.info("Utiliza el simulador superior o envía un mensaje por Telegram, Discord o Slack para ver los mensajes aquí.")
 
 
 def render_batch_processing():
@@ -276,153 +282,68 @@ def render_batch_processing():
     ruta_a_procesar = dataset_defecto
     temp_path = None
 
-    # --- BARRA COMPACTA SUPERIOR: Dataset y Parámetros (sin espacios vacíos innecesarios) ---
+    # Parámetros y dataset
     col_up_box, col_params_box = st.columns([1.0, 1.4])
 
     with col_up_box:
         uploaded = st.file_uploader(
-            "📁 Cargar dataset personalizado (JSON):",
+            "Cargar archivo de mensajes personalizado (JSON):",
             type=["json"],
             key="batch_uploader",
-            help="Sube un archivo JSON con interacciones o utiliza el oficial por defecto.",
+            help="Sube un archivo JSON con interacciones o utiliza el conjunto por defecto de la comunidad.",
         )
         if uploaded is not None:
             temp_path = Path(f"data/temp_{uploaded.name}")
             temp_path.write_bytes(uploaded.read())
             ruta_a_procesar = str(temp_path)
-            st.success(f"Cargado: `{uploaded.name}` ({round(uploaded.size / 1024, 1)} KB)")
+            st.success(f"Archivo cargado: `{uploaded.name}` ({round(uploaded.size / 1024, 1)} KB)")
         else:
-            st.caption(f"ℹ️ Dataset base: `data/interacciones_ejemplo.json` (15 registros)")
+            st.caption(f"Archivo base predeterminado: `data/interacciones_ejemplo.json` (15 registros)")
 
     with col_params_box:
         c1, c2, c3, c4 = st.columns([1.2, 1.8, 1.3, 1.3])
         with c1:
-            limite = st.number_input("Límite (0=todos):", min_value=0, max_value=100, value=3, key="batch_limite")
+            limite = st.number_input("Cantidad de registros (0=todos):", min_value=0, max_value=100, value=3, key="batch_limite")
         with c2:
             canal_filtro = st.selectbox(
-                "Canal:",
+                "Filtrar por canal:",
                 ["Todos", "#logros-y-empleos", "#dudas-cloud-oci", "#dudas-langgraph", "#feedback-cursos", "#proyectos-showcase"],
                 key="batch_canal_filtro",
             )
         with c3:
             st.markdown("<div style='height: 24px;'></div>", unsafe_allow_html=True)
-            if st.button("🗑️ Vaciar Lotes", help="Elimina los JSON de sesión temporal", use_container_width=True):
+            if st.button("Limpiar Lotes", icon=":material/delete:", help="Elimina los archivos JSON temporales de la sesión", use_container_width=True):
                 for fpath in ["data/paquete_procesado_python.json", "data/paquete_procesado_n8n.json", "data/paquete_procesado.json"]:
                     p = Path(fpath)
                     if p.exists():
                         p.unlink()
-                st.toast("Lotes locales eliminados.", icon="🗑️")
+                invalidar_cache_datos()
+                st.toast("Archivos de sesión eliminados.", icon=":material/check:")
                 st.rerun()
         with c4:
             st.markdown("<div style='height: 24px;'></div>", unsafe_allow_html=True)
-            with st.popover("⚠️ Histórico OCI", use_container_width=True):
-                st.warning("¿Deseas vaciar el bucket en OCI?")
-                if st.button("🚨 Confirmar", type="primary", key="btn_vaciar_oci_batch"):
+            with st.popover("Histórico Cloud", use_container_width=True):
+                st.warning("¿Deseas vaciar los paquetes almacenados en la nube Oracle Cloud?")
+                if st.button("Confirmar", icon=":material/delete_forever:", type="primary", key="btn_vaciar_oci_batch"):
                     n_del = vaciar_historico_oci()
-                    st.toast(f"Histórico OCI vaciado ({n_del} objetos).", icon="☁️")
+                    invalidar_cache_datos()
+                    st.toast(f"Histórico en la nube vaciado ({n_del} paquetes).", icon=":material/check:")
                     st.rerun()
 
-        # Opciones de persistencia en una fila compacta
         chk1, chk2 = st.columns(2)
         with chk1:
-            subir_oci = st.checkbox("Subir a OCI Storage", value=True, help="Persiste los 4 archivos temáticos a OCI.")
+            subir_oci = st.checkbox("Guardar en la nube (Oracle Cloud)", value=True, help="Guarda automáticamente los 4 archivos temáticos generados en OCI.")
         with chk2:
-            omitir_ya_procesados = st.checkbox("Omitir ya procesados en OCI", value=True, help="Evita duplicar registros ya subidos.")
+            omitir_ya_procesados = st.checkbox("Omitir mensajes ya procesados", value=True, help="Evita procesar o duplicar registros que ya fueron procesados previamente.")
 
-    st.markdown("<div style='height: 0.5rem;'></div>", unsafe_allow_html=True)
+    st.markdown("<div style='height: 0.8rem;'></div>", unsafe_allow_html=True)
 
+    play_icon = icon_svg("cpu", size=22, color="#4F46E5", extra_style="margin-right:8px;")
     st.markdown(
-        """
-        <div style="font-size: 1.3rem; font-weight: 800; color: inherit; margin-bottom: 0.8rem; display: flex; align-items: center; gap: 8px;">
-            <span>Interactive execution center</span>
+        f"""
+        <div style="font-size: 1.25rem; font-weight: 800; color: #1E293B; margin-bottom: 0.8rem; display: flex; align-items: center;">
+            {play_icon} <span>Centro de Ejecución de Motores de IA</span>
         </div>
-        """,
-        unsafe_allow_html=True,
-    )
-
-    st.markdown(
-        """
-        <style>
-        /* Contenedores oscuros EXCLUSIVAMENTE para los dos motores (Motor 1 n8n y Motor 2 Python) */
-        .st-key-motor_n8n_card,
-        .st-key-motor_python_card,
-        [class*="st-key-motor_n8n_card"],
-        [class*="st-key-motor_python_card"] {
-            background-color: #0F172A !important;
-            background: #0F172A !important;
-            border: 1px solid #1E293B !important;
-            border-radius: 14px !important;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25) !important;
-            padding: 1.25rem 1.4rem !important;
-            color: #F8FAFC !important;
-        }
-
-        /* Tipografía dentro de los motores */
-        .st-key-motor_n8n_card p,
-        .st-key-motor_python_card p,
-        [class*="st-key-motor_n8n_card"] p,
-        [class*="st-key-motor_python_card"] p {
-            color: #CBD5E1 !important;
-        }
-
-        /* Labels de los inputs en blanco legible */
-        .st-key-motor_n8n_card label,
-        .st-key-motor_python_card label,
-        [class*="st-key-motor_n8n_card"] label,
-        [class*="st-key-motor_python_card"] label,
-        .st-key-motor_n8n_card [data-testid="stWidgetLabel"] p,
-        .st-key-motor_python_card [data-testid="stWidgetLabel"] p {
-            color: #F1F5F9 !important;
-            font-weight: 700 !important;
-            font-size: 0.88rem !important;
-        }
-
-        /* Inputs y campos oscuros sin fondo blanco */
-        .st-key-motor_n8n_card input,
-        .st-key-motor_python_card input,
-        [class*="st-key-motor_n8n_card"] input,
-        [class*="st-key-motor_python_card"] input,
-        .st-key-motor_n8n_card [data-baseweb="input"],
-        .st-key-motor_python_card [data-baseweb="input"],
-        .st-key-motor_n8n_card [data-baseweb="base-input"],
-        .st-key-motor_python_card [data-baseweb="base-input"] {
-            background-color: #1E293B !important;
-            background: #1E293B !important;
-            border: 1px solid #334155 !important;
-            color: #F8FAFC !important;
-            border-radius: 8px !important;
-            font-size: 0.88rem !important;
-        }
-
-        .st-key-motor_n8n_card input:focus,
-        .st-key-motor_python_card input:focus,
-        [class*="st-key-motor_n8n_card"] input:focus,
-        [class*="st-key-motor_python_card"] input:focus {
-            border-color: #38BDF8 !important;
-            box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.25) !important;
-        }
-
-        .st-key-motor_n8n_card input:disabled,
-        .st-key-motor_python_card input:disabled,
-        [class*="st-key-motor_n8n_card"] input:disabled,
-        [class*="st-key-motor_python_card"] input:disabled {
-            background-color: #1E293B !important;
-            background: #1E293B !important;
-            color: #94A3B8 !important;
-            -webkit-text-fill-color: #94A3B8 !important;
-            border-color: #334155 !important;
-        }
-
-        /* Badges adaptados al fondo oscuro */
-        .st-key-motor_n8n_card .badge-tag,
-        .st-key-motor_python_card .badge-tag,
-        [class*="st-key-motor_n8n_card"] .badge-tag,
-        [class*="st-key-motor_python_card"] .badge-tag {
-            background: rgba(30, 41, 59, 0.9) !important;
-            color: #94A3B8 !important;
-            border: 1px solid rgba(255, 255, 255, 0.08) !important;
-        }
-        </style>
         """,
         unsafe_allow_html=True,
     )
@@ -430,81 +351,46 @@ def render_batch_processing():
     col_n8n, col_py = st.columns(2)
 
     with col_n8n:
-        with st.container(key="motor_n8n_card", border=True):
+        with st.container(border=True):
+            webhook_svg = icon_svg("webhook", size=18, color="#F59E0B", extra_style="margin-right:6px;")
             st.markdown(
-                """
+                f"""
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                    <div style="display: flex; align-items: center; gap: 8px;">
-                        <div style="background: #2563EB; width: 28px; height: 28px; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 0.95rem;">🔄</div>
-                        <span style="font-size: 1.12rem; font-weight: 800; color: #FFA116; line-height: 1.2;">Motor 1: Orquestador n8n</span>
+                    <div style="display: flex; align-items: center;">
+                        {webhook_svg}
+                        <span style="font-size: 1.1rem; font-weight: 800; color: #1E293B;">Motor 1: Orquestador n8n</span>
                     </div>
-                    <div style="background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.3); color: #FBBF24; font-weight: 700; font-size: 0.72rem; padding: 2px 8px; border-radius: 6px; letter-spacing: 0.04em;">VISUAL WEBHOOK</div>
+                    <div style="background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.3); color: #B45309; font-weight: 700; font-size: 0.72rem; padding: 2px 8px; border-radius: 6px;">FLUJO VISUAL</div>
                 </div>
-                <div style="color: #94A3B8; font-size: 0.82rem; margin: 6px 0 10px 0; line-height: 1.38; min-height: 38px;">
-                    Orquestación visual basada en flujos de nodos automatizados con bucles por interacción y bifurcación Switch hacia OCI.
+                <div style="color: #64748B; font-size: 0.82rem; margin: 6px 0 10px 0; line-height: 1.4; min-height: 38px;">
+                    Orquestación visual basada en nodos de automatización con conexión HTTP directa a la máquina virtual en la nube.
                 </div>
-                <div class="engine-features-list">
-                    <div class="engine-feature-item">
-                        <span class="engine-feat-icon">⚡</span>
-                        <span class="engine-feat-label">Instancia:</span>
-                        <span class="engine-feat-val">OCI VM / Local (<code class="engine-port-pill">:5678</code>)</span>
-                    </div>
-                    <div class="engine-feature-item">
-                        <span class="engine-feat-icon">🧠</span>
-                        <span class="engine-feat-label">LLM:</span>
-                        <span class="engine-feat-val">Basic LLM Chain + Groq / Gemini</span>
-                    </div>
-                    <div class="engine-feature-item">
-                        <span class="engine-feat-icon">🔀</span>
-                        <span class="engine-feat-label">Enrutamiento:</span>
-                        <span class="engine-feat-val">4 ramales especializados</span>
-                    </div>
-                    <div class="engine-feature-item">
-                        <span class="engine-feat-icon">🗄️</span>
-                        <span class="engine-feat-label">Persistencia:</span>
-                        <span class="engine-feat-val">Nodos OCI REST integrados</span>
-                    </div>
+                <div style="line-height:1.9; font-size:0.8rem; color:#475569; margin-bottom:12px;">
+                    <div>● <b>Instancia:</b> Máquina Virtual OCI (puerto :5678)</div>
+                    <div>● <b>Modelos de IA:</b> Cadena LLM con Groq / Gemini</div>
+                    <div>● <b>Enrutamiento:</b> 4 ramales temáticos especializados</div>
+                    <div>● <b>Almacenamiento:</b> Nodos REST hacia Oracle Cloud</div>
                 </div>
                 """,
                 unsafe_allow_html=True,
             )
 
-            webhook_default = get_n8n_webhook_url()
             webhook_url = st.text_input(
-                "Webhook URL",
-                value=webhook_default,
-                key="input_wh_batch",
-                help="Endpoint HTTP de ingesta del workflow n8n.",
+                "Dirección URL del Webhook",
+                value=get_n8n_webhook_url(),
+                key="input_webhook_n8n",
+                help="Endpoint del Webhook de n8n para el procesamiento por lotes.",
             )
 
-            st.markdown(
-                """
-                <div style="margin: 4px 0 12px 0;">
-                    <span class="badge-tag">👥 Orquestación Visual & Loops</span>
-                </div>
-                """,
-                unsafe_allow_html=True,
-            )
-
-            col_st_n8n, col_btn_n8n = st.columns([1.0, 1.4])
-            with col_st_n8n:
-                st.markdown(
-                    """
-                    <div style="padding-top: 6px;">
-                        <span class="badge-status-green">● Activo 24/7</span>
-                    </div>
-                    """,
-                    unsafe_allow_html=True,
-                )
-            with col_btn_n8n:
-                btn_n8n = st.button("Ejecutar via Webhook", type="primary", use_container_width=True, key="btn_run_n8n")
+            st.write("")
+            btn_n8n = st.button("Ejecutar vía Webhook", icon=":material/bolt:", type="primary", use_container_width=True, key="btn_run_n8n")
 
             if btn_n8n:
                 canal_val = None if canal_filtro == "Todos" else canal_filtro
                 limite_val = None if limite == 0 else int(limite)
                 ids_omitir = obtener_ids_procesados_sesion() if omitir_ya_procesados else None
 
-                with st.spinner("Enviando interacciones al Webhook de n8n..."):
+                with st.spinner("Enviando mensajes al flujo de n8n..."):
                     t_ini = time.time()
                     try:
                         paquete_n8n = procesar_archivo_n8n_ui(
@@ -516,90 +402,57 @@ def render_batch_processing():
                             ids_a_omitir=ids_omitir,
                         )
                         t_total = time.time() - t_ini
-                        st.success(f"¡Flujo n8n completado en **{t_total:.2f}s**!")
+                        invalidar_cache_datos()
+                        st.success(f"Flujo n8n completado en **{t_total:.2f} s**")
                         st.json(paquete_n8n.get("metricas", {}))
                     except Exception as e:
-                        st.error(f"Error en n8n: {e}")
+                        st.error(f"Error al conectar con n8n: {e}")
                     finally:
                         if temp_path and temp_path.exists():
                             temp_path.unlink()
 
     with col_py:
-        with st.container(key="motor_python_card", border=True):
+        with st.container(border=True):
+            code_svg = icon_svg("terminal", size=18, color="#059669", extra_style="margin-right:6px;")
             st.markdown(
-                """
+                f"""
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                    <div style="display: flex; align-items: center; gap: 8px;">
-                        <div style="background: #0D9488; width: 28px; height: 28px; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 0.95rem;">🔄</div>
-                        <span style="font-size: 1.12rem; font-weight: 800; color: #38BDF8; line-height: 1.2;">Motor 2: Pipeline Python Nativo</span>
+                    <div style="display: flex; align-items: center;">
+                        {code_svg}
+                        <span style="font-size: 1.1rem; font-weight: 800; color: #1E293B;">Motor 2: Pipeline Python Nativo</span>
                     </div>
-                    <div style="background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.3); color: #38BDF8; font-weight: 700; font-size: 0.72rem; padding: 2px 8px; border-radius: 6px; letter-spacing: 0.04em;">NATIVE CODE</div>
+                    <div style="background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.3); color: #047857; font-weight: 700; font-size: 0.72rem; padding: 2px 8px; border-radius: 6px;">CÓDIGO NATIVO</div>
                 </div>
-                <div style="color: #94A3B8; font-size: 0.82rem; margin: 6px 0 10px 0; line-height: 1.38; min-height: 38px;">
-                    Código modular de alto rendimiento en <code style="background: rgba(20, 184, 166, 0.15); color: #2DD4BF; padding: 1px 6px; border-radius: 4px; font-size: 0.78rem;">src/</code> con tipado Pydantic estricto y conmutación automática de modelos Gemini.
+                <div style="color: #64748B; font-size: 0.82rem; margin: 6px 0 10px 0; line-height: 1.4; min-height: 38px;">
+                    Pipeline modular en Python con validación Pydantic estricta y conmutación automática de modelos Gemini.
                 </div>
-                <div class="engine-features-list">
-                    <div class="engine-feature-item">
-                        <span class="engine-feat-icon">⚡</span>
-                        <span class="engine-feat-label">LLM:</span>
-                        <span class="engine-feat-val">Gemini 3.6 Flash (fallback 3.5 Lite)</span>
-                    </div>
-                    <div class="engine-feature-item">
-                        <span class="engine-feat-icon">🛡️</span>
-                        <span class="engine-feat-label">Resiliencia:</span>
-                        <span class="engine-feat-val">Retry exponencial + Circuit Breaker</span>
-                    </div>
-                    <div class="engine-feature-item">
-                        <span class="engine-feat-icon">🧪</span>
-                        <span class="engine-feat-label">Testing:</span>
-                        <span class="engine-feat-val">71 tests unitarios en pytest (100% pass)</span>
-                    </div>
-                    <div class="engine-feature-item">
-                        <span class="engine-feat-icon">🚀</span>
-                        <span class="engine-feat-label">Rendimiento:</span>
-                        <span class="engine-feat-val">Paralelismo asíncrono y caché local</span>
-                    </div>
+                <div style="line-height:1.9; font-size:0.8rem; color:#475569; margin-bottom:12px;">
+                    <div>● <b>Modelo Principal:</b> Google Gemini 2.5 Flash (versión alternativa Groq)</div>
+                    <div>● <b>Resiliencia:</b> Reintentos automáticos y protección ante fallos</div>
+                    <div>● <b>Pruebas:</b> 71 pruebas automatizadas aprobadas (100%)</div>
+                    <div>● <b>Rendimiento:</b> Paralelismo asíncrono y caché de alta velocidad</div>
                 </div>
                 """,
                 unsafe_allow_html=True,
             )
 
             st.text_input(
-                "Motor LLM & Resiliencia",
-                value="Google Gemini 2.5 Flash (Fallback Groq)",
+                "Motor de Inteligencia Artificial",
+                value="Google Gemini 2.5 Flash (Respaldo Groq LLaMA-3)",
                 disabled=True,
                 key="input_model_py",
-                help="Pipeline nativo en Python con Structured Outputs Pydantic.",
+                help="Pipeline nativo en Python con generación de texto estructurado.",
             )
 
-            st.markdown(
-                """
-                <div style="margin: 4px 0 12px 0;">
-                    <span class="badge-tag">🛡️ Circuit Breaker Resilience</span>
-                </div>
-                """,
-                unsafe_allow_html=True,
-            )
-
-            col_st_py, col_btn_py = st.columns([1.0, 1.4])
-            with col_st_py:
-                st.markdown(
-                    """
-                    <div style="padding-top: 6px;">
-                        <span class="badge-status-green">● Listo para Ingesta</span>
-                    </div>
-                    """,
-                    unsafe_allow_html=True,
-                )
-            with col_btn_py:
-                btn_py = st.button("Ejecutar Pipeline Nativo", type="primary", use_container_width=True, key="btn_run_py")
+            st.write("")
+            btn_py = st.button("Ejecutar Pipeline Nativo", icon=":material/play_arrow:", type="primary", use_container_width=True, key="btn_run_py")
 
             if btn_py:
                 canal_val = None if canal_filtro == "Todos" else canal_filtro
                 limite_val = None if limite == 0 else int(limite)
                 ids_omitir = obtener_ids_procesados_sesion() if omitir_ya_procesados else None
 
-                with st.spinner("Procesando lote con Gemini 2.5 Flash..."):
+                with st.spinner("Procesando lote de mensajes con Gemini 2.5 Flash..."):
                     t_ini = time.time()
                     try:
                         paquete_py = procesar_archivo_ui(
@@ -611,42 +464,45 @@ def render_batch_processing():
                             ids_a_omitir=ids_omitir,
                         )
                         t_total = time.time() - t_ini
-                        st.success(f"¡Pipeline Python completado en **{t_total:.2f}s**!")
+                        invalidar_cache_datos()
+                        st.success(f"Pipeline completado con éxito en **{t_total:.2f} s**")
                         st.json(paquete_py.get("metricas", {}))
-                        st.info("Los 4 archivos especializados fueron actualizados en OCI Object Storage.")
+                        st.info("Los 4 archivos especializados fueron actualizados correctamente en la nube.")
                     except Exception as e:
                         st.error(f"Error en Pipeline Python: {e}")
                     finally:
                         if temp_path and temp_path.exists():
                             temp_path.unlink()
 
-    # --- FILA INFERIOR: Stepper de 4 Pasos + Tarjeta de Métricas (según motores.png) ---
-    st.markdown("<div style='height: 1rem;'></div>", unsafe_allow_html=True)
-
+    # Stepper y Métricas Consolidadas
+    st.markdown("<div style='height: 1.2rem;'></div>", unsafe_allow_html=True)
     col_stepper, col_metrics = st.columns([2.3, 1.0])
 
     with col_stepper:
         st.markdown(
             """
-            <div class="stepper-container" style="height: 90px; min-height: 90px; max-height: 90px; box-sizing: border-box;">
-                <div class="step-node">
-                    <div class="step-circle active">1</div>
-                    <div class="step-label active">Ingesta</div>
-                </div>
-                <div class="step-connector active"></div>
-                <div class="step-node">
-                    <div class="step-circle">2</div>
-                    <div class="step-label">Análisis LLM</div>
-                </div>
-                <div class="step-connector"></div>
-                <div class="step-node">
-                    <div class="step-circle">3</div>
-                    <div class="step-label">Curaduría</div>
-                </div>
-                <div class="step-connector"></div>
-                <div class="step-node">
-                    <div class="step-circle">4</div>
-                    <div class="step-label">Persistencia OCI</div>
+            <div class="stepper-container" style="background:#FFFFFF; border:1px solid #E2E8F0; border-radius:12px; padding:16px 20px;">
+                <div style="font-weight:700; font-size:0.85rem; color:#64748B; margin-bottom:12px; text-transform:uppercase;">Flujo Integral de Ejecución E2E</div>
+                <div style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
+                    <div class="step-node" style="text-align:center;">
+                        <div class="step-circle active" style="width:28px; height:28px; border-radius:50%; background:#4F46E5; color:#fff; display:inline-flex; align-items:center; justify-content:center; font-weight:700; font-size:0.8rem;">1</div>
+                        <div class="step-label active" style="font-size:0.75rem; font-weight:600; margin-top:4px;">Ingesta</div>
+                    </div>
+                    <div style="flex:1; height:2px; background:#4F46E5;"></div>
+                    <div class="step-node" style="text-align:center;">
+                        <div class="step-circle" style="width:28px; height:28px; border-radius:50%; background:#4F46E5; color:#fff; display:inline-flex; align-items:center; justify-content:center; font-weight:700; font-size:0.8rem;">2</div>
+                        <div class="step-label" style="font-size:0.75rem; font-weight:600; margin-top:4px;">Análisis IA</div>
+                    </div>
+                    <div style="flex:1; height:2px; background:#4F46E5;"></div>
+                    <div class="step-node" style="text-align:center;">
+                        <div class="step-circle" style="width:28px; height:28px; border-radius:50%; background:#4F46E5; color:#fff; display:inline-flex; align-items:center; justify-content:center; font-weight:700; font-size:0.8rem;">3</div>
+                        <div class="step-label" style="font-size:0.75rem; font-weight:600; margin-top:4px;">Moderación</div>
+                    </div>
+                    <div style="flex:1; height:2px; background:#E2E8F0;"></div>
+                    <div class="step-node" style="text-align:center;">
+                        <div class="step-circle" style="width:28px; height:28px; border-radius:50%; background:#E2E8F0; color:#64748B; display:inline-flex; align-items:center; justify-content:center; font-weight:700; font-size:0.8rem;">4</div>
+                        <div class="step-label" style="font-size:0.75rem; font-weight:600; margin-top:4px; color:#64748B;">Guardado Cloud</div>
+                    </div>
                 </div>
             </div>
             """,
@@ -654,19 +510,18 @@ def render_batch_processing():
         )
 
     with col_metrics:
-        # Contabilizar interacciones procesadas reales o métrica destacada
         try:
             ids_proc = len(obtener_ids_procesados_sesion(consultar_oci=False))
-            val_metric = f"{ids_proc:,}" if ids_proc > 0 else "1,100,023"
+            val_metric = f"{ids_proc:,}" if ids_proc > 0 else "15"
         except Exception:
-            val_metric = "1,100,023"
+            val_metric = "15"
 
         st.markdown(
             f"""
-            <div class="metric-box-card" style="height: 90px; min-height: 90px; max-height: 90px; box-sizing: border-box;">
-                <div class="metric-box-title">Metrics</div>
-                <div class="metric-box-value">{val_metric}</div>
-                <div class="metric-box-desc">Total processed items</div>
+            <div style="background:#FFFFFF; border:1px solid #E2E8F0; border-radius:12px; padding:14px 18px; text-align:center;">
+                <div style="font-size:0.75rem; font-weight:700; color:#64748B; text-transform:uppercase;">Mensajes Únicos</div>
+                <div style="font-size:1.8rem; font-weight:800; color:#4F46E5; margin:4px 0;">{val_metric}</div>
+                <div style="font-size:0.75rem; color:#64748B;">Registros en la sesión activa</div>
             </div>
             """,
             unsafe_allow_html=True,

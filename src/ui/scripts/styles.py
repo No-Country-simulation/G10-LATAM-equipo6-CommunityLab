@@ -96,27 +96,59 @@ section[data-testid="stSidebar"] a, section[data-testid="stSidebar"] a:visited {
 }}
 [data-testid="stSidebar"] .stButton > button {{
     width:100% !important;
-    height:36px !important;
-    min-height:36px !important;
+    height:38px !important;
+    min-height:38px !important;
     margin:2px 0 !important;
-    padding:7px 14px !important;
+    padding:6px 12px !important;
     border-radius:10px !important;
-    border:0 !important;
-    background:transparent !important;
-    color:{palette['sidebar_item']} !important;
-    font-weight:500 !important;
-    font-size:.88rem !important;
     text-align:left !important;
     display:flex !important;
     align-items:center !important;
     justify-content:flex-start !important;
     gap:10px !important;
-    box-shadow:none !important;
-    line-height:1.15 !important;
+    line-height:1.2 !important;
+    font-size:.85rem !important;
+    transition: all 0.15s ease-in-out !important;
 }}
+[data-testid="stSidebar"] button[data-testid="baseButton-secondary"],
+[data-testid="stSidebar"] button[kind="secondary"],
+[data-testid="stSidebar"] .stButton > button:not([kind="primary"]):not([data-testid="baseButton-primary"]) {{
+    background:rgba(255,255,255,0.04) !important;
+    border:1px solid rgba(255,255,255,0.06) !important;
+    color:#D6D8F8 !important;
+    box-shadow:none !important;
+}}
+[data-testid="stSidebar"] button[data-testid="baseButton-secondary"] *,
+[data-testid="stSidebar"] button[kind="secondary"] *,
+[data-testid="stSidebar"] .stButton > button:not([kind="primary"]) * {{
+    color:#D6D8F8 !important;
+    stroke:#D6D8F8 !important;
+}}
+[data-testid="stSidebar"] button[data-testid="baseButton-secondary"]:hover,
+[data-testid="stSidebar"] button[kind="secondary"]:hover,
 [data-testid="stSidebar"] .stButton > button:hover {{
-    background:rgba(255,255,255,.06) !important;
-    color:#fff !important;
+    background:rgba(255,255,255,0.12) !important;
+    border-color:rgba(255,255,255,0.18) !important;
+    color:#FFFFFF !important;
+}}
+[data-testid="stSidebar"] button[data-testid="baseButton-secondary"]:hover *,
+[data-testid="stSidebar"] button[kind="secondary"]:hover * {{
+    color:#FFFFFF !important;
+    stroke:#FFFFFF !important;
+}}
+[data-testid="stSidebar"] button[kind="primary"],
+[data-testid="stSidebar"] button[data-testid="baseButton-primary"] {{
+    background:linear-gradient(135deg, #4F46E5 0%, #6366F1 100%) !important;
+    border:1px solid rgba(255,255,255,0.25) !important;
+    color:#FFFFFF !important;
+    font-weight:700 !important;
+    box-shadow:0 4px 14px rgba(79, 70, 229, 0.45) !important;
+}}
+[data-testid="stSidebar"] button[kind="primary"] *,
+[data-testid="stSidebar"] button[data-testid="baseButton-primary"] * {{
+    color:#FFFFFF !important;
+    stroke:#FFFFFF !important;
+    font-weight:700 !important;
 }}
 [data-testid="stSidebar"] .stButton > button p,
 [data-testid="stSidebar"] .stButton > button div {{
@@ -125,12 +157,6 @@ section[data-testid="stSidebar"] a, section[data-testid="stSidebar"] a:visited {
 [data-testid="stSidebar"] .stButton > button > div {{
     width:100% !important;
     justify-content:flex-start !important;
-}}
-[data-testid="stSidebar"] .stButton > button[kind="primary"],
-[data-testid="stSidebar"] .stButton > button[data-testid="baseButton-primary"] {{
-    background:{palette['primary']} !important;
-    color:#fff !important;
-    font-weight:700 !important;
 }}
 .brand {{ font-size:1.35rem; font-weight:800; color:#fff !important; display:flex; gap:10px; align-items:center; }}
 .brand small {{ display:block; font-size:.78rem; font-weight:400; color:{palette['sidebar_heading']} !important; line-height:1.2; }}

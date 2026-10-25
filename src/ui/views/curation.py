@@ -1,4 +1,4 @@
-"""Vistas de revisión, aprobación y publicación de activos de CommunityLab."""
+"""Vistas de moderación, aprobación y banco de soluciones técnicas."""
 
 from __future__ import annotations
 
@@ -7,6 +7,7 @@ import streamlit as st
 from components import editor, post_list, preview
 from scripts.config import BADGE, CANAL_ICON
 from scripts.data_adapter import obtener_opciones_fuente
+from scripts.icons import icon_svg
 from scripts.services import get_visible_posts
 from scripts.state import select_post
 from scripts.utils import H, esc
@@ -14,8 +15,8 @@ from .common import render_page_card
 
 
 def render_pending_review():
-    """Vista tri-panel de revisión humana de activos generados."""
-    # Selector de Fuente / Paquete (OCI vs Local)
+    """Vista principal de revisión humana de publicaciones generadas."""
+    # Selector de Fuente / Paquete (Nube vs Local)
     opciones_fuente = obtener_opciones_fuente()
     etiquetas = [opt[0] for opt in opciones_fuente]
     idx_defecto = 0
@@ -23,14 +24,14 @@ def render_pending_review():
     if sel_actual in etiquetas:
         idx_defecto = etiquetas.index(sel_actual)
 
-    col_sel, col_ref = st.columns([4, 1])
+    col_sel, col_ref = st.columns([4, 1.2])
     with col_sel:
         fuente_elegida = st.selectbox(
-            "📦 Fuente de Activos a Curar:",
+            "Origen de los datos:",
             etiquetas,
             index=idx_defecto,
             key="sb_fuente_curaduria",
-            help="Selecciona un paquete almacenado en Oracle Cloud (OCI) o en disco local.",
+            help="Selecciona el paquete de mensajes almacenado en Oracle Cloud o en disco local.",
         )
         if fuente_elegida != st.session_state.get("selected_package_label"):
             st.session_state["selected_package_label"] = fuente_elegida
@@ -39,7 +40,7 @@ def render_pending_review():
     with col_ref:
         st.write("")
         st.write("")
-        if st.button("🔄 Refrescar", use_container_width=True, help="Recarga datos desde OCI / disco"):
+        if st.button("Actualizar", icon=":material/refresh:", use_container_width=True, help="Recarga la lista de mensajes"):
             st.rerun()
 
     todos = get_visible_posts()
@@ -48,23 +49,29 @@ def render_pending_review():
     n_pendientes = sum(1 for p in todos if p.get("estado") in {"Pendiente", "En revisión"})
     n_descartados = sum(1 for p in todos if p.get("estado") == "Descartado")
 
-    # Barra resumen de curaduría
+    # Barra resumen de moderación
     es_oci = "OCI" in str(st.session_state.get("selected_package_label", ""))
+    cloud_icon = icon_svg("cloud", size=14, color="#2563EB" if es_oci else "#64748B")
+    clock_icon = icon_svg("clock", size=14, color="#D97706")
+    check_icon = icon_svg("check-circle", size=14, color="#059669")
+    x_icon = icon_svg("x-circle", size=14, color="#DC2626")
+    board_icon = icon_svg("clipboard-check", size=22, color="#1E3A8A")
+
     st.markdown(
         f"""
-        <div style="background:linear-gradient(135deg,#F8FAFC,#EFF6FF); border:1px solid #DBEAFE; border-radius:14px; padding:12px 18px; margin-bottom:14px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
-            <div style="display:flex; align-items:center; gap:10px;">
-                <span style="font-size:1.4rem;">📋</span>
+        <div style="background:linear-gradient(135deg, #F8FAFC 0%, #EFF6FF 100%); border:1px solid #DBEAFE; border-radius:14px; padding:14px 20px; margin-bottom:16px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+            <div style="display:flex; align-items:center; gap:12px;">
+                {board_icon}
                 <div>
-                    <span style="font-weight:800; font-size:1.05rem; color:#1E3A8A;">Centro de Curaduría Humana Tri-Panel</span>
-                    <div style="font-size:0.8rem; color:#64748B;">Revisa, ajusta con IA y aprueba copys para persistencia y distribución oficial.</div>
+                    <span style="font-weight:800; font-size:1.05rem; color:#1E3A8A;">Centro de Moderación y Curaduría</span>
+                    <div style="font-size:0.8rem; color:#64748B;">Revisa, edita con IA y aprueba publicaciones antes de compartirlas en redes oficiales.</div>
                 </div>
             </div>
-            <div style="display:flex; gap:10px; align-items:center;">
-                <span class="status-pill {'oci' if es_oci else 'standby'}">Fuente: {'☁️ OCI Cloud' if es_oci else '📁 Local'}</span>
-                <span class="status-pill standby">⏳ {n_pendientes} Pendientes</span>
-                <span class="status-pill online">✅ {n_aprobados} Aprobados</span>
-                <span class="status-pill offline">❌ {n_descartados} Descartados</span>
+            <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+                <span class="status-pill {'oci' if es_oci else 'standby'}" style="display:inline-flex; align-items:center; gap:5px;">{cloud_icon} Fuente: {'Nube OCI' if es_oci else 'Archivo Local'}</span>
+                <span class="status-pill standby" style="display:inline-flex; align-items:center; gap:5px;">{clock_icon} {n_pendientes} Pendientes</span>
+                <span class="status-pill online" style="display:inline-flex; align-items:center; gap:5px;">{check_icon} {n_aprobados} Aprobados</span>
+                <span class="status-pill offline" style="display:inline-flex; align-items:center; gap:5px;">{x_icon} {n_descartados} Descartados</span>
             </div>
         </div>
         """,
@@ -78,7 +85,7 @@ def render_pending_review():
 
     if post is None:
         with col_edit:
-            st.info("Ajusta los filtros o selecciona un paquete con datos para revisar activos.")
+            st.info("Ajusta los filtros o selecciona un paquete con datos para revisar publicaciones.")
         with col_prev:
             st.empty()
         return
@@ -91,65 +98,63 @@ def render_pending_review():
 
 
 def render_approved_assets():
-    """Muestra el catálogo de activos aprobados por curaduría humana y listos para distribución."""
+    """Muestra el catálogo de publicaciones aprobadas y listas para distribución."""
     render_page_card(
-        "Activos Aprobados y Listos para Distribución",
-        "Colección de copys y piezas curadas y validadas por el equipo de moderación. Listas para copiar o publicar.",
-        "🟢",
+        "Publicaciones Aprobadas y Listas para Distribuir",
+        "Colección de piezas de contenido revisadas y validadas por el moderador, listas para copiar o enviar a redes.",
+        "circle-check",
     )
 
     aprobados = [p for p in get_visible_posts() if p.get("estado") == "Aprobado"]
 
     c1, c2, c3 = st.columns(3)
-    c1.metric("Total Aprobados", len(aprobados))
+    c1.metric("Total Aprobadas", len(aprobados))
     c2.metric("Canal Principal", "LinkedIn" if aprobados else "-")
-    c3.metric("OCI Status", "Sincronizado" if aprobados else "Pendiente")
+    c3.metric("Sincronización en Nube", "Sincronizado" if aprobados else "Pendiente")
 
-    st.markdown("---")
+    st.markdown("<hr style='margin:16px 0; border:0; border-top:1px solid #E2E8F0;' />", unsafe_allow_html=True)
 
     if not aprobados:
-        st.info("Aún no hay activos con estado **Aprobado**. Dirígete a **Revisión Pendiente** para curar y aprobar contenidos.")
+        st.info("Aún no hay publicaciones con estado **Aprobado**. Dirígete a **Pendientes de Revisión** para moderar y aprobar contenidos.")
         return
 
     for post in aprobados:
         with st.container(border=True):
             cols = st.columns([3, 1])
             with cols[0]:
-                icon = CANAL_ICON.get(post.get("canal", "LinkedIn"), "📢")
-                st.markdown(f"### {icon} {post.get('title')}")
-                st.caption(f"Canal Ingesta: **{post.get('canal_ingesta')}** | Autor: **{post.get('sub')}** | ID: `{post.get('id')}`")
+                st.markdown(f"### {post.get('title')}")
+                st.caption(f"Canal de procedencia: **{post.get('canal_ingesta')}** | Autor: **{post.get('sub')}** | ID: `{post.get('id')}`")
             with cols[1]:
-                if st.button("✏️ Editar", key=f"edit_ap_{post['id']}", use_container_width=True):
+                if st.button("Editar de nuevo", icon=":material/edit:", key=f"edit_ap_{post['id']}", use_container_width=True):
                     select_post(post["id"])
-                    st.session_state["nav_section"] = "curation"
-                    st.session_state["nav_view"] = "pending_review"
+                    st.session_state["active_view"] = "pending_review"
                     st.rerun()
 
             copy_txt = post.get("copy", "")
-            st.text_area("Copy Final Validado", value=copy_txt, height=120, key=f"txt_ap_{post['id']}", disabled=True)
+            st.text_area("Texto Aprobado", value=copy_txt, height=120, key=f"txt_ap_{post['id']}", disabled=True)
 
             action_cols = st.columns([1, 1, 2])
             with action_cols[0]:
-                if st.button("📋 Copiar Copy", key=f"cp_ap_{post['id']}", use_container_width=True):
-                    st.toast("Copy copiado al portapapeles (simulado)", icon="📋")
+                if st.button("Copiar Texto", icon=":material/content_copy:", key=f"cp_ap_{post['id']}", use_container_width=True):
+                    st.toast("Texto copiado al portapapeles.", icon=":material/check:")
             with action_cols[1]:
-                if st.button("🚀 Re-publicar", key=f"repub_ap_{post['id']}", use_container_width=True):
-                    st.toast(f"Publicación re-despachada a {post.get('canal', 'LinkedIn')}", icon="🚀")
+                if st.button("Re-enviar", icon=":material/send:", key=f"repub_ap_{post['id']}", use_container_width=True):
+                    st.toast(f"Publicación enviada a {post.get('canal', 'LinkedIn')}.", icon=":material/check:")
 
 
 def render_faqs():
-    """Catálogo y repositorio de dudas técnicas y FAQs resueltas por IA y comunidad."""
+    """Catálogo y repositorio de dudas técnicas y preguntas frecuentes resueltas por IA."""
     render_page_card(
-        "FAQs & Base de Conocimiento Técnico (Knowledge Base)",
-        "Dudas y consultas técnicas detectadas en Discord, Telegram y Slack, enriquecidas con soluciones de Gemini 2.5 Flash y Groq.",
-        "💡",
+        "Preguntas Frecuentes y Banco de Soluciones Técnicas",
+        "Consultas técnicas de estudiantes en Discord, Telegram y Slack, resueltas automáticamente por la Inteligencia Artificial.",
+        "lightbulb",
     )
 
     todos = get_visible_posts()
     faqs = [p for p in todos if p.get("tipo") == "duda_tecnica"]
 
-    # Tag Cloud de Tecnologías
-    st.markdown("<div style='font-size:0.8rem; font-weight:700; color:#64748B; margin-bottom:6px;'>Filtro Rápido por Temáticas (#TagCloud):</div>", unsafe_allow_html=True)
+    # Filtro por temas
+    st.markdown("<div style='font-size:0.82rem; font-weight:700; color:#64748B; margin-bottom:8px;'>Filtrar por Tema Técnico:</div>", unsafe_allow_html=True)
     tags = ["Todos", "OCI", "Docker", "Spring", "Java", "Python", "Git"]
     tag_cols = st.columns(len(tags))
     selected_tag = st.session_state.get("active_faq_tag", "Todos")
@@ -158,7 +163,7 @@ def render_faqs():
         with tag_cols[i]:
             is_active = (selected_tag == tag)
             if st.button(
-                f"#{tag}",
+                tag,
                 key=f"tag_btn_{tag}",
                 type="primary" if is_active else "secondary",
                 use_container_width=True,
@@ -166,7 +171,7 @@ def render_faqs():
                 st.session_state["active_faq_tag"] = tag
                 st.rerun()
 
-    q = st.text_input("🔍 Buscar en preguntas y respuestas técnicas", placeholder="ej. spring, docker, react, oci, git...", key="q_faq")
+    q = st.text_input("Buscar en soluciones", placeholder="Buscar por palabra clave: spring, docker, react, oci, git...", key="q_faq")
 
     # Aplicar filtros combinados
     if selected_tag != "Todos":
@@ -175,28 +180,29 @@ def render_faqs():
     if q:
         faqs = [f for f in faqs if q.lower() in f.get("title", "").lower() or q.lower() in f.get("copy", "").lower()]
 
-    st.caption(f"**{len(faqs)}** preguntas técnicas indexadas bajo el filtro actual")
+    st.caption(f"**{len(faqs)}** preguntas técnicas encontradas")
 
     if not faqs:
-        st.info("No se encontraron preguntas técnicas con los filtros actuales. Prueba seleccionando '#Todos' o cambiando el término de búsqueda.")
+        st.info("No se encontraron preguntas técnicas con los filtros actuales. Prueba seleccionando 'Todos' o cambiando el término de búsqueda.")
         return
 
     for item in faqs:
         raw_inter = item.get("_raw", {}).get("interaccion", {})
-        with st.expander(f"💡 {item.get('title')}", expanded=False):
+        title_clean = item.get('title', '').replace('[DUDA_TECNICA]', '').strip()
+        with st.expander(f"Consulta: {title_clean}", expanded=False):
             st.markdown(f"**Pregunta de la Comunidad ({item.get('canal_ingesta')} · {raw_inter.get('autor', 'Estudiante')}):**")
             st.info(raw_inter.get("texto", item.get("sub", "")))
 
-            st.markdown("**Respuesta Técnica Generada / Solución Curada:**")
+            st.markdown("**Respuesta Técnica Generada por IA:**")
             st.success(item.get("copy", ""))
 
             c_meta1, c_meta2, c_meta3 = st.columns([2, 1, 1])
             c_meta1.caption(f"Motor: `{item.get('motor')}` | Sentimiento: `{item.get('sentimiento')}` | ID: `{item.get('id')}`")
             with c_meta2:
-                if st.button("📋 Copiar Solución", key=f"cp_faq_{item['id']}", use_container_width=True):
-                    st.toast("Solución copiada al portapapeles.", icon="📋")
+                if st.button("Copiar Respuesta", icon=":material/content_copy:", key=f"cp_faq_{item['id']}", use_container_width=True):
+                    st.toast("Respuesta copiada al portapapeles.", icon=":material/check:")
             with c_meta3:
-                if st.button("Editar en Curaduría", key=f"faq_btn_{item['id']}", use_container_width=True):
+                if st.button("Editar en Moderación", icon=":material/edit:", key=f"faq_btn_{item['id']}", use_container_width=True):
                     select_post(item["id"])
                     st.session_state["active_view"] = "pending_review"
                     st.rerun()

@@ -10,7 +10,7 @@ import streamlit as st
 CONFIG_GROUPS = [
     {
         "title": "Servicios Activos",
-        "icon": "📡",
+        "icon_name": "radio",
         "fields": [
             {"key": "TELEGRAM_ENABLED", "label": "Telegram", "kind": "toggle", "default": False, "help": "Habilita o deshabilita el servicio Telegram."},
             {"key": "DISCORD_ENABLED", "label": "Discord", "kind": "toggle", "default": False, "help": "Habilita o deshabilita el servicio Discord."},
@@ -18,8 +18,8 @@ CONFIG_GROUPS = [
         ],
     },
     {
-        "title": "Canales (Producción OCI)",
-        "icon": "🌐",
+        "title": "Canales en Producción",
+        "icon_name": "globe",
         "fields": [
             {"key": "TELEGRAM_BOT_TOKEN", "label": "Telegram Bot Token (Prod)", "placeholder": "Token bot Telegram produccion", "help": "Token de Telegram usado en el servidor OCI."},
             {"key": "DISCORD_BOT_TOKEN", "label": "Discord Bot Token (Prod)", "placeholder": "Token bot Discord produccion", "help": "Token del bot de Discord en produccion."},
@@ -31,8 +31,8 @@ CONFIG_GROUPS = [
         ],
     },
     {
-        "title": "Canales (Entorno Local)",
-        "icon": "💻",
+        "title": "Canales en Local",
+        "icon_name": "terminal",
         "fields": [
             {"key": "TELEGRAM_LOCAL_BOT_TOKEN", "label": "Telegram Bot Token (Local)", "placeholder": "Token local de Telegram", "help": "Token del bot local para pruebas y desarrollo."},
             {"key": "DISCORD_LOCAL_BOT_TOKEN", "label": "Discord Bot Token (Local)", "placeholder": "Token local de Discord", "help": "Token de Discord para entorno local de pruebas."},
@@ -43,8 +43,8 @@ CONFIG_GROUPS = [
         ],
     },
     {
-        "title": "n8n (Producción OCI)",
-        "icon": "🔄",
+        "title": "Orquestador n8n (Nube)",
+        "icon_name": "refresh-cw",
         "fields": [
             {"key": "N8N_WEBHOOK_URL", "label": "n8n Webhook URL (Prod VM OCI)", "placeholder": "http://147.15.9.116:5678/", "help": "URL del Webhook de ingesta de n8n en la VM de OCI."},
             {"key": "N8N_HOST", "label": "n8n Host (Prod)", "default": "0.0.0.0", "placeholder": "0.0.0.0", "help": "Host de n8n en servidor OCI."},
@@ -52,8 +52,8 @@ CONFIG_GROUPS = [
         ],
     },
     {
-        "title": "n8n (Entorno Local)",
-        "icon": "🛠️",
+        "title": "Orquestador n8n (Local)",
+        "icon_name": "sliders",
         "fields": [
             {"key": "N8N_LOCAL_WEBHOOK_URL", "label": "n8n Webhook URL (Local / Túnel)", "placeholder": "http://localhost:5678/webhook/communitylab-ingesta", "help": "Webhook local o ngrok para pruebas de n8n."},
             {"key": "N8N_LOCAL_HOST", "label": "n8n Local Host", "default": "http://localhost", "placeholder": "http://localhost", "help": "Host local de n8n."},
@@ -62,8 +62,8 @@ CONFIG_GROUPS = [
         ],
     },
     {
-        "title": "LLM Engines",
-        "icon": "🤖",
+        "title": "Modelos de IA",
+        "icon_name": "cpu",
         "fields": [
             {"key": "GEMINI_API_KEY", "label": "API Key Gemini", "placeholder": "Introduce tu clave de Gemini", "help": "Clave del motor Google Gemini."},
             {"key": "GEMINI_MODEL", "label": "Modelo Gemini", "default": "gemini-2.5-flash", "placeholder": "gemini-2.5-flash", "help": "Modelo por defecto para IA generativa."},
@@ -72,8 +72,8 @@ CONFIG_GROUPS = [
         ],
     },
     {
-        "title": "OCI / Cloud",
-        "icon": "☁️",
+        "title": "Oracle Cloud (OCI)",
+        "icon_name": "cloud",
         "fields": [
             {"key": "OCI_USER_OCID", "label": "OCI User OCID", "placeholder": "ocid1.user...", "help": "Identificador del usuario OCI."},
             {"key": "OCI_TENANCY_OCID", "label": "OCI Tenancy OCID", "placeholder": "ocid1.tenancy...", "help": "Identificador de la tenancy OCI."},
@@ -85,16 +85,16 @@ CONFIG_GROUPS = [
         ],
     },
     {
-        "title": "Procesamiento por Lotes",
-        "icon": "📦",
+        "title": "Procesamiento Lotes",
+        "icon_name": "package",
         "fields": [
             {"key": "PROCESSING_N8N_ENABLED", "label": "N8N", "kind": "toggle", "default": False, "help": "Habilita o deshabilita el procesamiento por lotes con N8N."},
             {"key": "PROCESSING_PYTHON_ENABLED", "label": "Python", "kind": "toggle", "default": False, "help": "Habilita o deshabilita el procesamiento por lotes con Python."},
         ],
     },
     {
-        "title": "App / Infra",
-        "icon": "⚙️",
+        "title": "Entorno del Sistema",
+        "icon_name": "settings",
         "fields": [
             {"key": "ENTORNO_DEPLOY", "label": "Entorno de despliegue", "default": "LOCAL", "options": ["LOCAL", "PRODUCCION"], "help": "Conmuta entre modo LOCAL y PRODUCCION en todo el backend."},
             {"key": "APP_ENV", "label": "App Environment", "default": "development", "options": ["development", "staging", "production"], "help": "Ambiente de ejecución de la app."},
@@ -104,8 +104,8 @@ CONFIG_GROUPS = [
         ],
     },
     {
-        "title": "Túnel",
-        "icon": "🔐",
+        "title": "Túnel de Conexión",
+        "icon_name": "link",
         "fields": [
             {"key": "NGROK_AUTHTOKEN", "label": "Token de autenticación Ngrok", "secret": True, "placeholder": "Ingresa tu token de Ngrok", "help": "Token usado para autenticar Ngrok en este equipo."},
         ],
@@ -152,26 +152,28 @@ def render_settings() -> None:
     """Renderiza la vista de configuración del proyecto."""
     _seed_default_values()
 
+    from scripts.icons import icon_svg
     from .common import render_page_card
     render_page_card(
-        "Configuración del Entorno y Credenciales del Sistema",
-        "Administra de forma segura tokens, llaves de API, credenciales OCI y variables del entorno (.env) organizadas por dominios.",
-        "🔐",
+        "Configuración del Entorno y Parámetros del Sistema",
+        "Administra de forma segura tokens, llaves de API, credenciales de Oracle Cloud y variables del entorno (.env) organizadas por secciones.",
+        "settings",
     )
 
     # Banner de Seguridad
+    shield_icon = icon_svg("shield-check", size=20, color="#FFFFFF", extra_style="margin-right:8px;")
     st.markdown(
-        """
-        <div style="background:linear-gradient(135deg,#1E293B,#0F172A); border:1px solid #334155; border-radius:14px; padding:14px 18px; margin-bottom:14px; color:#fff; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+        f"""
+        <div style="background:linear-gradient(135deg,#1E293B 0%,#0F172A 100%); border:1px solid #334155; border-radius:14px; padding:16px 20px; margin-bottom:16px; color:#fff; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
             <div>
-                <span style="font-weight:800; font-size:1.1rem; color:#F8FAFC;">🛡️ Aislamiento Seguro de Variables y Secretos</span>
+                <span style="font-weight:800; font-size:1.1rem; color:#F8FAFC; display:flex; align-items:center;">{shield_icon} Gestión Segura de Credenciales y Parámetros</span>
                 <div style="font-size:0.83rem; color:#94A3B8; margin-top:3px;">
-                    Todos los secretos se escriben directamente al archivo <code>.env</code> local sin exponerse en repositorios remotos.
+                    Todos los secretos y llaves se resguardan de forma local en el archivo <code>.env</code> sin exponerse públicamente.
                 </div>
             </div>
             <div style="display:flex; gap:8px;">
-                <span class="status-pill online"><span class="status-dot online"></span> .env Activo</span>
-                <span class="status-pill oci">OCI Secrets</span>
+                <span class="status-pill online"><span class="status-dot online"></span> Archivo .env Activo</span>
+                <span class="status-pill oci">Parámetros Protegidos</span>
             </div>
         </div>
         """,
@@ -188,45 +190,49 @@ def render_settings() -> None:
 
     summary_cols = st.columns(4)
     with summary_cols[0]:
+        svg_gear = icon_svg("settings", size=20, color="#4F46E5")
         st.markdown(
             f"""
-            <div class="kpi-card">
-                <div class="kpi-header"><span class="kpi-label">Variables Totales</span><div class="kpi-icon-box">⚙️</div></div>
-                <div class="kpi-value">{total_fields}</div>
-                <div class="kpi-delta"><span>●</span> 8 categorías</div>
+            <div class="kpi-card" style="background:#FFFFFF; border:1px solid #E2E8F0; border-radius:12px; padding:14px 16px;">
+                <div class="kpi-header" style="display:flex; justify-content:space-between;"><span class="kpi-label" style="font-size:0.75rem; font-weight:700; color:#64748B;">Variables Totales</span><div class="kpi-icon-box">{svg_gear}</div></div>
+                <div class="kpi-value" style="font-size:1.4rem; font-weight:800; color:#1E293B;">{total_fields}</div>
+                <div class="kpi-delta" style="font-size:0.75rem; color:#64748B;">● 8 categorías</div>
             </div>
             """,
             unsafe_allow_html=True,
         )
     with summary_cols[1]:
+        svg_lock = icon_svg("shield", size=20, color="#4F46E5")
         st.markdown(
             f"""
-            <div class="kpi-card">
-                <div class="kpi-header"><span class="kpi-label">Tokens Sensibles</span><div class="kpi-icon-box">🔑</div></div>
-                <div class="kpi-value">{secret_fields}</div>
-                <div class="kpi-delta"><span>●</span> Cifrado / Oculto</div>
+            <div class="kpi-card" style="background:#FFFFFF; border:1px solid #E2E8F0; border-radius:12px; padding:14px 16px;">
+                <div class="kpi-header" style="display:flex; justify-content:space-between;"><span class="kpi-label" style="font-size:0.75rem; font-weight:700; color:#64748B;">Claves Sensibles</span><div class="kpi-icon-box">{svg_lock}</div></div>
+                <div class="kpi-value" style="font-size:1.4rem; font-weight:800; color:#1E293B;">{secret_fields}</div>
+                <div class="kpi-delta" style="font-size:0.75rem; color:#059669;">● Enmascaradas</div>
             </div>
             """,
             unsafe_allow_html=True,
         )
     with summary_cols[2]:
+        svg_env = icon_svg("globe", size=20, color="#4F46E5")
         st.markdown(
             f"""
-            <div class="kpi-card">
-                <div class="kpi-header"><span class="kpi-label">Entorno Activo</span><div class="kpi-icon-box">🌐</div></div>
-                <div class="kpi-value" style="font-size:1.3rem;">{st.session_state.get('APP_ENV', 'development').upper()}</div>
-                <div class="kpi-delta"><span>●</span> Modo Híbrido OCI</div>
+            <div class="kpi-card" style="background:#FFFFFF; border:1px solid #E2E8F0; border-radius:12px; padding:14px 16px;">
+                <div class="kpi-header" style="display:flex; justify-content:space-between;"><span class="kpi-label" style="font-size:0.75rem; font-weight:700; color:#64748B;">Entorno Activo</span><div class="kpi-icon-box">{svg_env}</div></div>
+                <div class="kpi-value" style="font-size:1.3rem; font-weight:800; color:#1E293B;">{st.session_state.get('APP_ENV', 'development').upper()}</div>
+                <div class="kpi-delta" style="font-size:0.75rem; color:#64748B;">● Modo de Ejecución</div>
             </div>
             """,
             unsafe_allow_html=True,
         )
     with summary_cols[3]:
+        svg_check = icon_svg("check-circle", size=20, color="#059669")
         st.markdown(
-            """
-            <div class="kpi-card">
-                <div class="kpi-header"><span class="kpi-label">Estado de Sincronía</span><div class="kpi-icon-box">✅</div></div>
-                <div class="kpi-value" style="font-size:1.4rem;">OK</div>
-                <div class="kpi-delta"><span>●</span> .env sincronizado</div>
+            f"""
+            <div class="kpi-card" style="background:#FFFFFF; border:1px solid #E2E8F0; border-radius:12px; padding:14px 16px;">
+                <div class="kpi-header" style="display:flex; justify-content:space-between;"><span class="kpi-label" style="font-size:0.75rem; font-weight:700; color:#64748B;">Sincronización</span><div class="kpi-icon-box">{svg_check}</div></div>
+                <div class="kpi-value" style="font-size:1.3rem; font-weight:800; color:#059669;">Correcto</div>
+                <div class="kpi-delta" style="font-size:0.75rem; color:#059669;">● Archivos en regla</div>
             </div>
             """,
             unsafe_allow_html=True,
@@ -234,31 +240,31 @@ def render_settings() -> None:
 
     st.markdown("<div style='height: 0.8rem;'></div>", unsafe_allow_html=True)
 
-    # Barra de herramientas superior: Recarga rápida y estado seguro
+    # Barra de herramientas superior
     col_tools_left, col_tools_right = st.columns([3.8, 1.2])
     with col_tools_left:
         st.markdown(
             """
-            <div style="font-size:0.85rem; color:#64748B; padding:6px 0;">
-                🔒 <i>Protección activa: Las claves, tokens y secretos existentes nunca son revelados en el navegador por políticas de seguridad. Para actualizar una credencial, introduce el nuevo valor.</i>
+            <div style="font-size:0.83rem; color:#64748B; padding:6px 0;">
+                <i>Protección activa: Las claves, tokens y contraseñas no se muestran en pantalla para mayor seguridad. Para actualizar una credencial, escribe el nuevo valor.</i>
             </div>
             """,
             unsafe_allow_html=True,
         )
     with col_tools_right:
-        if st.button("🔄 Recargar de disco", use_container_width=True, help="Vuelve a leer settings.json y .env del disco descartando cambios no guardados"):
+        if st.button("Recargar del Disco", icon=":material/refresh:", use_container_width=True, help="Vuelve a leer settings.json y .env del disco"):
             _seed_default_values(force_reload=True)
-            st.toast("Configuración recargada desde el disco.", icon="🔄")
+            st.toast("Configuración recargada desde el disco.", icon=":material/check:")
             st.rerun()
 
     with st.form("settings_form"):
         values: dict[str, str | bool] = {}
 
-        tabs = st.tabs([f"{group['icon']} {group['title']}" for group in CONFIG_GROUPS])
+        tabs = st.tabs([group["title"] for group in CONFIG_GROUPS])
 
         for group, tab in zip(CONFIG_GROUPS, tabs):
             with tab:
-                st.markdown(f"### {group['icon']} {group['title']}")
+                st.markdown(f"### {group['title']}")
 
                 for field in group["fields"]:
                     key = field["key"]
@@ -315,15 +321,16 @@ def render_settings() -> None:
         # ==============================================================================
         # CONTROL DE SEGURIDAD: CLAVE DE VERIFICACIÓN ADMINISTRATIVA
         # ==============================================================================
-        st.markdown("---")
+        st.markdown("<hr style='margin:18px 0; border:0; border-top:1px solid #E2E8F0;' />", unsafe_allow_html=True)
+        shield_warn = icon_svg("shield", size=18, color="#EF4444", extra_style="margin-right:6px;")
         st.markdown(
-            """
+            f"""
             <div style="background:rgba(239, 68, 68, 0.08); border:1px solid rgba(239, 68, 68, 0.25); border-radius:10px; padding:12px 16px; margin-bottom:12px;">
-                <div style="font-weight:700; color:#EF4444; font-size:0.95rem; display:flex; align-items:center; gap:8px;">
-                    🛡️ Autorización Requerida para Modificar Configuración
+                <div style="font-weight:700; color:#EF4444; font-size:0.95rem; display:flex; align-items:center;">
+                    {shield_warn} Autorización Requerida para Modificar Configuración
                 </div>
                 <div style="font-size:0.82rem; color:#64748B; margin-top:4px;">
-                    Por políticas de seguridad, para persistir cambios en variables de entorno o credenciales en el sistema debes ingresar la <b>Clave de Verificación de Administrador</b>.
+                    Por políticas de seguridad, para guardar cambios en variables de entorno o credenciales debes ingresar la <b>Clave de Verificación de Administrador</b>.
                 </div>
             </div>
             """,
@@ -331,7 +338,7 @@ def render_settings() -> None:
         )
 
         admin_key_input = st.text_input(
-            "🔑 Clave de Verificación de Administrador",
+            "Clave de Verificación de Administrador",
             type="password",
             placeholder="Introduce la clave de verificación administrativa",
             help="Ingresa la clave de autorización administrativa para confirmar los cambios.",
@@ -339,39 +346,38 @@ def render_settings() -> None:
         )
 
         submitted = st.form_submit_button(
-            "💾 Guardar configuración y sincronizar (.env + JSON)",
+            "Guardar Configuración y Sincronizar",
+            icon=":material/save:",
             type="primary",
             use_container_width=True,
         )
 
         if submitted:
-            # Obtener clave esperada del entorno (.env o os.environ)
             expected_admin_key = str(os.environ.get("SETTINGS_ADMIN_KEY") or "communitylab2026").strip()
             provided_key = admin_key_input.strip()
 
             if not provided_key:
-                st.error("⛔ **Operación Denegada:** Debes ingresar la clave de verificación para autorizar la modificación de `.env` y `settings.json`.")
-                st.toast("Clave de verificación requerida", icon="🔒")
+                st.error("Operación Denegada: Debes ingresar la clave de verificación para autorizar la modificación de las variables de entorno.")
+                st.toast("Clave de verificación requerida", icon=":material/lock:")
             elif provided_key != expected_admin_key:
-                st.error("❌ **Clave de Verificación Incorrecta:** No tienes autorización para alterar las variables de entorno.")
-                st.toast("Clave administrativa incorrecta", icon="❌")
+                st.error("Clave de Verificación Incorrecta: No tienes autorización para alterar las variables de entorno.")
+                st.toast("Clave administrativa incorrecta", icon=":material/error:")
             else:
-                # 1. Guardar en JSON estructurado y volcar a .env preservando comentarios
                 json_path, env_path = save_settings(values)
                 _seed_default_values(force_reload=True)
 
-                st.success("✅ **Autorización Concedida:** Configuración guardada y sincronizada correctamente en `.env` y `settings.json`.")
+                st.success("Autorización Concedida: Configuración guardada y sincronizada correctamente en los archivos de entorno.")
                 st.markdown(
                     f"""
                     <div style="background:rgba(16, 185, 129, 0.12); border:1px solid #10B981; border-radius:12px; padding:14px 18px; margin:12px 0; color:#E2E8F0;">
-                        <div style="font-weight:700; color:#34D399; margin-bottom:6px; font-size:1.05rem;">✨ Doble Persistencia Activa:</div>
-                        <ul style="margin:0; padding-left:20px; font-size:0.9rem; line-height:1.6;">
-                            <li>📄 <b>JSON Estructurado:</b> <code>config/settings.json</code> (jerárquico, tipado y respaldado)</li>
-                            <li>🛡️ <b>Archivo de Entorno:</b> <code>.env</code> (comentarios <code>#</code>, encabezados y formato original 100% conservados)</li>
-                            <li>⚙️ <b>Memoria en Ejecución:</b> Variables inyectadas en <code>os.environ</code> para el proceso actual</li>
+                        <div style="font-weight:700; color:#34D399; margin-bottom:6px; font-size:1.05rem;">Doble Persistencia Activa:</div>
+                        <ul style="margin:0; padding-left:20px; font-size:0.9rem; line-height:1.6; color:#334155;">
+                            <li><b>JSON Estructurado:</b> <code>config/settings.json</code> (jerárquico, tipado y respaldado)</li>
+                            <li><b>Archivo de Entorno:</b> <code>.env</code> (comentarios y variables sincronizadas)</li>
+                            <li><b>Memoria en Ejecución:</b> Variables inyectadas en el proceso actual</li>
                         </ul>
-                        <div style="margin-top:10px; font-size:0.83rem; color:#94A3B8;">
-                            ℹ️ <i>Nota: Si modificaste credenciales de bots (Discord, Slack, Telegram) o puertos externos, recuerda reiniciar sus respectivos procesos para que tomen los nuevos valores.</i>
+                        <div style="margin-top:10px; font-size:0.83rem; color:#64748B;">
+                            <i>Nota: Si modificaste credenciales de bots (Discord, Slack, Telegram) o puertos externos, recuerda reiniciar sus respectivos procesos para que tomen los nuevos valores.</i>
                         </div>
                     </div>
                     """,
@@ -380,7 +386,7 @@ def render_settings() -> None:
 
     # Visor interactivo seguro de la configuración (secretos siempre enmascarados)
     st.markdown("<div style='height: 0.8rem;'></div>", unsafe_allow_html=True)
-    with st.expander("🔍 Explorar configuración estructurada (config/settings.json)", expanded=False):
+    with st.expander("Explorar configuración estructurada (config/settings.json)", expanded=False):
         st.caption("Representación JSON jerárquica con secretos ofuscados para auditoría:")
         raw_structured = structure_config(load_settings())
         from config_manager import mask_secret_for_example
