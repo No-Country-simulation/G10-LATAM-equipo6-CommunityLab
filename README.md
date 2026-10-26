@@ -82,13 +82,11 @@ flowchart TD
 | :--- | :--- | :--- |
 | **César Augusto Cely Pulido** | Bogotá, Colombia | **Project Manager & Cloud Architect** |
 | **Max Ferrer Cabanillas Salas** | Lima, Perú | **Backend & Pipeline Developer** |
-| **Raúl Gallardo** | Buenos Aires, Argentina | **QA & Cloud Support** |
 | **José Medina** | Paraguay | **Oracle Ecosystem & N8N / LLMs Specialist** |
-| **Juan Luis Mansilla** | Puerto Montt, Chile | **Backend & Fullstack Developer** |
 | **Edwin Gustavo Enriquez Arias** | La Paz, Bolivia | **QA Lead, Testing Automation & Backend** |
 | **Carol Yesenia Arancay Osorio** | Lima, Perú | **Frontend / UX & Data** |
-| **Víctor Araya** | LATAM | **Frontend & Documentación** |
-| **Rodrigo Ramírez** | LATAM | **Testing & Soporte** |
+| **Raúl Gallardo** | Buenos Aires, Argentina | **QA & Cloud Support** |
+| **Luygy Ruben Vivas Moreno** | Colombia | **QA & Pruebas Funcionales** |
 
 ---
 

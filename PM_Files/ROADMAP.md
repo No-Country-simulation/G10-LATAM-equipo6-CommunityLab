@@ -14,12 +14,12 @@ Desarrollar un MVP de un **Motor Inteligente de Transformación y Distribución 
 
 ---
 
-## 👥 Células de Trabajo y Roles (9 Integrantes)
+## 👥 Células de Trabajo y Roles (7 Integrantes)
 
 Para optimizar la colaboración y garantizar aprendizaje transversal, el equipo se divide en 3 células clave:
 
 ### 🧠 Célula 1: IA, Prompts & Orquestación (n8n & Gemini)
-* **Miembros sugeridos:** Max Ferrer, Edwin Enriquez, Juan Luis Mansilla, José Medina.
+* **Miembros sugeridos:** Max Ferrer, Edwin Enriquez, José Medina.
 * **Responsabilidades:**
   * Diseño de *system prompts* con *few-shot learning* para distintos canales y tonos.
   * Extracción estructurada de métricas de sentimiento y temas clave.
@@ -37,11 +37,11 @@ Para optimizar la colaboración y garantizar aprendizaje transversal, el equipo 
   * Manejo seguro de variables de entorno (`.env`, `.env.example`).
 
 ### 💻 Célula 3: Frontend (Streamlit), Datos & QA
-* **Miembros sugeridos:** Edwin Enriquez (Especialista QA), Carol Arancay, Max Ferrer (Adaptación Frontend), Víctor Araya, Rodrigo Ramírez.
+* **Miembros sugeridos:** Edwin Enriquez (QA Lead), Carol Arancay, Max Ferrer (Adaptación Frontend), Raúl Gallardo, Luygy Ruben Vivas Moreno (Pruebas Funcionales).
 * **Responsabilidades:**
   * Creación y enriquecimiento de datasets de prueba (`data/interacciones_ejemplo.json` y `.csv`).
   * Desarrollo y modernización del panel en **Streamlit** (adaptación del template UI de Carol Arancay por Max Ferrer: Dashboard general, Fuentes activas, Curaduría, Histórico OCI y Settings).
-  * Pruebas funcionales, automatización de pruebas (Selenium / Pytest) y control de calidad.
+  * Pruebas funcionales E2E y aseguramiento de calidad (liderado por Edwin Enriquez y Luygy Vivas en las últimas semanas del sprint).
   * Documentación de flujos de usuario y guías de uso.
 
 ---
