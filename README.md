@@ -7,23 +7,23 @@
 
 ## 📌 Descripción del Proyecto
 
-**CommunityLab** es una plataforma inteligente de escucha activa, transformación y curaduría automatizada de contenido para comunidades técnicas de aprendizaje (como Discord, Telegram, Slack o lotes de datos). 
+**CommunityLab** es una plataforma inteligente de escucha activa, transformación y curaduría automatizada de contenido para comunidades técnicas de aprendizaje (Discord, Telegram, Slack o lotes de datos). 
 
-Extrae valor orgánico generado por estudiantes y lo convierte en activos listos para su distribución:
-- 💼 **Publicaciones inspiradoras para LinkedIn & X (Twitter):** Generadas a partir de contrataciones, certificaciones y logros de estudiantes.
-- 📰 **Resúmenes semanales (Community Highlights):** Secciones estructuradas para Newsletters.
-- 💡 **Preguntas Frecuentes (FAQs) y Tips Técnicos:** Detectados y resueltos automáticamente a partir de dudas recurrentes.
-- 🤖 **Bots Omnicanal en Vivo:** Escucha activa bidireccional en tiempo real para **Telegram** (`@G10_Latam_06_bot`), **Discord** (`G10-LATAM-06`) y **Slack** (Socket Mode), con conmutación dinámica entre motor Python puro y n8n.
-- 🎨 **Generador de Imágenes para Posts (Dual-Engine):** Creación visual inteligente de imágenes contextuales para LinkedIn y X mediante motor Dual conmutables: **Python Nativo (Google Gemini + OCI SDK)** o **n8n Workflow (Groq Prompt Engineering + Pollinations FLUX + OCI S3)**, con previsualización segura mediante **Pre-Authenticated Requests (PAR)**.
-- ☁️ **Persistencia en la Nube:** Almacenamiento seguro, tipado y deduplicado en **Oracle Cloud Infrastructure (OCI) Object Storage (Tier Always Free)** con soporte de tokens PAR para visualización directa en navegador.
-- 🎨 **Panel de Curaduría NovaEdu (Streamlit Modular):** Interfaz rediseñada en 7 vistas desacopladas (`src/ui/components` y `src/ui/views`) con control de seguridad administrativa (`SETTINGS_ADMIN_KEY`), selección de fuentes (OCI vs Local), editor de copys y visor interactivo de mockups para redes sociales.
-- 🌐 **Despliegue Cloud con Dominio & SSL:** Desplegado en VM Linux **OCI Compute Always Free** con proxy inverso **Caddy**, certificados SSL automáticos de Let's Encrypt y dominio DuckDNS (`https://hackathon-g10-latam-06.duckdns.org`).
+Convierte el valor orgánico generado por estudiantes en activos listos para su distribución:
+- 💼 **Publicaciones para LinkedIn & X:** Generadas a partir de contrataciones, certificaciones y logros de estudiantes.
+- 📰 **Resúmenes semanales (Highlights):** Secciones estructuradas para Newsletters de comunidad.
+- 💡 **FAQs y Tips Técnicos:** Detección y resolución de dudas recurrentes con snippets de código.
+- 🤖 **Bots Omnicanal en Vivo:** Escucha activa en tiempo real para **Telegram** (`@G10_Latam_06_bot`), **Discord** (`G10-LATAM-06`) y **Slack** (Socket Mode), con conmutación dinámica entre Python y n8n.
+- 🎨 **Generador de Imágenes Dual-Engine:** Creación visual con **Python Nativo (Gemini + OCI SDK)** o **n8n Workflow (Groq + Pollinations FLUX + OCI S3)**, con previsualización segura vía **Tokens PAR**.
+- ☁️ **Persistencia Cloud:** Almacenamiento tipado y deduplicado en **Oracle Cloud Infrastructure (OCI) Object Storage (Always Free)** con soporte de tokens PAR para visualización directa.
+- 🎨 **Panel NovaEdu (Streamlit Modular):** Interfaz rediseñada en 7 vistas (`components` y `views`) con seguridad administrativa (`SETTINGS_ADMIN_KEY`), selección de fuentes (OCI vs Local) y visor de mockups.
+- 🌐 **Despliegue Cloud SSL:** Alojado en VM Linux **OCI Compute Always Free** con proxy inverso **Caddy**, certificados SSL Let's Encrypt y dominio DuckDNS (`https://hackathon-g10-latam-06.duckdns.org`).
 
 ---
 
 ## 🏗️ Arquitectura de la Solución (Omnicanal & Dual-Engine Cloud-Native)
 
-CommunityLab cuenta con una **arquitectura omnicanal y dual de orquestación homologada** que permite procesar tanto lotes históricos como mensajes en vivo desde chats comunitarios, convergiendo en **Oracle Cloud Infrastructure (OCI) Object Storage** como única fuente de verdad:
+CommunityLab cuenta con una **arquitectura omnicanal y dual de orquestación homologada** que permite procesar lotes históricos y mensajes en vivo, convergiendo en **Oracle Cloud Infrastructure (OCI) Object Storage** como única fuente de verdad:
 
 ```mermaid
 flowchart TD
@@ -93,40 +93,40 @@ flowchart TD
 ## 📁 Estructura del Repositorio
 
 ```text
-├── .streamlit/                       # Configuración de Streamlit (tema light forzado y server headless)
-├── docker-compose.yml                # Despliegue de n8n (Local & OCI Compute VM)
-├── .env.example                      # Plantilla sanitizada de variables de entorno (Gemini, OCI, n8n, Bots, Admin Key)
+├── .streamlit/                       # Configuración Streamlit (tema light y headless)
+├── docker-compose.yml                # Despliegue de n8n en contenedor Docker
+├── .env.example                      # Plantilla de variables de entorno (Gemini, OCI, Bots)
 ├── config/
-│   └── settings.example.json         # Plantilla estructurada de configuración del backend
+│   └── settings.example.json         # Configuración estructurada del backend
 ├── README.md                         # Documentación general y arquitectura
-├── backend-pipeline.md               # Guía técnica profunda del Backend y persistencia OCI
+├── backend-pipeline.md               # Guía técnica de Backend y persistencia OCI
 ├── PM_Files/                         # Gestión del Proyecto y Metodología Ágil
 │   ├── ROADMAP.md                    # Plan maestro de 5 semanas, hitos y demos
-│   ├── Guion_Presentacion_CommunityLab_YouTube.md # Guion y estructura del video pitch (5 min)
-│   ├── Guion_Presentacion_CommunityLab_YouTube.pdf # PDF compilado del guion oficial
-│   ├── despliegue-ssl-dominio.md     # Guía de Dominio DuckDNS, HTTPS y Proxy Inverso Caddy en OCI
-│   ├── Actas_Reuniones/              # Minutas y actas de reuniones semanales
+│   ├── Guion_Presentacion_CommunityLab_YouTube.md # Guion del video pitch (5 min)
+│   ├── Guion_Presentacion_CommunityLab_YouTube.pdf # PDF oficial del guion
+│   ├── despliegue-ssl-dominio.md     # Dominio DuckDNS, HTTPS y Caddy en OCI
+│   ├── Actas_Reuniones/              # Minutas semanales de equipo
 │   └── Proyecto 3 – 🚀 CommunityLab.pdf # Especificación oficial del reto
 ├── data/
-│   └── interacciones_ejemplo.json    # Dataset oficial con 15 interacciones simuladas
-├── logs/                             # Trazas y auditoría de ejecución rotativas diarias
+│   └── interacciones_ejemplo.json    # Dataset de prueba con 15 interacciones
+├── logs/                             # Trazas rotativas diarias de ejecución
 ├── n8n/                              # Orquestación de flujos
-│   ├── README.md                     # Guía de conexión a la VM OCI y versionado
-│   └── workflows/                    # Workflows exportados en JSON para Git
+│   ├── README.md                     # Conexión a VM OCI y versionado
+│   └── workflows/                    # Workflows exportados en JSON
 ├── src/
-│   ├── ai_engine/                    # Modelos Pydantic v2, prompts y cliente Gemini
-│   ├── channels/                     # Integración omnicanal en vivo (Telegram, Discord, Slack, BotManager)
-│   ├── cloud_oci/                    # Conector con Oracle Cloud Infrastructure Object Storage (soporte PAR y S3)
-│   ├── ingestion/                    # Lectura, validación, batching y deduplicación
+│   ├── ai_engine/                    # Modelos Pydantic v2 y cliente Gemini
+│   ├── channels/                     # Bots omnicanal (Telegram, Discord, Slack)
+│   ├── cloud_oci/                    # Conector OCI Object Storage (PAR y S3)
+│   ├── ingestion/                    # Lectura, validación y deduplicación
 │   ├── pipeline.py                   # Pipeline Python E2E y CLI
-│   ├── ui/                           # Panel de curaduría NovaEdu modular en Streamlit
-│   │   ├── components/               # Componentes reusables (header, sidebar, editor, preview, post_list)
-│   │   ├── views/                    # Vistas aisladas (dashboard, curation, ingestion, storage, connections, settings, observability)
-│   │   ├── scripts/                  # Adaptadores de datos, servicios UI, estado y estilos
-│   │   ├── config_manager.py         # Gestor de doble persistencia (.env + JSON)
-│   │   └── app.py                    # Punto de entrada principal de la app Streamlit
+│   ├── ui/                           # Panel NovaEdu modular en Streamlit
+│   │   ├── components/               # Header, sidebar, editor, preview, post_list
+│   │   ├── views/                    # 7 Vistas desacopladas de la plataforma
+│   │   ├── scripts/                  # Adaptadores, servicios UI, estado y estilos
+│   │   ├── config_manager.py         # Doble persistencia (.env + JSON)
+│   │   └── app.py                    # Entrada principal de Streamlit
 │   └── utils/                        # Logging y utilidades transversales
-└── tests/                            # Suite automatizada (82/82 pruebas pasando)
+└── tests/                            # Suite automatizada (82/82 tests pasando)
 ```
 
 ---
@@ -147,7 +147,7 @@ pip install -r requirements.txt
 ```
 
 ### 3. Variables de Entorno
-Copia el archivo `.env.example` como `.env` y completa tus credenciales de Gemini, OCI y Bots:
+Copia `.env.example` como `.env` y configura tus credenciales de Gemini, OCI y Bots:
 ```bash
 cp .env.example .env
 ```
@@ -156,27 +156,27 @@ cp .env.example .env
 ```bash
 streamlit run src/ui/app.py
 ```
-Accede a través de tu navegador a `http://localhost:8501` (o en la URL de producción con SSL).
-- **Diseño de Alto Contraste y Accesibilidad:** Botonera universal (`.stButton`) en blanco y azul índigo profundo de alta visibilidad, filtros por *segmented pills* y botones de curaduría con estados dinámicos (`✅ Aprobado (Activo)`, `❌ Descartado (Activo)`, `👁️ Leído (Activo)`).
-- **Descubrimiento OCI Cronológico:** Detección y ordenación inmediata de los paquetes JSON persistidos en Oracle Cloud (`activos/{YYYY-MM-DD}/*.json`), listando los más recientes del día al inicio del selector de curaduría.
-- **Arranque Omnicanal:** Si tienes `AUTOSTART_BOTS=true` en tu `.env`, los bots de Telegram, Discord y Slack arrancarán automáticamente a escuchar en segundo plano al iniciar la app.
+Accede en `http://localhost:8501` (o en la URL de producción con SSL).
+- **Alto Contraste y Accesibilidad:** Botonera universal en blanco e índigo (`#3730A3`), filtros en *segmented pills* y botones de curaduría con estados dinámicos (`✅ Aprobado (Activo)`, `❌ Descartado (Activo)`, `👁️ Leído (Activo)`).
+- **Descubrimiento OCI Cronológico:** Detección y ordenación de paquetes en Oracle Cloud (`activos/{YYYY-MM-DD}/*.json`), priorizando los más recientes del día.
+- **Arranque Omnicanal:** Con `AUTOSTART_BOTS=true`, Telegram, Discord y Slack inician en segundo plano al arrancar la app.
 
 ### 5. Orquestador n8n
-- **En la Nube (Instancia oficial del equipo):** La VM de OCI Always Free corre n8n directamente en [http://147.15.9.116:5678](http://147.15.9.116:5678).
-- **En Local:** Ejecuta `docker compose up -d` y accede en `http://localhost:5678`.
-- Consulta la guía completa de flujos y versionado en [`n8n/README.md`](n8n/README.md).
+- **En la Nube:** VM OCI Always Free corriendo en [http://147.15.9.116:5678](http://147.15.9.116:5678).
+- **En Local:** Ejecuta `docker compose up -d` y accede a `http://localhost:5678`.
+- Consulta la guía completa en [`n8n/README.md`](n8n/README.md).
 
-### 6. Ejecución de Pruebas Automatizadas & Estrategia de QA
+### 6. Pruebas Automatizadas & Estrategia QA
 ```bash
 pytest tests/ -v
 ```
-*Total:* **82 tests unitarios e integrales (100% aprobados)** cubriendo ingesta, esquemas Pydantic, cliente OCI (con soporte PAR y fallback local), bots omnicanal (Telegram, Discord, Slack), pipeline dual-engine y servicios de generación de imágenes.  
-*Estrategia QA (Semana Ganada de Ventaja):* Gracias a un desarrollo acelerado, el equipo cuenta con 1 semana de ventaja antes del Demo Day dedicada exclusivamente al aseguramiento de calidad (QA), resiliencia de bots, pruebas de carga en OCI Object Storage y refinamiento continuo de UX/UI.
+*Total:* **82 tests unitarios e integrales (100% aprobados)** cubriendo ingesta, esquemas Pydantic, cliente OCI (PAR y fallback local), bots omnicanal (Telegram, Discord, Slack), pipeline dual y generación de imágenes.  
+*Estrategia QA:* Con 1 semana de ventaja antes del Demo Day, el equipo consolidó pruebas de resiliencia de bots, carga en OCI y refinamiento UX/UI.
 
 ### 7. Despliegue en Producción & Dominio SSL (OCI Always Free)
-- **URL Oficial de Producción:** [`https://hackathon-g10-latam-06.duckdns.org/`](https://hackathon-g10-latam-06.duckdns.org/)
-- **Infraestructura:** VM Ubuntu en Oracle Cloud Compute (`147.15.9.116`), con proxy inverso **Caddy** gestionando certificados automáticos Let's Encrypt y túnel WebSocket seguro hacia Streamlit (puerto `8501`).
-- Consulta la guía completa de configuración en [PM_Files/despliegue-ssl-dominio.md](PM_Files/despliegue-ssl-dominio.md).
+- **URL Oficial:** [`https://hackathon-g10-latam-06.duckdns.org/`](https://hackathon-g10-latam-06.duckdns.org/)
+- **Infraestructura:** VM Ubuntu en Oracle Cloud Compute (`147.15.9.116`), con proxy inverso **Caddy** gestionando certificados Let's Encrypt y túnel WebSocket seguro hacia Streamlit (puerto `8501`).
+- Guía detallada en [PM_Files/despliegue-ssl-dominio.md](PM_Files/despliegue-ssl-dominio.md).
 
 ---
 
