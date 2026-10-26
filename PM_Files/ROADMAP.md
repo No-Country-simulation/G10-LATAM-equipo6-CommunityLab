@@ -224,11 +224,19 @@ gantt
   - [x] **Suite de Pruebas Extendida & Resiliencia (82/82 Tests Pasando al 100%):** Expansión de casos límite (*edge cases*) en ingesta, manejo de excepciones, reconexión automática de WebSocket en Telegram/Discord/Slack, y validación exhaustiva de PAR y Dual-Engine (`pytest tests/ -v`).
   - [x] **Pruebas y Blindaje de Imágenes en OCI con PAR:** Implementación de soporte para **Pre-Authenticated Requests (PAR)** permitiendo visualizar imágenes almacenadas en buckets privados de OCI de forma segura y temporal.
   - [x] **Infraestructura Cloud de Producción (Dominio & HTTPS Caddy):** Despliegue y configuración de proxy inverso **Caddy** en la VM Ubuntu de OCI con certificados automáticos SSL y dominio [`https://hackathon-g10-latam-06.duckdns.org/`](https://hackathon-g10-latam-06.duckdns.org/).
-  - [x] **Refinamiento de UX/UI NovaEdu:** Ajustes visuales finos en las 7 vistas modulares de la UI Streamlit (`dashboard`, `curation`, `ingestion`, `storage`, `connections`, `settings`, `observability`).
+  - [x] **Sistema de Botones Accesibles, Alto Contraste y Radio Pills:**
+    - Rediseño integral de la botonera (`.stButton`, primarios y secundarios) con fondo blanco sólido `#FFFFFF`, bordes `#C7D2FE` y textos índigo `#3730A3` de máximo contraste, eliminando cualquier bloque negro o texto ilegible.
+    - Creación de `.streamlit/config.toml` con `base = "light"` para blindar el tema visual contra interferencias de modo oscuro del navegador.
+    - Transformación de filtros de radio a *segmented pills* interactivos con estados activo/inactivo nítidos.
+    - Botones de curaduría dinámica (`Aprobar`, `Descartar`, `Leído`) que reflejan visualmente el estado actual del post (`✅ Aprobado (Activo)`, `❌ Descartado (Activo)`, `👁️ Leído (Activo)`).
+    - Reorganización espaciosa del generador de imágenes en 2 filas completas (`c_motor`, `c_prompt` y 50/50 de botones de acción) eliminando truncamientos de texto.
+  - [x] **Descubrimiento y Ordenación Cronológica Inversa en OCI Object Storage:**
+    - Corrección en `storage_client.py` (`list_assets`) para solicitar `fields="name,size,timeCreated,md5,etag"` y consultar hasta 1,000 objetos, ordenando descendentemente por fecha.
+    - Los paquetes generados en el día presente (ej. `activos/2026-10-26/*.json`) ahora aparecen de forma inmediata y prioritaria en la primera posición de la lista de fuentes a curar.
   - [x] **Integración E2E del Microservicio de Generación de Imágenes:** Integración y desacoplamiento completo del motor Dual: **🐍 Python Nativo (Gemini 2.5 + OCI)** y **⚡ n8n Workflow (Groq + Pollinations FLUX + OCI S3)** vía endpoint `POST /webhook/generar-imagen-post2`.
 * **Tareas Finales de Entrega y Cierre:**
   - [ ] Integración del conector de publicación automática en LinkedIn (página corporativa [Hackathon ONE G10 Team 6](https://www.linkedin.com/company/hackaton-one-g10-team-6/)).
-  - [ ] Grabación y edición del **Video Demo de YouTube** (máximo 10 minutos, destacando el problema de negocio, arquitectura en OCI Always Free, orquestación en n8n e IA).
+  - [ ] Grabación y edición del **Video Demo de YouTube** (máximo 5 minutos con guion adaptado [Guion_Presentacion_CommunityLab_YouTube.pdf](file:///home/cesarcely/Proyectos/G10-LATAM-equipo6-CommunityLab/PM_Files/Guion_Presentacion_CommunityLab_YouTube.pdf), destacando el problema de negocio, arquitectura en OCI Always Free, orquestación en n8n e IA).
   - [ ] **Pre Demo Meet (Jueves):** Ensayo general con mentores de No Country / Oracle.
   - [ ] **Subir entregables finales** (Cierre formal domingo 23:59 pm).
   - [ ] **Demo Day (Martes/Jueves):** Presentación en vivo y pitch del equipo.

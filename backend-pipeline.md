@@ -242,8 +242,8 @@ Abre tu navegador en: **`http://localhost:8501`** (o en producción vía HTTPS: 
    - Resumen del estado de curaduría (aprobados, descartados, leídos).
 
 2. 📝 **Curaduría de Activos Tri-Panel (`views/curation.py`):**
-   - **Panel Izquierdo:** Lista de publicaciones ordenadas cronológicamente con selector de fuente (Nube OCI vs Fallback Local).
-   - **Panel Central:** Editor de copys para LinkedIn y X, selector de estado y **Generador de Imágenes Dual-Engine** (conmutador entre 🐍 Python Gemini y ⚡ n8n Groq + Pollinations FLUX + OCI S3).
+   - **Panel Izquierdo:** Lista de publicaciones con filtrado por *segmented pills* (`Todos`, `Pendientes`, `Aprobados`, `Publicados`), indicación visual clara de edición activa (`✏️ Editando activo (Activo)`) y selector de fuente con descubrimiento cronológico inverso de paquetes OCI (`fields="name,size,timeCreated,md5,etag"`), posicionando los archivos JSON del día en primer lugar.
+   - **Panel Central:** Editor de copys para LinkedIn y X, botones de acción semánticos con estados dinámicos (`✅ Aprobado (Activo)`, `❌ Descartado (Activo)`, `👁️ Leído (Activo)`) y **Generador de Imágenes Dual-Engine** reorganizado en 2 filas espaciosas (conmutador entre 🐍 Python Gemini y ⚡ n8n Groq + Pollinations FLUX + OCI S3) con adjunto local sin truncamiento.
    - **Panel Derecho:** Mockup interactivo para previsualización fidedigna de redes sociales con renderizado seguro mediante URLs **PAR (Pre-Authenticated Requests)** para buckets privados de OCI.
 
 3. 📥 **Procesamiento e Ingesta (`views/ingestion.py`):**

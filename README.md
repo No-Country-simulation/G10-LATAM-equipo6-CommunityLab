@@ -93,6 +93,7 @@ flowchart TD
 ## 📁 Estructura del Repositorio
 
 ```text
+├── .streamlit/                       # Configuración de Streamlit (tema light forzado y server headless)
 ├── docker-compose.yml                # Despliegue de n8n (Local & OCI Compute VM)
 ├── .env.example                      # Plantilla sanitizada de variables de entorno (Gemini, OCI, n8n, Bots, Admin Key)
 ├── config/
@@ -101,6 +102,8 @@ flowchart TD
 ├── backend-pipeline.md               # Guía técnica profunda del Backend y persistencia OCI
 ├── PM_Files/                         # Gestión del Proyecto y Metodología Ágil
 │   ├── ROADMAP.md                    # Plan maestro de 5 semanas, hitos y demos
+│   ├── Guion_Presentacion_CommunityLab_YouTube.md # Guion y estructura del video pitch (5 min)
+│   ├── Guion_Presentacion_CommunityLab_YouTube.pdf # PDF compilado del guion oficial
 │   ├── despliegue-ssl-dominio.md     # Guía de Dominio DuckDNS, HTTPS y Proxy Inverso Caddy en OCI
 │   ├── Actas_Reuniones/              # Minutas y actas de reuniones semanales
 │   └── Proyecto 3 – 🚀 CommunityLab.pdf # Especificación oficial del reto
@@ -153,9 +156,10 @@ cp .env.example .env
 ```bash
 streamlit run src/ui/app.py
 ```
-Accede a través de tu navegador a `http://localhost:8501`.
-
-Si tienes `AUTOSTART_BOTS=true` en tu `.env`, los bots de Telegram, Discord y Slack arrancarán automáticamente a escuchar en segundo plano al iniciar la app.
+Accede a través de tu navegador a `http://localhost:8501` (o en la URL de producción con SSL).
+- **Diseño de Alto Contraste y Accesibilidad:** Botonera universal (`.stButton`) en blanco y azul índigo profundo de alta visibilidad, filtros por *segmented pills* y botones de curaduría con estados dinámicos (`✅ Aprobado (Activo)`, `❌ Descartado (Activo)`, `👁️ Leído (Activo)`).
+- **Descubrimiento OCI Cronológico:** Detección y ordenación inmediata de los paquetes JSON persistidos en Oracle Cloud (`activos/{YYYY-MM-DD}/*.json`), listando los más recientes del día al inicio del selector de curaduría.
+- **Arranque Omnicanal:** Si tienes `AUTOSTART_BOTS=true` en tu `.env`, los bots de Telegram, Discord y Slack arrancarán automáticamente a escuchar en segundo plano al iniciar la app.
 
 ### 5. Orquestador n8n
 - **En la Nube (Instancia oficial del equipo):** La VM de OCI Always Free corre n8n directamente en [http://147.15.9.116:5678](http://147.15.9.116:5678).
