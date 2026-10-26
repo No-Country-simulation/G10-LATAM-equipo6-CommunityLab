@@ -51,7 +51,7 @@ def render():
               </div>
             </div>""")
             st.button(
-                "👉 Editando" if sel else "Editar activo",
+                "✏️ Editando activo (Activo)" if sel else "👉 Seleccionar para editar",
                 key=f"pick_{p['id']}",
                 on_click=select_post,
                 args=(p["id"],),

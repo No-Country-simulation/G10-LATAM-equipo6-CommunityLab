@@ -178,35 +178,331 @@ section[data-testid="stSidebar"] a, section[data-testid="stSidebar"] a:visited {
 .ready {{ background:#EAF8F0; border:1px solid #BFE8CE; border-radius:12px; padding:12px 14px;
           font-size:.8rem; color:#1E7B48; margin-top:12px; }}
 .ready b {{ display:block; margin-bottom:2px; }}
+/* =========================================================================
+   SISTEMA DE BOTONES PREMIUM, ACCESIBLES Y ULTRA-VISIBLES
+   ========================================================================= */
 
-/* Botones */
-.stButton > button {{ border-radius:10px; font-weight:700; border:1px solid {palette['primary']}; color:{palette['primary']}; background:{palette['panel']}; transition: all 0.2s ease; }}
+/* Regla base universal para TODOS los botones */
+.stButton, .stButton > button, button[data-testid*="BaseButton"], button[data-testid*="baseButton"] {{
+    border-radius: 10px !important;
+    font-weight: 700 !important;
+    font-size: 0.88rem !important;
+    line-height: 1.25 !important;
+    letter-spacing: 0.01em !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}}
+
+/* Forzar que cualquier elemento interno (p, span, div, svg) herede el color y peso */
+.stButton button *,
+.stButton button p,
+.stButton button span,
+.stButton button div,
+button[data-testid*="BaseButton"] *,
+button[data-testid*="baseButton"] * {{
+    color: inherit !important;
+    font-weight: inherit !important;
+}}
+
+/* Botones Secundarios / Por Defecto (Alto contraste, fondo blanco, texto e icono legibles) */
+.stButton > button,
 .stButton > button[kind="secondary"],
-.stButton > button[data-testid="stBaseButton-secondary"] {{
-    background:{palette['panel']} !important;
-    color:{palette['primary']} !important;
-    border:1px solid {palette['primary']} !important;
+.stButton > button[data-testid*="secondary"],
+button[data-testid*="BaseButton-secondary"],
+button[data-testid*="baseButton-secondary"] {{
+    background-color: #FFFFFF !important;
+    background: #FFFFFF !important;
+    color: #3730A3 !important;
+    border: 1.5px solid #C7D2FE !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
 }}
-.stButton > button[kind="secondary"] p,
-.stButton > button[data-testid="stBaseButton-secondary"] p {{
-    color:{palette['primary']} !important;
-}}
-.stButton > button[kind="primary"], .stButton > button[data-testid="stBaseButton-primary"] {{
-    background:{palette['primary']}; color:#fff; border:0; box-shadow: 0 4px 12px rgba(67, 75, 178, 0.2); }}
-.stButton > button:hover {{ border-color:{palette['primary']}; color:{palette['primary']}; transform: translateY(-1px); }}
+
+.stButton > button:hover,
 .stButton > button[kind="secondary"]:hover,
-.stButton > button[data-testid="stBaseButton-secondary"]:hover {{
-    border-color:{palette['primary']} !important;
-    color:{palette['primary']} !important;
-    background:{palette['primary_soft']} !important;
+.stButton > button[data-testid*="secondary"]:hover,
+button[data-testid*="BaseButton-secondary"]:hover,
+button[data-testid*="baseButton-secondary"]:hover {{
+    background-color: #EEF2FF !important;
+    background: #EEF2FF !important;
+    color: #312E81 !important;
+    border-color: #6366F1 !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.16) !important;
 }}
-.stButton > button[kind="primary"]:hover {{ color:#fff; filter:brightness(1.08); box-shadow: 0 6px 16px rgba(67, 75, 178, 0.3); }}
+
+.stButton > button:active,
+.stButton > button[kind="secondary"]:active,
+.stButton > button[data-testid*="secondary"]:active,
+button[data-testid*="BaseButton-secondary"]:active,
+button[data-testid*="baseButton-secondary"]:active {{
+    background-color: #E0E7FF !important;
+    background: #E0E7FF !important;
+    border-color: #4F46E5 !important;
+    transform: translateY(0) !important;
+}}
+
+/* Botones Primarios (Vibrantes, azul/violeta con texto blanco puro) */
+.stButton > button[kind="primary"],
+.stButton > button[data-testid*="primary"],
+button[data-testid*="BaseButton-primary"],
+button[data-testid*="baseButton-primary"] {{
+    background: linear-gradient(135deg, #5B4BDB 0%, #4737C8 100%) !important;
+    background-color: #5B4BDB !important;
+    color: #FFFFFF !important;
+    border: 1.5px solid #372A99 !important;
+    box-shadow: 0 4px 14px rgba(91, 75, 219, 0.32) !important;
+}}
+
+.stButton > button[kind="primary"]:hover,
+.stButton > button[data-testid*="primary"]:hover,
+button[data-testid*="BaseButton-primary"]:hover,
+button[data-testid*="baseButton-primary"]:hover {{
+    background: linear-gradient(135deg, #4F3ECC 0%, #3B2BB8 100%) !important;
+    background-color: #4F3ECC !important;
+    color: #FFFFFF !important;
+    border-color: #2F2188 !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 6px 18px rgba(91, 75, 219, 0.45) !important;
+}}
+
+.stButton > button[kind="primary"]:active,
+.stButton > button[data-testid*="primary"]:active,
+button[data-testid*="BaseButton-primary"]:active,
+button[data-testid*="baseButton-primary"]:active {{
+    background: #372A99 !important;
+    transform: translateY(0) !important;
+}}
+
+/* Acciones de Curaduría 1: Botón APROBAR (Verde) */
+[class*="st-key-btn_ap_"] button {{
+    border-radius: 10px !important;
+    font-weight: 800 !important;
+}}
+[class*="st-key-btn_ap_"] button[data-testid*="secondary"],
+[class*="st-key-btn_ap_"] button[kind="secondary"] {{
+    background-color: #ECFDF5 !important;
+    background: #ECFDF5 !important;
+    color: #065F46 !important;
+    border: 1.5px solid #10B981 !important;
+    box-shadow: 0 1px 3px rgba(16, 185, 129, 0.12) !important;
+}}
+[class*="st-key-btn_ap_"] button[data-testid*="secondary"]:hover,
+[class*="st-key-btn_ap_"] button[kind="secondary"]:hover {{
+    background-color: #D1FAE5 !important;
+    background: #D1FAE5 !important;
+    color: #047857 !important;
+    border-color: #059669 !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25) !important;
+}}
+[class*="st-key-btn_ap_"] button[data-testid*="primary"],
+[class*="st-key-btn_ap_"] button[kind="primary"] {{
+    background: linear-gradient(135deg, #10B981 0%, #059669 100%) !important;
+    background-color: #059669 !important;
+    color: #FFFFFF !important;
+    border: 2px solid #047857 !important;
+    box-shadow: 0 4px 16px rgba(16, 185, 129, 0.45) !important;
+}}
+[class*="st-key-btn_ap_"] button[data-testid*="primary"]:hover,
+[class*="st-key-btn_ap_"] button[kind="primary"]:hover {{
+    background: #047857 !important;
+    color: #FFFFFF !important;
+    transform: translateY(-1px) !important;
+}}
+
+/* Acciones de Curaduría 2: Botón DESCARTAR (Rojo) */
+[class*="st-key-btn_desc_"] button {{
+    border-radius: 10px !important;
+    font-weight: 800 !important;
+}}
+[class*="st-key-btn_desc_"] button[data-testid*="secondary"],
+[class*="st-key-btn_desc_"] button[kind="secondary"] {{
+    background-color: #FEF2F2 !important;
+    background: #FEF2F2 !important;
+    color: #991B1B !important;
+    border: 1.5px solid #EF4444 !important;
+    box-shadow: 0 1px 3px rgba(239, 68, 68, 0.12) !important;
+}}
+[class*="st-key-btn_desc_"] button[data-testid*="secondary"]:hover,
+[class*="st-key-btn_desc_"] button[kind="secondary"]:hover {{
+    background-color: #FEE2E2 !important;
+    background: #FEE2E2 !important;
+    color: #7F1D1D !important;
+    border-color: #DC2626 !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25) !important;
+}}
+[class*="st-key-btn_desc_"] button[data-testid*="primary"],
+[class*="st-key-btn_desc_"] button[kind="primary"] {{
+    background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%) !important;
+    background-color: #DC2626 !important;
+    color: #FFFFFF !important;
+    border: 2px solid #B91C1C !important;
+    box-shadow: 0 4px 16px rgba(239, 68, 68, 0.45) !important;
+}}
+[class*="st-key-btn_desc_"] button[data-testid*="primary"]:hover,
+[class*="st-key-btn_desc_"] button[kind="primary"]:hover {{
+    background: #B91C1C !important;
+    color: #FFFFFF !important;
+    transform: translateY(-1px) !important;
+}}
+
+/* Acciones de Curaduría 3: Botón LEÍDO (Índigo) */
+[class*="st-key-btn_read_"] button {{
+    border-radius: 10px !important;
+    font-weight: 800 !important;
+}}
+[class*="st-key-btn_read_"] button[data-testid*="secondary"],
+[class*="st-key-btn_read_"] button[kind="secondary"] {{
+    background-color: #EEF2FF !important;
+    background: #EEF2FF !important;
+    color: #3730A3 !important;
+    border: 1.5px solid #6366F1 !important;
+    box-shadow: 0 1px 3px rgba(99, 102, 241, 0.12) !important;
+}}
+[class*="st-key-btn_read_"] button[data-testid*="secondary"]:hover,
+[class*="st-key-btn_read_"] button[kind="secondary"]:hover {{
+    background-color: #E0E7FF !important;
+    background: #E0E7FF !important;
+    color: #312E81 !important;
+    border-color: #4F46E5 !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25) !important;
+}}
+[class*="st-key-btn_read_"] button[data-testid*="primary"],
+[class*="st-key-btn_read_"] button[kind="primary"] {{
+    background: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%) !important;
+    background-color: #4F46E5 !important;
+    color: #FFFFFF !important;
+    border: 2px solid #3730A3 !important;
+    box-shadow: 0 4px 16px rgba(99, 102, 241, 0.45) !important;
+}}
+[class*="st-key-btn_read_"] button[data-testid*="primary"]:hover,
+[class*="st-key-btn_read_"] button[kind="primary"]:hover {{
+    background: #3730A3 !important;
+    color: #FFFFFF !important;
+    transform: translateY(-1px) !important;
+}}
+
+/* Acciones de Selección de Post (pick_) */
+[class*="st-key-pick_"] button {{
+    border-radius: 8px !important;
+    font-size: 0.82rem !important;
+    padding: 6px 12px !important;
+    margin-top: 4px !important;
+}}
+[class*="st-key-pick_"] button[data-testid*="primary"],
+[class*="st-key-pick_"] button[kind="primary"] {{
+    background: #5B4BDB !important;
+    color: #FFFFFF !important;
+    border: 1.5px solid #4338CA !important;
+    font-weight: 800 !important;
+}}
+[class*="st-key-pick_"] button[data-testid*="secondary"],
+[class*="st-key-pick_"] button[kind="secondary"] {{
+    background: #FFFFFF !important;
+    color: #334155 !important;
+    border: 1.5px solid #CBD5E1 !important;
+    font-weight: 700 !important;
+}}
+[class*="st-key-pick_"] button[data-testid*="secondary"]:hover,
+[class*="st-key-pick_"] button[kind="secondary"]:hover {{
+    background: #F1F5F9 !important;
+    border-color: #5B4BDB !important;
+    color: #5B4BDB !important;
+}}
+
+/* Botones de Generador de Imagen */
+[class*="st-key-btn_img_"] button {{
+    background: linear-gradient(135deg, #7C3AED 0%, #5B4BDB 100%) !important;
+    color: #FFFFFF !important;
+    border: 1.5px solid #5B21B6 !important;
+    font-weight: 700 !important;
+    box-shadow: 0 3px 10px rgba(124, 58, 237, 0.3) !important;
+}}
+[class*="st-key-btn_img_"] button:hover {{
+    background: linear-gradient(135deg, #6D28D9 0%, #4C1D95 100%) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 5px 14px rgba(124, 58, 237, 0.45) !important;
+}}
+
+[class*="st-key-btn_adj_"] button {{
+    background: #FFFFFF !important;
+    color: #3730A3 !important;
+    border: 1.5px solid #A5B4FC !important;
+    font-weight: 700 !important;
+}}
+[class*="st-key-btn_adj_"] button:hover {{
+    background: #EEF2FF !important;
+    border-color: #6366F1 !important;
+    color: #312E81 !important;
+}}
+
+/* File Uploader button */
 [data-testid="stFileUploader"] button {{
-    background:{palette['panel']} !important;
-    color:{palette['primary']} !important;
-    border:1px solid {palette['primary']} !important;
-    border-radius:10px !important;
-    font-weight:700 !important;
+    background: #FFFFFF !important;
+    color: #3730A3 !important;
+    border: 1.5px solid #C7D2FE !important;
+    border-radius: 10px !important;
+    font-weight: 700 !important;
+}}
+[data-testid="stFileUploader"] button:hover {{
+    background: #EEF2FF !important;
+    border-color: #5B4BDB !important;
+    color: #4338CA !important;
+}}
+
+/* Segmented Control / Radio Buttons Pills */
+div[data-testid="stRadio"] div[role="radiogroup"] {{
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+    align-items: center !important;
+    background: transparent !important;
+    padding: 2px 0 !important;
+}}
+div[data-testid="stRadio"] div[role="radiogroup"] > label {{
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: #FFFFFF !important;
+    border: 1.5px solid #CBD5E1 !important;
+    border-radius: 9999px !important;
+    padding: 5px 14px !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    font-weight: 700 !important;
+    font-size: 0.82rem !important;
+    margin: 0 !important;
+    color: #334155 !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
+}}
+div[data-testid="stRadio"] div[role="radiogroup"] > label:hover {{
+    border-color: #5B4BDB !important;
+    background: #EEF2FF !important;
+    color: #4338CA !important;
+    transform: translateY(-1px) !important;
+}}
+div[data-testid="stRadio"] div[role="radiogroup"] > label > div:first-child {{
+    display: none !important;
+}}
+div[data-testid="stRadio"] div[role="radiogroup"] > label:has(input:checked) {{
+    background: #5B4BDB !important;
+    border-color: #4338CA !important;
+    color: #FFFFFF !important;
+    box-shadow: 0 2px 8px rgba(91, 75, 219, 0.35) !important;
+}}
+div[data-testid="stRadio"] div[role="radiogroup"] > label:has(input:checked) * {{
+    color: #FFFFFF !important;
+    font-weight: 800 !important;
+}}
+div[data-testid="stRadio"] div[role="radiogroup"] > label p {{
+    margin: 0 !important;
+    font-size: 0.82rem !important;
+    line-height: 1.2 !important;
 }}
 input, textarea, [data-baseweb="select"] > div {{ background:{palette['panel']} !important; color:{palette['ink']} !important; border-color:{palette['line']} !important; border-radius:10px !important; }}
 [data-testid="stMain"] [data-testid="stMarkdownContainer"] {{ color:{palette['ink']}; }}

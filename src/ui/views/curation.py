@@ -23,7 +23,7 @@ def render_pending_review():
     if sel_actual in etiquetas:
         idx_defecto = etiquetas.index(sel_actual)
 
-    col_sel, col_ref = st.columns([4, 1])
+    col_sel, col_ref = st.columns([3.8, 1.2], vertical_alignment="bottom")
     with col_sel:
         fuente_elegida = st.selectbox(
             "📦 Fuente de Activos a Curar:",
@@ -37,9 +37,7 @@ def render_pending_review():
             st.rerun()
 
     with col_ref:
-        st.write("")
-        st.write("")
-        if st.button("🔄 Refrescar", use_container_width=True, help="Recarga datos desde OCI / disco"):
+        if st.button("🔄 Refrescar Fuente", key="btn_refresh_source", use_container_width=True, help="Recarga datos desde OCI / disco"):
             st.rerun()
 
     todos = get_visible_posts()

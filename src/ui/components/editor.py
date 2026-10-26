@@ -40,8 +40,10 @@ def _render_generador_imagen(post: dict, copy_actual: str) -> None:
     clave_nombre = f"imagen_local_nombre_{post_id}"
     clave_firma = f"imagen_local_firma_{post_id}"
 
-    c_motor, c_prompt, c_btn, c_adj = st.columns([1.1, 1.8, 1.05, 1.05], vertical_alignment="bottom")
+    # Fila 1: Configuración de Motor y Estilo Visual
+    c_motor, c_prompt = st.columns([1.4, 2.6], vertical_alignment="bottom")
     with c_motor:
+        st.markdown("<div style='font-size:0.75rem; font-weight:700; color:#475569; margin-bottom:4px;'>⚙️ MOTOR IA</div>", unsafe_allow_html=True)
         motor_opcion = st.selectbox(
             "Motor",
             ["🐍 Python (Gemini)", "⚡ n8n (Groq)"],
@@ -50,24 +52,28 @@ def _render_generador_imagen(post: dict, copy_actual: str) -> None:
             label_visibility="collapsed",
         )
     with c_prompt:
+        st.markdown("<div style='font-size:0.75rem; font-weight:700; color:#475569; margin-bottom:4px;'>🎨 ESTILO / PROMPT (OPCIONAL)</div>", unsafe_allow_html=True)
         instruccion = st.text_input(
             "Instrucción visual (opcional)",
-            placeholder="Instrucción visual opcional. Ej: estilo 3D isométrico",
+            placeholder="Ej: render 3D isométrico, moderno...",
             key=f"img_prompt_{post_id}",
             label_visibility="collapsed",
             help="Ajuste de estilo visual. Si lo dejas vacío, se arma con el copy y los temas clave.",
         )
+
+    # Fila 2: Botones de Acción claros y 100% legibles
+    c_btn, c_adj = st.columns(2)
     with c_btn:
         generar = st.button(
-            "Generar",
+            "✨ Generar Imagen con IA",
             key=f"btn_img_{post_id}",
-            type="secondary",
+            type="primary",
             use_container_width=True,
-            help="Generar imagen con el motor seleccionado",
+            help="Generar imagen automáticamente con el motor seleccionado",
         )
     with c_adj:
         adjuntar = st.button(
-            "📎 Adjuntar",
+            "📎 Adjuntar Imagen Local",
             key=f"btn_adj_{post_id}",
             type="secondary",
             use_container_width=True,
@@ -157,10 +163,17 @@ def render(post: dict) -> list:
 
         _render_generador_imagen(post, copy_actual)
 
-        # Botones de Acción de Curaduría Real
+        # Botones de Acción de Curaduría Real con estados dinámicos activo / inactivo
+        estado_post = post.get("estado", "")
+        es_aprobado = (estado_post == "Aprobado")
+        es_descartado = (estado_post in ("Descartado", "Rechazado"))
+        es_leido = (estado_post == "Leído")
+
         b_col1, b_col2, b_col3 = st.columns(3)
         with b_col1:
-            if st.button("✅ Aprobar", key=f"btn_ap_{post['id']}", type="primary", use_container_width=True):
+            lbl_ap = "✅ Aprobado (Activo)" if es_aprobado else "✅ Aprobar"
+            tipo_ap = "primary" if es_aprobado else "secondary"
+            if st.button(lbl_ap, key=f"btn_ap_{post['id']}", type=tipo_ap, use_container_width=True, help="Aprobar para persistencia y distribución"):
                 guardar_curaduria_humana(
                     id_interaccion=post["id"],
                     copy_aprobado=copy_actual,
@@ -170,7 +183,9 @@ def render(post: dict) -> list:
                 st.rerun()
 
         with b_col2:
-            if st.button("❌ Descartar", key=f"btn_desc_{post['id']}", use_container_width=True):
+            lbl_desc = "❌ Descartado (Activo)" if es_descartado else "❌ Descartar"
+            tipo_desc = "primary" if es_descartado else "secondary"
+            if st.button(lbl_desc, key=f"btn_desc_{post['id']}", type=tipo_desc, use_container_width=True, help="Descartar este activo de la distribución"):
                 guardar_curaduria_humana(
                     id_interaccion=post["id"],
                     copy_aprobado=copy_actual,
@@ -180,7 +195,9 @@ def render(post: dict) -> list:
                 st.rerun()
 
         with b_col3:
-            if st.button("👁️ Leído", key=f"btn_read_{post['id']}", use_container_width=True):
+            lbl_read = "👁️ Leído (Activo)" if es_leido else "👁️ Marcar Leído"
+            tipo_read = "primary" if es_leido else "secondary"
+            if st.button(lbl_read, key=f"btn_read_{post['id']}", type=tipo_read, use_container_width=True, help="Marcar como revisado sin distribuir"):
                 guardar_curaduria_humana(
                     id_interaccion=post["id"],
                     copy_aprobado=copy_actual,
