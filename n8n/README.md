@@ -65,6 +65,15 @@ Para procesar interacciones directamente en lote desde el almacenamiento:
 6. **Resiliencia & Rate Limiting:** Nodo `Wait` para proteger el límite de TPM/RPM de la API.
 7. **Cierre de Ciclo:** La salida de `Wait` regresa al loop hasta completar el lote.
 
+### 4. Microservicio de Generación de Imágenes para Posts (`POST /webhook/generar-imagen-post2`)
+Diseñado para la creación visual bajo demanda desde el editor de curaduría de Streamlit ([`n8n/workflows/CommunityLab_Generador_Imagenes_Post.json`](workflows/CommunityLab_Generador_Imagenes_Post.json)):
+1. **Webhook Trigger:** Endpoint `POST /webhook/generar-imagen-post2` con recepción de payload JSON (`tipo_post`, `contenido`, `autor`, `instruccion_visual`).
+2. **AI Agent (Groq LLM):** Diseña y expande un prompt en inglés hiper-específico para modelos de difusión (estilo editorial moderno, iluminación volumétrica, sin texto deformado).
+3. **Limpieza & Sanitización de Prompt:** Nodo `Code` que remueve saltos de línea y caracteres especiales para formateo URL.
+4. **Inferencia Visual (Pollinations.ai / FLUX):** Descarga el binario de la imagen generada mediante una petición HTTP `GET` con semilla aleatoria (`seed`).
+5. **Persistencia S3 en OCI Object Storage:** Nodo S3 de n8n que sube el archivo binario a `communitylab-activos-marketing/imagenes/` desacoplado con variables de entorno de OCI.
+6. **Respuesta Síncrona:** Devuelve `200 OK` con `{ success: true, url: "https://..." }` para renderizado inmediato en el mockup interactivo.
+
 ---
 
 

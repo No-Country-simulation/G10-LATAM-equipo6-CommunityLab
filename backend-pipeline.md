@@ -3,9 +3,9 @@
 **Proyecto:** CommunityLab — Hackathon ONE G10 (Oracle & Alura / No Country)  
 **Equipo:** Equipo 6 - LATAM  
 **Destinatarios:** Integrantes del Equipo (Célula Frontend, Célula Cloud, Célula IA & Mentores)  
-**Fecha:** 6 de octubre de 2026  
+**Fecha:** 26 de octubre de 2026  
 **Rama Oficial:** `main`  
-**Estado:** 100% Funcional — 80/80 Tests Unitarios e Integrales Pasando (Bots Omnicanal, UI NovaEdu Modular & Control de Seguridad de Settings)
+**Estado:** 100% Funcional — 82/82 Tests Unitarios e Integrales Pasando (Dual-Engine Image Generator, PAR OCI Previews, Bots Omnicanal, UI NovaEdu Modular & Control de Seguridad de Settings)
 
 ---
 
@@ -19,7 +19,10 @@
 4. **Métricas de Salud y Feedback:** Monitoreo de sentimiento, felicitaciones y áreas de mejora (`metricas_feedback_comunidad.json`).
 5. **Persistencia Cloud-Native en OCI:** Almacenamiento seguro y estructurado de los activos en **Oracle Cloud Infrastructure (OCI) Object Storage** en la capa Always Free (`communitylab-activos-marketing`), eliminando la necesidad de persistir JSONs redundantes en el disco de la VM (Arquitectura Stateless).
 6. **Bots Omnicanal en Vivo:** Escucha activa y bidireccional en segundo plano para Telegram (`@G10_Latam_06_bot`), Discord (`G10-LATAM-06`) y Slack (Socket Mode) con auto-arranque opcional (`AUTOSTART_BOTS=true`).
-7. **Panel de Curaduría Humana NovaEdu (Streamlit Modular):** Interfaz desacoplada en 7 vistas temáticas (`dashboard`, `curation`, `ingestion`, `storage`, `connections`, `settings`, `observability`) con selector de fuente OCI/Local, visualizador de logs y control de autorización administrativa (`SETTINGS_ADMIN_KEY`).
+7. **Generador de Imágenes para Posts Dual-Engine:** Generación de creativos visuales para redes sociales conmutables entre **Python Nativo (Google Gemini + OCI SDK)** y **n8n Workflow (Groq + Pollinations FLUX + OCI S3)**.
+8. **Tokens Pre-Autenticados (PAR) en OCI:** Visualización directa y segura de imágenes alojadas en buckets privados de OCI Object Storage mediante tokens de expiración temporal.
+9. **Panel de Curaduría Humana NovaEdu (Streamlit Modular):** Interfaz desacoplada en 7 vistas temáticas (`dashboard`, `curation`, `ingestion`, `storage`, `connections`, `settings`, `observability`) con selector de fuente OCI/Local, visualizador de logs, mockups interactivos y control de autorización administrativa (`SETTINGS_ADMIN_KEY`).
+10. **Despliegue Cloud en Producción con Caddy & SSL:** Despliegue en VM Ubuntu de OCI Compute Always Free con proxy inverso Caddy y dominio público HTTPS (`https://hackathon-g10-latam-06.duckdns.org`).
 
 ---
 
@@ -69,6 +72,11 @@ flowchart TD
 ├── config/                               # Configuración estructurada del backend
 │   ├── settings.json                     # Persistencia JSON local
 │   └── settings.example.json             # Plantilla de configuración
+├── PM_Files/                             # Gestión del Proyecto y Metodología Ágil
+│   ├── ROADMAP.md                        # Plan maestro de 5 semanas, hitos y demos
+│   ├── despliegue-ssl-dominio.md         # Guía de Dominio DuckDNS, HTTPS y Proxy Inverso Caddy en OCI
+│   ├── Actas_Reuniones/                  # Minutas y actas de reuniones semanales
+│   └── Proyecto 3 – 🚀 CommunityLab.pdf  # Especificación oficial del reto
 ├── data/                                 # Datasets y almacenamiento local
 │   ├── interacciones_ejemplo.json        # Dataset oficial con 15 casos de prueba
 │   ├── curaduria_aprobados.json          # Registro de decisiones de los Community Managers
@@ -77,14 +85,19 @@ flowchart TD
 ├── logs/                                 # Directorio de logs rotativos diarios
 │   └── communitylab-YYYY-MM-DD.log       # Archivo de auditoría generado por fecha
 ├── n8n/workflows/                        # Workflows de n8n
-│   ├── communitylab_ingesta_local_webhook.json # Flujo adaptado con Webhook HTTP
-│   ├── communitylab_ingesta_llm.json     # Flujo original del equipo
-│   ├── jmedinag_WF_002.json              # Flujo de José Medina
-│   └── ingestion_groq_subflow.json       # Subflujo de Groq
+│   ├── CommunityLab_Generador_Imagenes_Post.json # Microservicio síncrono de generación de imágenes
+│   ├── communitylab_master_omnicanal_oci.json    # Flujo maestro unificado omnicanal
+│   ├── communitylab_ingesta_local_webhook.json   # Flujo adaptado con Webhook HTTP
+│   ├── communitylab_ingesta_llm.json             # Flujo original del equipo
+│   ├── communitylab_telegram_dinamico.json       # Ingesta y respuesta dinámica Telegram
+│   ├── communitylab_discord_dinamico.json        # Ingesta y respuesta dinámica Discord
+│   ├── communitylab_slack_dinamico.json          # Ingesta y respuesta dinámica Slack
+│   ├── jmedinag_WF_002.json                      # Flujo de José Medina
+│   └── ingestion_groq_subflow.json               # Subflujo de Groq con persistencia S3 OCI
 ├── src/                                  # Código fuente principal
 │   ├── ai_engine/                        # Modelos Pydantic e inferencia con Gemini
 │   │   ├── schemas.py                    # Modelos de datos tipados (Pydantic V2)
-│   │   ├── gemini_service.py             # Cliente oficial google-genai con fallback y backoff
+│   │   ├── gemini_service.py             # Cliente oficial google-genai con fallback, backoff y generador de prompts visuales
 │   │   ├── prompt_templates.json         # Plantillas de System Prompt y User Prompt
 │   │   └── validator.py                  # Utilidades de limpieza de JSON/Markdown
 │   ├── channels/                         # Integración omnicanal en vivo
@@ -93,30 +106,30 @@ flowchart TD
 │   │   ├── slack_bot.py                  # Bot de Slack en Socket Mode
 │   │   └── bot_manager.py                # Gestor OmnichannelBotManager
 │   ├── cloud_oci/                        # Conector con Oracle Cloud Infrastructure
-│   │   └── storage_client.py             # OCIStorageManager (Cloud + Local Fallback)
+│   │   └── storage_client.py             # OCIStorageManager (Cloud + PAR + S3 + Local Fallback)
 │   ├── ingestion/                        # Carga, batching y deduplicación
 │   │   └── data_loader.py                # Lectura, validación y filtros de exclusión
 │   ├── pipeline.py                       # Orquestador E2E y soporte para CLI
 │   ├── ui/                               # Capa de presentación y servicios modular
 │   │   ├── components/                   # Componentes visuales (header, sidebar, editor, preview, post_list)
-│   │   ├── views/                        # Vistas temáticas (dashboard, curation, ingestion, storage, connections, settings, observability)
+│   │   ├── views/                        # 7 Vistas temáticas (dashboard, curation, ingestion, storage, connections, settings, observability)
 │   │   ├── scripts/                      # data_adapter.py (normalización OCI), services.py, state.py, styles.py
 │   │   ├── config_manager.py             # Gestor de doble persistencia (.env + settings.json)
 │   │   └── app.py                        # Punto de entrada Streamlit
 │   └── utils/                            # Utilidades compartidas
 │       ├── config.py                     # Helper de configuración y toggles de servicios
 │       └── logger.py                     # Logger rotativo diario (thread-safe)
-└── tests/                                # Suite completa de 80 pruebas unitarias e integrales
+└── tests/                                # Suite completa de 82 pruebas unitarias e integrales
     ├── test_ai_engine.py                 # Validación de esquemas Pydantic
     ├── test_bot_manager.py               # Pruebas del gestor omnicanal de bots
     ├── test_channels.py                  # Pruebas de integración de Telegram, Discord y Slack
-    ├── test_cloud_oci.py                 # Pruebas del gestor de OCI
+    ├── test_cloud_oci.py                 # Pruebas del gestor de OCI (CRUD y PAR)
     ├── test_config.py                    # Pruebas de configuración y variables
     ├── test_gemini_service.py            # Pruebas de inferencia y resiliencia
     ├── test_ingestion.py                 # Pruebas de ingesta y deduplicación
     ├── test_oci_storage.py               # Pruebas de almacenamiento en OCI
     ├── test_pipeline.py                  # Pruebas de ejecución E2E
-    └── test_ui_services.py               # Pruebas de servicios UI y persistencia
+    └── test_ui_services.py               # Pruebas de servicios UI, PAR y generador de imágenes
 ```
 
 ---
@@ -125,24 +138,24 @@ flowchart TD
 
 Para Replicar en el Entorno Local seguir estos pasos:
 
-### Paso 1: Clonar el Repositorio y Situarse en la Rama
+### Paso 1: Clonar el Repositorio y Situarse en la Rama Oficial
 
 ```bash
 git clone git@github.com:No-Country-simulation/G10-LATAM-equipo6-CommunityLab.git
 cd G10-LATAM-equipo6-CommunityLab
-git checkout feat/backend-pipeline-max
+git checkout main
 ```
 
-### Paso 2: Crear y Activar el Entorno Virtual (Python 3.11)
+### Paso 2: Crear y Activar el Entorno Virtual (Python 3.11+)
 
 ```bash
 # Crear entorno virtual
-python -m venv venv
+python3 -m venv .venv
 
 # Activar en Windows (PowerShell):
-.\venv\Scripts\Activate.ps1
+.\.venv\Scripts\Activate.ps1
 # Activar en Linux o macOS:
-source venv/bin/activate
+source .venv/bin/activate
 ```
 
 ### Paso 3: Instalar Dependencias Oficiales
@@ -199,7 +212,7 @@ pytest
 **Resultado esperado:**
 
 ```text
-============================= 44 passed in 1.06s ==============================
+======================= 82 passed, 25 warnings in 6.70s ========================
 ```
 
 ### 5.2 Ejecución por Línea de Comandos (CLI)
@@ -212,7 +225,7 @@ python -m src.pipeline --input data/interacciones_ejemplo.json --limit 3
 
 ---
 
-## 🌐 6. Ejecución del Panel Visual en Streamlit
+## 🌐 6. Ejecución del Panel Visual en Streamlit (NovaEdu Modular)
 
 Para abrir la interfaz de curaduría y orquestación:
 
@@ -220,21 +233,38 @@ Para abrir la interfaz de curaduría y orquestación:
 streamlit run src/ui/app.py
 ```
 
-Abre tu navegador en: **`http://localhost:8501`**.
+Abre tu navegador en: **`http://localhost:8501`** (o en producción vía HTTPS: `https://hackathon-g10-latam-06.duckdns.org/`).
 
-### Vistas Disponibles en la Interfaz:
+### Las 7 Vistas Modulares Disponibles en la Interfaz:
 
-1. **💼 Curaduría de Activos:**
-   - Visualiza métricas en tiempo real.
-   - Los posts aparecen ordenados con los más recientes al principio (`⏱️ Mostrar más recientes primero`).
-   - Permite editar el copy para LinkedIn o el tip técnico y pulsar **Aprobar** o **Rechazar**.
-2. **⚡ Ejecutar Pipeline:**
-   - **Fila 1:** `Límite de registros` | `Filtrar por canal` | `[🗑️ Vaciar Lotes Locales]` | `[⚠️ Vaciar Histórico OCI ⌄]`.
-   - **Fila 2:** `[☑️ Subir a OCI Storage (Motor Python)]` | `[☑️ Omitir interacciones ya procesadas en OCI]`.
-   - Selector de motor para ejecutar con **🐍 Motor 2: Pipeline Python Nativo** o con **🌐 Motor 1: Orquestador n8n**.
-   - Visor de logs en vivo en la parte inferior con botones de refresco y limpieza.
-3. **☁️ Histórico OCI Object Storage:**
-   - Explora todos los paquetes persistidos en el almacenamiento (`activos/{YYYY-MM-DD}/*.json`) y permite su vaciado seguro con confirmación previa directo en la nube.
+1. 📊 **Dashboard de la Comunidad (`views/dashboard.py`):**
+   - Métricas clave en tiempo real: volumen de interacciones, sentimiento neto y distribución por canal.
+   - Resumen del estado de curaduría (aprobados, descartados, leídos).
+
+2. 📝 **Curaduría de Activos Tri-Panel (`views/curation.py`):**
+   - **Panel Izquierdo:** Lista de publicaciones ordenadas cronológicamente con selector de fuente (Nube OCI vs Fallback Local).
+   - **Panel Central:** Editor de copys para LinkedIn y X, selector de estado y **Generador de Imágenes Dual-Engine** (conmutador entre 🐍 Python Gemini y ⚡ n8n Groq + Pollinations FLUX + OCI S3).
+   - **Panel Derecho:** Mockup interactivo para previsualización fidedigna de redes sociales con renderizado seguro mediante URLs **PAR (Pre-Authenticated Requests)** para buckets privados de OCI.
+
+3. 📥 **Procesamiento e Ingesta (`views/ingestion.py`):**
+   - Controles de ejecución por lotes: límites de registros, filtros por canal y deduplicador OCI para evitar procesar interacciones duplicadas.
+   - Selector dinámico de motor: **🐍 Motor Python Nativo (Gemini 2.5 Flash)** o **🌐 Motor Orquestador n8n (Webhook HTTP)**.
+   - Botones para vaciado selectivo de lotes locales o del histórico en OCI.
+
+4. ☁️ **Almacenamiento OCI Object Storage (`views/storage.py`):**
+   - Explorador de paquetes temáticos en la nube (`activos/{YYYY-MM-DD}/*.json`) e imágenes persistidas.
+   - Generación dinámica de tokens PAR para visualización y descarga directa.
+
+5. 📡 **Conexiones & Bots Omnicanal (`views/connections.py`):**
+   - Monitoreo en vivo de los bots de **Telegram** (`@G10_Latam_06_bot`), **Discord** (`G10-LATAM-06`) y **Slack** (Socket Mode).
+   - Controles individuales y globales de encendido/apagado en tiempo real.
+
+6. ⚙️ **Configuración & Seguridad (`views/settings.py`):**
+   - Gestión de claves de API (Gemini, Groq, Telegram, Discord, Slack, OCI).
+   - Blindaje de seguridad: Modificación de variables protegida por **Clave de Verificación Administrativa (`SETTINGS_ADMIN_KEY`)**.
+
+7. 🩺 **Observabilidad & Logs (`views/observability.py`):**
+   - Visor de trazas y logs rotativos en tiempo real (`logs/communitylab-YYYY-MM-DD.log`) con opciones de refresco y auditoría de eventos.
 
 ---
 

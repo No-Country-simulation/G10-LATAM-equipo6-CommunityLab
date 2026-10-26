@@ -43,8 +43,27 @@ Este directorio almacena los flujos de n8n exportados para control de versiones 
   * **Entrada dinámica:** Recibe las interacciones seleccionadas en Streamlit (`$json.body.interacciones`).
   * **Respuesta síncrona:** Nodo `Respond to Webhook` al completar el loop para devolver el paquete de activos estructurado a la UI.
 
-### 5. `jmedinag_WF_002.json`
-* **Descripción:** Flujo de trabajo de referencia desarrollado por José Medina.
+### 5. `CommunityLab_Generador_Imagenes_Post.json` (Generador de Imágenes para Posts en Redes) ⭐
+* **Descripción:** Microservicio síncrono dedicado para generar creativos visuales contextuales a partir de posts de LinkedIn o X aprobados.
+* **Componentes:**
+  * **Webhook Trigger:** Expone el endpoint `POST /webhook/generar-imagen-post2`.
+  * **Groq AI Agent + Memory:** LLM especializado que analiza el contenido del post, la instrucción visual opcional y redacta un prompt hiper-detallado en inglés enfocado en fotografía digital y estética moderna.
+  * **Code Node:** Limpieza del prompt y sanitización de caracteres para solicitud HTTP.
+  * **HTTP Request (Pollinations.ai):** Inferencia con modelo FLUX y semilla aleatoria (`seed`).
+  * **OCI S3 Upload:** Sube la imagen descargada a `communitylab-activos-marketing/imagenes/{timestamp}.png` utilizando las credenciales S3 desacopladas desde `.env`.
+  * **Respond to Webhook:** Devuelve `200 OK` con `{ success: true, url: "https://..." }` para renderizado en tiempo real en la UI de Streamlit.
+
+### 6. `communitylab_telegram_dinamico.json`
+* **Descripción:** Ingesta y webhook dedicado para procesar mensajes del bot de Telegram (`@G10_Latam_06_bot`) en tiempo real, conectando con el motor LLM y persistencia en OCI.
+
+### 7. `communitylab_discord_dinamico.json`
+* **Descripción:** Receptor de eventos y menciones en canales de Discord (`G10-LATAM-06`), generando respuestas contextuales vía embeds e interactuando con OCI.
+
+### 8. `communitylab_slack_dinamico.json`
+* **Descripción:** Receptor de eventos y mensajes de canales en Slack, con formateo Block Kit y sincronización de activos.
+
+### 9. `jmedinag_WF_002.json`
+* **Descripción:** Flujo de trabajo experimental y de referencia desarrollado por José Medina.
 
 ---
 

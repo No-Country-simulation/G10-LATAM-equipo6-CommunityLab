@@ -220,13 +220,14 @@ gantt
 
 ### Semana 5: QA Intensivo, Hardening & Cierre Pre-Demo (Semana Ganada de Ventaja 🎉)
 * **Objetivo:** Aprovechar la ventaja de 1 semana adelantada en el cronograma para realizar pruebas intensivas E2E, aseguramiento de calidad (QA), refinamientos de UI/UX, estabilización en OCI y preparación del Video Demo Final.
-* **Foco Principal de QA & Hardening:**
-  - [ ] **Suite de Pruebas Extendida & Resiliencia:** Expansión de casos límite (*edge cases*) en ingesta, manejo de excepciones y reconexión automática de WebSocket en Telegram/Discord/Slack.
-  - [ ] **Pruebas de Estrés & Carga en OCI:** Validación de concurrencia y tiempos de respuesta con volumen en OCI Object Storage.
-  - [ ] **Refinamiento de UX/UI NovaEdu:** Ajustes visuales finos en las 7 vistas de la UI Streamlit según retroalimentación del equipo.
-* **Tareas Críticas de Entrega:**
-  - [ ] Integración y pruebas E2E del microservicio de generación de imágenes (n8n).
-  - [ ] Integración del conector de publicación automática en LinkedIn.
+* **Foco Principal de QA & Hardening Realizado:**
+  - [x] **Suite de Pruebas Extendida & Resiliencia (82/82 Tests Pasando al 100%):** Expansión de casos límite (*edge cases*) en ingesta, manejo de excepciones, reconexión automática de WebSocket en Telegram/Discord/Slack, y validación exhaustiva de PAR y Dual-Engine (`pytest tests/ -v`).
+  - [x] **Pruebas y Blindaje de Imágenes en OCI con PAR:** Implementación de soporte para **Pre-Authenticated Requests (PAR)** permitiendo visualizar imágenes almacenadas en buckets privados de OCI de forma segura y temporal.
+  - [x] **Infraestructura Cloud de Producción (Dominio & HTTPS Caddy):** Despliegue y configuración de proxy inverso **Caddy** en la VM Ubuntu de OCI con certificados automáticos SSL y dominio [`https://hackathon-g10-latam-06.duckdns.org/`](https://hackathon-g10-latam-06.duckdns.org/).
+  - [x] **Refinamiento de UX/UI NovaEdu:** Ajustes visuales finos en las 7 vistas modulares de la UI Streamlit (`dashboard`, `curation`, `ingestion`, `storage`, `connections`, `settings`, `observability`).
+  - [x] **Integración E2E del Microservicio de Generación de Imágenes:** Integración y desacoplamiento completo del motor Dual: **🐍 Python Nativo (Gemini 2.5 + OCI)** y **⚡ n8n Workflow (Groq + Pollinations FLUX + OCI S3)** vía endpoint `POST /webhook/generar-imagen-post2`.
+* **Tareas Finales de Entrega y Cierre:**
+  - [ ] Integración del conector de publicación automática en LinkedIn (página corporativa [Hackathon ONE G10 Team 6](https://www.linkedin.com/company/hackaton-one-g10-team-6/)).
   - [ ] Grabación y edición del **Video Demo de YouTube** (máximo 10 minutos, destacando el problema de negocio, arquitectura en OCI Always Free, orquestación en n8n e IA).
   - [ ] **Pre Demo Meet (Jueves):** Ensayo general con mentores de No Country / Oracle.
   - [ ] **Subir entregables finales** (Cierre formal domingo 23:59 pm).
