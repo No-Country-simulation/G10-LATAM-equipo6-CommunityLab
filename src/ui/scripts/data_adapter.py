@@ -111,9 +111,10 @@ def obtener_opciones_fuente() -> list[tuple[str, str, str]]:
 
     # 1. Fuentes Cloud OCI
     try:
-        paquetes_cloud = obtener_ultimos_paquetes(limite=10)
+        paquetes_cloud = obtener_ultimos_paquetes(limite=50)
         for p in paquetes_cloud:
-            opciones.append((f"☁️ OCI: {p['name']}", p["name"], "oci"))
+            if p.get("name", "").endswith(".json"):
+                opciones.append((f"☁️ OCI: {p['name']}", p["name"], "oci"))
     except Exception:
         pass
 

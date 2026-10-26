@@ -38,6 +38,7 @@ def render_pending_review():
 
     with col_ref:
         if st.button("🔄 Refrescar Fuente", key="btn_refresh_source", use_container_width=True, help="Recarga datos desde OCI / disco"):
+            st.session_state.pop("selected_package_label", None)
             st.rerun()
 
     todos = get_visible_posts()

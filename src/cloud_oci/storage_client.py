@@ -428,7 +428,7 @@ class OCIStorageManager:
         return content if isinstance(content, bytes) else content.encode("utf-8")
 
     def list_assets(self, prefix: str = "activos", limit: int = 100) -> List[Dict[str, Any]]:
-        """Lista los objetos bajo un prefijo en el bucket o carpeta local."""
+        """Lista los objetos bajo un prefijo en el bucket o carpeta local, ordenados del más reciente al más antiguo."""
         if self.is_local_mode:
             search_dir = self.LOCAL_FALLBACK_DIR / prefix
             if not search_dir.exists():
@@ -443,18 +443,30 @@ class OCIStorageManager:
                     "time_created": datetime.fromtimestamp(file_path.stat().st_mtime, tz=timezone.utc).isoformat(),
                     "etag": "local_etag",
                 })
+            results.sort(key=lambda x: x.get("created_at") or x.get("name"), reverse=True)
             return results[:limit]
 
         if not self.client:
             raise RuntimeError("Cliente OCI no inicializado.")
 
         namespace = self.get_namespace()
-        response = self.client.list_objects(
-            namespace_name=namespace,
-            bucket_name=self.bucket_name,
-            prefix=prefix,
-            limit=limit,
-        )
+        fetch_limit = max(limit, 1000)
+        try:
+            response = self.client.list_objects(
+                namespace_name=namespace,
+                bucket_name=self.bucket_name,
+                prefix=prefix,
+                limit=fetch_limit,
+                fields="name,size,timeCreated,md5,etag",
+            )
+        except Exception:
+            # Fallback en caso de que el cliente o mock no admita el argumento fields
+            response = self.client.list_objects(
+                namespace_name=namespace,
+                bucket_name=self.bucket_name,
+                prefix=prefix,
+                limit=fetch_limit,
+            )
 
         results = []
         objects = response.data.objects if hasattr(response.data, "objects") else []
@@ -468,7 +480,9 @@ class OCIStorageManager:
                 "created_at": iso_time,
                 "etag": getattr(item, "etag", None),
             })
-        return results
+        # Ordenar del más reciente al más antiguo antes de truncar al límite
+        results.sort(key=lambda x: x.get("created_at") or x.get("name"), reverse=True)
+        return results[:limit]
 
     def delete_object(self, object_name: str) -> bool:
         """Elimina un objeto del bucket o almacenamiento local."""

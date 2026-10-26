@@ -140,7 +140,7 @@ def obtener_ids_procesados_sesion(consultar_oci: bool = True) -> Set[str]:
 def obtener_ultimos_paquetes(
     storage_manager: Optional[OCIStorageManager] = None,
     prefix: str = "activos",
-    limite: int = 10,
+    limite: int = 50,
 ) -> List[Dict[str, Any]]:
     """Obtiene la lista de paquetes de distribución disponibles (en OCI o almacenamiento local).
 
